@@ -1,6 +1,5 @@
 package com.flightbookings.flight_bookings.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,40 +20,52 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String username;
 
-    private String email;
+    @Column
     private String password;
+
+    @Column
+    private String email;
 
     @Enumerated(EnumType.STRING)
     private ERole role;
 
+    @OneToMany(mappedBy= "user", orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<Booking> bookings;
 
 
-
-
-    public User(Long id, ERole role, String password, String email, String username) {
+    public User(Long id, String username, String password, String email, ERole role, List<Booking> bookings) {
         this.id = id;
-        //this.projectsList = projectsList;
-        //this.tasks = tasks;
-        this.role = role;
+        this.username = username;
         this.password = password;
         this.email = email;
-        this.username = username;
+        this.role = role;
+        this.bookings = bookings;
     }
 
     public Long getId() {
-        return id;
-    }
+        return id;}
 
     public void setId(Long id) {
         this.id = id;
     }
 
+    @Override
     public String getUsername() {
         return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getEmail() {
@@ -73,15 +84,13 @@ public class User implements UserDetails {
         this.role = role;
     }
 
-    public String getPassword() {
-        return password;
+    public List<Booking> getBookings() {
+        return bookings;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setBookings(List<Booking> bookings) {
+        this.bookings = bookings;
     }
-
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -119,8 +128,8 @@ public class User implements UserDetails {
         private String email;
         private String password;
         private ERole role;
-        //private List<> ;
-        //private List<> ;
+        private List<Booking> bookings;
+
 
         public Builder id(Long id) {
             this.id = id;
@@ -147,19 +156,19 @@ public class User implements UserDetails {
             return this;
         }
 
-//        public Builder tasks(List<Task> tasks) {
-//            this.tasks = tasks;
-//            return this;
-//        }
-//
-//        public Builder projectsList(List<Project> projectsList) {
-//            this.projectsList = projectsList;
-//            return this;
-//        }
-//
-//        public User build() {
-//            return new User(id, projectsList, tasks, role, password, email, username);
-//
-//        }
+        public Builder bookings(List<Booking> bookings) {
+            this.bookings = bookings;
+            return this;
+        }
+
+        public Builder projectsList(List<Booking> projectsList) {
+            this.bookings = bookings;
+            return this;
+        }
+
+        public User build() {
+            return new User(id, password, email,username,role,  bookings);
+
+        }
     }
 }
