@@ -21,6 +21,9 @@ public class Seat {
     @Column
     private boolean booked = false;
 
+    @Column(unique = true, nullable = false)
+    private String seatName;
+
     @ManyToOne
     @JoinColumn(name="flight_id", nullable = false)
     private Flight flight;
@@ -36,6 +39,7 @@ public class Seat {
         this.row = row;
         this.seatLetter = seatLetter;
         this.booked = booked;
+        this.seatName = row + seatLetter.name();
         this.flight = flight;
         this.booking = booking;
     }
@@ -86,5 +90,13 @@ public class Seat {
 
     public void setBooking(Booking booking) {
         this.booking = booking;
+    }
+
+    public String getSeatName() {
+        return seatName;
+    }
+
+    public void setSeatName(String seatName) {
+        this.seatName = seatName;
     }
 }

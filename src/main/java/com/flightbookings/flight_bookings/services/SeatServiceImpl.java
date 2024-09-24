@@ -19,16 +19,23 @@ public class SeatServiceImpl implements SeatService {
         this.seatRepository = seatRepository;
     }
     @Override
-    public void initializeSeats(Flight flight, int numRows) {
+    public List<String> initializeSeats(Flight flight, int numRows) {
         List<Seat> seats = new ArrayList<>();
+        List<String> seatIdentifiers = new ArrayList<>();
 
         for (int row = 1; row <= numRows; row++) {
             for (ESeatLetter letter : ESeatLetter.values()) {
+                String seatName = row + letter.name();
                 Seat seat = new Seat(null, row, letter, false, flight, null);
+                seat.setSeatName(seatName);
                 seats.add(seat);
+                seatIdentifiers.add(seatName);
             }
         }
+
         seatRepository.saveAll(seats);
         flight.setSeats(seats);
+
+        return seatIdentifiers;
     }
 }
