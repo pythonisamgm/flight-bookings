@@ -22,7 +22,7 @@ public class Seat {
     private boolean booked = false;
 
     @ManyToOne
-    @JoinColumn(name="flight-id", nullable = false)
+    @JoinColumn(name="flight_id", nullable = false)
     private Flight flight;
 
     @OneToOne(mappedBy = "seat")
