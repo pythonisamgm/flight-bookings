@@ -1,5 +1,7 @@
 package com.flightbookings.flight_bookings.services;
 
+import com.flightbookings.flight_bookings.exceptions.SeatAlreadyBookedException;
+import com.flightbookings.flight_bookings.exceptions.SeatNotFoundException;
 import com.flightbookings.flight_bookings.models.ESeatLetter;
 import com.flightbookings.flight_bookings.models.Flight;
 import com.flightbookings.flight_bookings.models.Seat;
@@ -37,5 +39,20 @@ public class SeatServiceImpl implements SeatService {
         flight.setSeats(seats);
 
         return seatIdentifiers;
+    }
+
+    @Override
+    public Seat reserveSeat(Flight flight, String seatName){
+        Seat seat = seatRepository.findBySeatReference(flight, seatName)
+                .orElseThrow(() -> new SeatNotFoundException("Seat not found"));
+
+        if (seat.isBooked()) {
+            throw new SeatAlreadyBookedException("Seat is already booked");
+        }
+
+        seat.setBooked(true);
+        seatRepository.save(seat);
+
+        return seat;
     }
 }
