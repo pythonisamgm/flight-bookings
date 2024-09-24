@@ -78,4 +78,11 @@ public class Booking {
     public void setFlight(Flight flight) {
         this.flight = flight;
     }
+    public Seat getSeat() {
+        return seat;
+    }
+
+    public void setSeat(Seat seat) {
+        this.seat = seat;
+    }
 }
