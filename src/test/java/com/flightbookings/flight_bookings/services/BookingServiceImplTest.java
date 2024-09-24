@@ -1,6 +1,7 @@
 package com.flightbookings.flight_bookings.services;
 
 import com.flightbookings.flight_bookings.models.Booking;
+import com.flightbookings.flight_bookings.models.User;
 import com.flightbookings.flight_bookings.repositories.IBookingRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,27 +29,33 @@ public class BookingServiceImplTest {
 
     private Booking booking1;
     private Booking booking2;
+    private User user;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
 
+        // Inicializar el usuario
+        user = new User();
+        user.setId(1L); // Asegúrate de que la clase User tenga un método setId
+
+        // Inicialización de bookings
         booking1 = new Booking();
         booking1.setBookingId(1L);
         booking1.setDateOfBooking(LocalDateTime.of(2024, 9, 24, 10, 0));
-
+        booking1.setUser(user); // Asociar el booking con el usuario
 
         booking2 = new Booking();
         booking2.setBookingId(2L);
         booking2.setDateOfBooking(LocalDateTime.of(2024, 9, 25, 11, 0));
-
+        booking2.setUser(user); // Asociar el booking con el usuario
     }
 
     @Test
     public void testCreateBooking() {
         when(bookingRepository.save(any(Booking.class))).thenReturn(booking1);
 
-        Booking createdBooking = bookingService.createBooking(booking1);
+        Booking createdBooking = bookingService.createBooking(booking1, user);
 
         assertNotNull(createdBooking);
         assertEquals(1L, createdBooking.getBookingId());
@@ -81,17 +88,17 @@ public class BookingServiceImplTest {
     }
 
     @Test
-    public void testGetAllBookings() {
+    public void testGetAllBookingsForUser() {
         List<Booking> bookings = Arrays.asList(booking1, booking2);
-        when(bookingRepository.findAll()).thenReturn(bookings);
+        when(bookingRepository.findByPassenger_UserId(user.getId())).thenReturn(bookings);
 
-        List<Booking> allBookings = bookingService.getAllBookings();
+        List<Booking> allBookings = bookingService.getBookingsByUser(user.getId());
 
         assertEquals(2, allBookings.size());
         assertEquals(1L, allBookings.get(0).getBookingId());
         assertEquals(2L, allBookings.get(1).getBookingId());
 
-        verify(bookingRepository, times(1)).findAll();
+        verify(bookingRepository, times(1)).findByPassenger_UserId(user.getId());
     }
 
     @Test

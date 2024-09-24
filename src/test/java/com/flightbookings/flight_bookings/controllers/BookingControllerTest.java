@@ -3,6 +3,8 @@ package com.flightbookings.flight_bookings.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flightbookings.flight_bookings.models.Booking;
 import com.flightbookings.flight_bookings.services.BookingServiceImpl;
+import com.flightbookings.flight_bookings.services.UserServiceImpl;
+import com.flightbookings.flight_bookings.models.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -10,9 +12,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.flightbookings.flight_bookings.models.ERole.USER;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -32,10 +33,14 @@ public class BookingControllerTest {
     @Mock
     private BookingServiceImpl bookingService;
 
+    @Mock
+    private UserServiceImpl userService;
+
     @InjectMocks
     private BookingController bookingController;
 
     private MockMvc mockMvc;
+    private User user;
 
     private Booking booking1;
     private Booking booking2;
@@ -46,15 +51,19 @@ public class BookingControllerTest {
         MockitoAnnotations.openMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(bookingController).build();
 
+        user = new User();
+        user.setId(1L);
+        user.setRole(USER);
+
         booking1 = new Booking();
         booking1.setBookingId(1L);
         booking1.setDateOfBooking(LocalDateTime.of(2024, 9, 24, 10, 0));
-
+        booking1.setUser(user);
 
         booking2 = new Booking();
         booking2.setBookingId(2L);
         booking2.setDateOfBooking(LocalDateTime.of(2024, 9, 25, 12, 30));
-
+        booking2.setUser(user); // Ajustado para setear el usuario
 
         bookingList = new ArrayList<>();
         bookingList.add(booking1);
@@ -66,16 +75,17 @@ public class BookingControllerTest {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
 
-        when(bookingService.createBooking(any(Booking.class))).thenReturn(booking1);
+        when(userService.getUserById(1L)).thenReturn(user);
+        when(bookingService.createBooking(any(Booking.class), eq(user))).thenReturn(booking1);
 
         mockMvc.perform(post("/api/bookings/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(booking1)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.bookingId").value(1L))
-                .andExpect(jsonPath("$.dateOfBooking").value("2024-09-24T10:00:00")); // Asegúrate de que el formato coincide
+                .andExpect(jsonPath("$.dateOfBooking").value("2024-09-24T10:00:00"));
 
-        verify(bookingService, times(1)).createBooking(any(Booking.class));
+        verify(bookingService, times(1)).createBooking(any(Booking.class), eq(user));
     }
 
     @Test
@@ -109,6 +119,19 @@ public class BookingControllerTest {
                 .andExpect(jsonPath("$[1].bookingId").value(2L));
 
         verify(bookingService, times(1)).getAllBookings();
+    }
+
+    @Test
+    public void testGetBookingsForUser() throws Exception {
+        when(userService.getUserById(1L)).thenReturn(user);
+        when(bookingService.getBookingsByUser(user.getId())).thenReturn(bookingList);
+
+        mockMvc.perform(get("/api/bookings/user/{userId}", 1L))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].bookingId").value(1L))
+                .andExpect(jsonPath("$[1].bookingId").value(2L));
+
+        verify(bookingService, times(1)).getBookingsByUser(user.getId());
     }
 
     @Test

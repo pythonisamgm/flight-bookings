@@ -1,9 +1,12 @@
 package com.flightbookings.flight_bookings.controllers;
 
+import com.flightbookings.flight_bookings.services.UserServiceImpl;
 import com.flightbookings.flight_bookings.models.Booking;
+import com.flightbookings.flight_bookings.models.User;
 import com.flightbookings.flight_bookings.services.BookingServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,16 +16,29 @@ import java.util.List;
 public class BookingController {
 
     private final BookingServiceImpl bookingService;
+    private final UserServiceImpl userService;
 
-    public BookingController(BookingServiceImpl bookingService) {
+    public BookingController(BookingServiceImpl bookingService, UserServiceImpl userService) {
         this.bookingService = bookingService;
+        this.userService = userService;
     }
 
 
     @PostMapping("/create")
-    public ResponseEntity<Booking> createBooking(@RequestBody Booking booking) {
-        Booking newBooking = bookingService.createBooking(booking);
+    public ResponseEntity<Booking> createBooking(@RequestBody Booking booking, Authentication authentication) {
+        Long userId = Long.valueOf(authentication.getName());
+        User user = userService.getUserById(userId);
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Booking newBooking = bookingService.createBooking(booking, user);
         return new ResponseEntity<>(newBooking, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<List<Booking>> getBookingsByUser(@PathVariable Long id) {
+        List<Booking> bookings = bookingService.getBookingsByUser(id);
+        return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

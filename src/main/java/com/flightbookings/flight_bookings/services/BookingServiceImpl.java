@@ -1,6 +1,7 @@
 package com.flightbookings.flight_bookings.services;
 
 import com.flightbookings.flight_bookings.models.Booking;
+import com.flightbookings.flight_bookings.models.User;
 import com.flightbookings.flight_bookings.repositories.IBookingRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,8 @@ public class BookingServiceImpl {
         this.bookingRepository = bookingRepository;
     }
 
-    public Booking createBooking(Booking booking) {
+    public Booking createBooking(Booking booking, User user) {
+        booking.setUser(user);
         return bookingRepository.save(booking);
     }
 
@@ -49,5 +51,9 @@ public class BookingServiceImpl {
             return true;
         }
         return false;
+    }
+
+    public List<Booking> getBookingsByUser(Long userId) {
+        return bookingRepository.findByPassenger_UserId(userId);
     }
 }
