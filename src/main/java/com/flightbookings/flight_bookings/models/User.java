@@ -167,7 +167,7 @@ public class User implements UserDetails {
         }
 
         public User build() {
-            return new User(id, password, email,username,role,  bookings);
+            return new User(id, username, password, email, role, bookings);
 
         }
     }
