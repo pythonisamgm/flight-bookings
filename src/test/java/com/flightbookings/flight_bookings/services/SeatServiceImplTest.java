@@ -33,7 +33,7 @@ class SeatServiceImplTest {
     }
 
     @Test
-    void testInitializeSeats() {
+    void test_if_initializedSeats_creates_seats_and_rename_them() {
         Flight flight = new Flight();
         int numRows = 2;
         List<Seat> seats = new ArrayList<>();
@@ -55,4 +55,5 @@ class SeatServiceImplTest {
 
         verify(seatRepository, times(1)).saveAll(anyList());
     }
+
 }
