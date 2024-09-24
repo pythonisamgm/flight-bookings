@@ -79,4 +79,43 @@ class BookingServiceImplTest {
         verify(seatService, times(1)).reserveSeat(flight, seatName);
         verify(bookingRepository, times(1)).save(any(Booking.class));
     }
+    @Test
+    void testCreateBookingFlightNotFound() {
+        Long flightId = 1L;
+        Long passengerId = 1L;
+        String seatName = "1A";
+
+        when(flightRepository.findById(flightId)).thenReturn(Optional.empty());
+
+        assertThrows(FlightNotFoundException.class, () -> {
+            bookingService.createBooking(flightId, passengerId, seatName);
+        });
+
+        verify(flightRepository, times(1)).findById(flightId);
+        verify(passengerRepository, times(0)).findById(anyLong());
+        verify(seatService, times(0)).reserveSeat(any(Flight.class), anyString());
+        verify(bookingRepository, times(0)).save(any(Booking.class));
+    }
+    @Test
+    void testCreateBookingPassengerNotFound() {
+        Long flightId = 1L;
+        Long passengerId = 1L;
+        String seatName = "1A";
+
+        Flight flight = new Flight();
+        flight.setFlightId(flightId);
+
+        when(flightRepository.findById(flightId)).thenReturn(Optional.of(flight));
+        when(passengerRepository.findById(passengerId)).thenReturn(Optional.empty());
+
+        assertThrows(PassengerNotFoundException.class, () -> {
+            bookingService.createBooking(flightId, passengerId, seatName);
+        });
+
+        verify(flightRepository, times(1)).findById(flightId);
+        verify(passengerRepository, times(1)).findById(passengerId);
+        verify(seatService, times(0)).reserveSeat(any(Flight.class), anyString());
+        verify(bookingRepository, times(0)).save(any(Booking.class));
+    }
+
 }
