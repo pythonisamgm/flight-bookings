@@ -31,6 +31,11 @@ public class Booking {
     @JsonBackReference
     private Flight flight;
 
+    @OneToOne
+    @JoinColumn(name = "seat_id")
+    private Seat seat;
+
+
     public Booking() {
     }
 
