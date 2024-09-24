@@ -5,5 +5,5 @@ import com.flightbookings.flight_bookings.models.Booking;
 public interface BookingService {
     Booking createBooking(Long flightId, Long passengerId, String seatName);
 
-    Booking changeSeat(Long bookingId, String newSeatName);
+    Booking updateBooking(Booking updatedBooking);
 }

@@ -24,4 +24,10 @@ public class BookingController {
         Booking booking = bookingService.createBooking(flightId, passengerId, seatName);
         return new ResponseEntity<>(booking, HttpStatus.CREATED);
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<Booking> updateBooking(@PathVariable Long id, @RequestBody Booking updatedBooking) {
+        updatedBooking.setBookingId(id);
+        Booking booking = bookingService.updateBooking(updatedBooking);
+        return new ResponseEntity<>(booking, HttpStatus.OK);
+    }
 }

@@ -1,6 +1,5 @@
 package com.flightbookings.flight_bookings.services;
 
-import com.flightbookings.flight_bookings.exceptions.BookingNotFoundException;
 import com.flightbookings.flight_bookings.exceptions.FlightNotFoundException;
 import com.flightbookings.flight_bookings.exceptions.PassengerNotFoundException;
 import com.flightbookings.flight_bookings.models.Booking;
@@ -16,6 +15,7 @@ import com.flightbookings.flight_bookings.services.interfaces.SeatService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class BookingServiceImpl implements BookingService {
@@ -50,29 +50,32 @@ public class BookingServiceImpl implements BookingService {
 
         return booking;
     }
+
     @Override
-    public Booking changeSeat(Long bookingId, String newSeatName) {
-        Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new BookingNotFoundException("Booking not found"));
+    public Booking updateBooking(Booking updatedBooking) {
+        Optional<Booking> existingBookingOptional = bookingRepository.findById(updatedBooking.getBookingId());
+        if (existingBookingOptional.isPresent()) {
+            Booking existingBooking = existingBookingOptional.get();
 
-        Seat currentSeat = booking.getSeat();
-        Flight flight = booking.getFlight();
+            existingBooking.setDateOfBooking(updatedBooking.getDateOfBooking());
+            existingBooking.setPassenger(updatedBooking.getPassenger());
+            existingBooking.setFlight(updatedBooking.getFlight());
 
-        // Liberar el asiento actual
-        currentSeat.setBooked(false);
-        currentSeat.setBooking(null);
-        seatRepository.save(currentSeat);
+            if (updatedBooking.getSeat() != null && !updatedBooking.getSeat().equals(existingBooking.getSeat())) {
+                Seat currentSeat = existingBooking.getSeat();
+                currentSeat.setBooked(false);
+                currentSeat.setBooking(null);
+                seatRepository.save(currentSeat);
 
-        // Reservar el nuevo asiento
-        Seat newSeat = seatService.reserveSeat(flight, newSeatName);
+                Flight flight = existingBooking.getFlight();
+                Seat newSeat = seatService.reserveSeat(flight, updatedBooking.getSeat().getSeatName());
 
-        // Actualizar la reserva con el nuevo asiento
-        booking.setSeat(newSeat);
-        newSeat.setBooking(booking);
+                existingBooking.setSeat(newSeat);
+                newSeat.setBooking(existingBooking);
+            }
 
-        bookingRepository.save(booking);
-
-        return booking;
+            return bookingRepository.save(existingBooking);
+        }
+        return null;
     }
-
 }
