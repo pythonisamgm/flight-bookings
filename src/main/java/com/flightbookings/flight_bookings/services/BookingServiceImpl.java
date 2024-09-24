@@ -1,7 +1,6 @@
 package com.flightbookings.flight_bookings.services;
 
-import com.flightbookings.flight_bookings.exceptions.FlightNotFoundException;
-import com.flightbookings.flight_bookings.exceptions.PassengerNotFoundException;
+import com.flightbookings.flight_bookings.exceptions.*;
 import com.flightbookings.flight_bookings.models.Booking;
 import com.flightbookings.flight_bookings.models.Flight;
 import com.flightbookings.flight_bookings.models.Passenger;
@@ -33,7 +32,8 @@ public class BookingServiceImpl implements BookingService {
         this.passengerRepository = passengerRepository;
         this.seatService = seatService;
     }
-   @Override
+
+    @Override
     public Booking createBooking(Long flightId, Long passengerId, String seatName) {
         Flight flight = flightRepository.findById(flightId)
                 .orElseThrow(() -> new FlightNotFoundException("Flight not found"));
@@ -43,7 +43,7 @@ public class BookingServiceImpl implements BookingService {
 
         Seat seat = seatService.reserveSeat(flight, seatName);
 
-        Booking booking = new Booking( null, LocalDateTime.now(),passenger, flight,  seat);
+        Booking booking = new Booking(null, LocalDateTime.now(), passenger, flight, seat);
         seat.setBooking(booking);
 
         bookingRepository.save(booking);
@@ -51,31 +51,37 @@ public class BookingServiceImpl implements BookingService {
         return booking;
     }
 
-    @Override
     public Booking updateBooking(Booking updatedBooking) {
         Optional<Booking> existingBookingOptional = bookingRepository.findById(updatedBooking.getBookingId());
         if (existingBookingOptional.isPresent()) {
             Booking existingBooking = existingBookingOptional.get();
 
+            Seat previousSeat = existingBooking.getSeat();
+
             existingBooking.setDateOfBooking(updatedBooking.getDateOfBooking());
             existingBooking.setPassenger(updatedBooking.getPassenger());
             existingBooking.setFlight(updatedBooking.getFlight());
 
-            if (updatedBooking.getSeat() != null && !updatedBooking.getSeat().equals(existingBooking.getSeat())) {
-                Seat currentSeat = existingBooking.getSeat();
-                currentSeat.setBooked(false);
-                currentSeat.setBooking(null);
-                seatRepository.save(currentSeat);
+            existingBooking.setSeat(updatedBooking.getSeat());
 
-                Flight flight = existingBooking.getFlight();
-                Seat newSeat = seatService.reserveSeat(flight, updatedBooking.getSeat().getSeatName());
+            if (previousSeat != null) {
+                previousSeat.setBooked(false);
+                previousSeat.setBooking(null);
+                seatRepository.save(previousSeat);
+            }
 
-                existingBooking.setSeat(newSeat);
+            Seat newSeat = updatedBooking.getSeat();
+            if (newSeat != null) {
+                newSeat.setBooked(true);
                 newSeat.setBooking(existingBooking);
+                seatRepository.save(newSeat);
             }
 
             return bookingRepository.save(existingBooking);
+        } else {
+            throw new BookingNotFoundException("Booking not found with ID: " + updatedBooking.getBookingId());
         }
-        return null;
     }
+
+
 }
