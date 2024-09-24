@@ -15,6 +15,10 @@ public class Flight {
     @Column(name = "id")
     private Long id;
 
+    public Flight() {
+
+    }
+
     public Long getId() {
         return id;
     }
