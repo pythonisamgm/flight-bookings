@@ -39,11 +39,12 @@ public class Booking {
     public Booking() {
     }
 
-    public Booking(Flight flight, Passenger passenger, LocalDateTime dateOfBooking, Long bookingId) {
-        this.flight = flight;
-        this.passenger = passenger;
-        this.dateOfBooking = dateOfBooking;
+    public Booking(Long bookingId, LocalDateTime dateOfBooking, Passenger passenger, Flight flight, Seat seat) {
         this.bookingId = bookingId;
+        this.dateOfBooking = dateOfBooking;
+        this.passenger = passenger;
+        this.flight = flight;
+        this.seat = seat;
     }
 
     public Long getBookingId() {
