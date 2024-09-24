@@ -33,7 +33,7 @@ public class BookingServiceImpl implements BookingService {
         this.passengerRepository = passengerRepository;
         this.seatService = seatService;
     }
-    @Override
+   @Override
     public Booking createBooking(Long flightId, Long passengerId, String seatName) {
         Flight flight = flightRepository.findById(flightId)
                 .orElseThrow(() -> new FlightNotFoundException("Flight not found"));
