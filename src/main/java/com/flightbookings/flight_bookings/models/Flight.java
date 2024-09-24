@@ -16,7 +16,6 @@ public class Flight {
     private Long id;
 
     public Flight() {
-
     }
 
     public Long getId() {
@@ -31,12 +30,12 @@ public class Flight {
         this.id = id;
     }
 
-    @OneToMany(mappedBy = "flight")
-    @JsonManagedReference
-    private List<Seat> seatList;
+    //@OneToMany(mappedBy = "flight")
+    //@JsonManagedReference("flight-seat")
+    //private List<Seat> seatList;
 
     @OneToMany(mappedBy = "flight")
-    @JsonManagedReference
-    private List<Booking> bookingList;
+    @JsonManagedReference("flight-booking")
+    private List<Booking> bookings;
 
 }

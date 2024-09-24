@@ -16,23 +16,24 @@ public class Booking {
     private Long bookingId;
 
     @Column
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm")
     private LocalDateTime dateOfBooking = LocalDateTime.now();
 
 //    @Column
 //    private boolean status;
 
     @OneToOne(mappedBy = "booking")
-    @JsonManagedReference
+    @JsonManagedReference("booking-passenger")
     private Passenger passenger;
 
     @ManyToOne
     @JoinColumn(name = "flight_id", nullable = false)
-    @JsonBackReference
+    @JsonBackReference("flight-booking")
     private Flight flight;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference("user-booking")
     private User user;
 
     public Booking() {

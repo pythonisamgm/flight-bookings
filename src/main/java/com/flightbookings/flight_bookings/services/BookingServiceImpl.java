@@ -53,7 +53,7 @@ public class BookingServiceImpl {
         return false;
     }
 
-    public List<Booking> getBookingsByUser(Long userId) {
-        return bookingRepository.findByPassenger_UserId(userId);
+    public List<Booking> getBookingsByUser(User user) {
+        return bookingRepository.findByPassenger_User(user);
     }
 }

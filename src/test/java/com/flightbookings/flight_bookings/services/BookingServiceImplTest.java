@@ -16,7 +16,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 public class BookingServiceImplTest {
@@ -90,15 +89,15 @@ public class BookingServiceImplTest {
     @Test
     public void testGetAllBookingsForUser() {
         List<Booking> bookings = Arrays.asList(booking1, booking2);
-        when(bookingRepository.findByPassenger_UserId(user.getId())).thenReturn(bookings);
+        when(bookingRepository.findByPassenger_User(user)).thenReturn(bookings);
 
-        List<Booking> allBookings = bookingService.getBookingsByUser(user.getId());
+        List<Booking> allBookings = bookingService.getBookingsByUser(user);
 
         assertEquals(2, allBookings.size());
         assertEquals(1L, allBookings.get(0).getBookingId());
         assertEquals(2L, allBookings.get(1).getBookingId());
 
-        verify(bookingRepository, times(1)).findByPassenger_UserId(user.getId());
+        verify(bookingRepository, times(1)).findByPassenger_User(user);
     }
 
     @Test

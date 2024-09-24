@@ -7,6 +7,7 @@ import com.flightbookings.flight_bookings.services.BookingServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,21 +24,17 @@ public class BookingController {
         this.userService = userService;
     }
 
-
     @PostMapping("/create")
-    public ResponseEntity<Booking> createBooking(@RequestBody Booking booking, Authentication authentication) {
-        Long userId = Long.valueOf(authentication.getName());
-        User user = userService.getUserById(userId);
-        if (user == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        Booking newBooking = bookingService.createBooking(booking, user);
-        return new ResponseEntity<>(newBooking, HttpStatus.CREATED);
+    public ResponseEntity<Booking> createBooking(@RequestBody Booking booking) {
+        User user = userService.getUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        Booking createdBooking = bookingService.createBooking(booking, user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdBooking);
     }
 
     @GetMapping("/user/{id}")
     public ResponseEntity<List<Booking>> getBookingsByUser(@PathVariable Long id) {
-        List<Booking> bookings = bookingService.getBookingsByUser(id);
+        User user = userService.getUserById(id); // Obtener el usuario por id si es necesario
+        List<Booking> bookings = bookingService.getBookingsByUser(user); // Cambia esto según tu lógica
         return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
 
@@ -58,12 +55,12 @@ public class BookingController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Booking> updateBooking(@PathVariable Long id, @RequestBody Booking bookingDetails) {
-        Booking updatedBooking = bookingService.updateBooking(id, bookingDetails);
+    public ResponseEntity<Booking> updateBooking(@PathVariable Long id, @RequestBody Booking booking) {
+        Booking updatedBooking = bookingService.updateBooking(id, booking);
         if (updatedBooking != null) {
-            return new ResponseEntity<>(updatedBooking, HttpStatus.OK);
+            return ResponseEntity.ok(updatedBooking);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         }
     }
 
