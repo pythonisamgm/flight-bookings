@@ -55,5 +55,22 @@ class SeatServiceImplTest {
 
         verify(seatRepository, times(1)).saveAll(anyList());
     }
+    @Test
+    void test_if_reserveSeat_save_seat_in_repo() {
+        Flight flight = new Flight();
+        Seat seat = new Seat(null, 1, ESeatLetter.A, false, flight, null);
+        seat.setSeatName("1A");
 
+        when(seatRepository.findBySeatReference(flight, "1A")).thenReturn(Optional.of(seat));
+        when(seatRepository.save(seat)).thenReturn(seat);
+
+        Seat reservedSeat = seatService.reserveSeat(flight, "1A");
+
+        assertNotNull(reservedSeat);
+        assertTrue(reservedSeat.isBooked());
+        assertEquals("1A", reservedSeat.getSeatName());
+
+        verify(seatRepository, times(1)).findBySeatReference(flight, "1A");
+        verify(seatRepository, times(1)).save(seat);
+    }
 }
