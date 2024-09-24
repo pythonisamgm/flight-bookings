@@ -1,5 +1,6 @@
 package com.flightbookings.flight_bookings.models;
 
+import com.flightbookings.flight_bookings.listeners.FlightEntityListener;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -7,6 +8,7 @@ import java.util.List;
 
 @Entity
 @Table(name="flight")
+@EntityListeners(FlightEntityListener.class)
 public class Flight {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,4 +51,5 @@ public class Flight {
     public void setSeats(List<Seat> seats) {
         this.seats = seats;
     }
+
 }
