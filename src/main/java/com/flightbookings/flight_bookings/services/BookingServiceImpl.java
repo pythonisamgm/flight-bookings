@@ -1,5 +1,6 @@
 package com.flightbookings.flight_bookings.services;
 
+import com.flightbookings.flight_bookings.exceptions.BookingNotFoundException;
 import com.flightbookings.flight_bookings.exceptions.FlightNotFoundException;
 import com.flightbookings.flight_bookings.exceptions.PassengerNotFoundException;
 import com.flightbookings.flight_bookings.models.Booking;
@@ -32,6 +33,7 @@ public class BookingServiceImpl implements BookingService {
         this.passengerRepository = passengerRepository;
         this.seatService = seatService;
     }
+    @Override
     public Booking createBooking(Long flightId, Long passengerId, String seatName) {
         Flight flight = flightRepository.findById(flightId)
                 .orElseThrow(() -> new FlightNotFoundException("Flight not found"));
@@ -43,6 +45,30 @@ public class BookingServiceImpl implements BookingService {
 
         Booking booking = new Booking( null, LocalDateTime.now(),passenger, flight,  seat);
         seat.setBooking(booking);
+
+        bookingRepository.save(booking);
+
+        return booking;
+    }
+    @Override
+    public Booking changeSeat(Long bookingId, String newSeatName) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new BookingNotFoundException("Booking not found"));
+
+        Seat currentSeat = booking.getSeat();
+        Flight flight = booking.getFlight();
+
+        // Liberar el asiento actual
+        currentSeat.setBooked(false);
+        currentSeat.setBooking(null);
+        seatRepository.save(currentSeat);
+
+        // Reservar el nuevo asiento
+        Seat newSeat = seatService.reserveSeat(flight, newSeatName);
+
+        // Actualizar la reserva con el nuevo asiento
+        booking.setSeat(newSeat);
+        newSeat.setBooking(booking);
 
         bookingRepository.save(booking);
 
