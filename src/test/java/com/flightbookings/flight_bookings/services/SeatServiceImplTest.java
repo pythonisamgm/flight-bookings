@@ -73,4 +73,33 @@ class SeatServiceImplTest {
         verify(seatRepository, times(1)).findBySeatReference(flight, "1A");
         verify(seatRepository, times(1)).save(seat);
     }
+    @Test
+    void testReserveSeatThrowsSeatNotFoundException() {
+        Flight flight = new Flight();
+
+        when(seatRepository.findBySeatReference(flight, "1A")).thenReturn(Optional.empty());
+
+        assertThrows(SeatNotFoundException.class, () -> {
+            seatService.reserveSeat(flight, "1A");
+        });
+
+        verify(seatRepository, times(1)).findBySeatReference(flight, "1A");
+        verify(seatRepository, times(0)).save(any(Seat.class));
+    }
+
+    @Test
+    void testReserveSeatThrowsSeatAlreadyBookedException() {
+        Flight flight = new Flight();
+        Seat seat = new Seat(null, 1, ESeatLetter.A, true, flight, null); // Seat already booked
+        seat.setSeatName("1A");
+
+        when(seatRepository.findBySeatReference(flight, "1A")).thenReturn(Optional.of(seat));
+
+        assertThrows(SeatAlreadyBookedException.class, () -> {
+            seatService.reserveSeat(flight, "1A");
+        });
+
+        verify(seatRepository, times(1)).findBySeatReference(flight, "1A");
+        verify(seatRepository, times(0)).save(any(Seat.class));
+    }
 }
