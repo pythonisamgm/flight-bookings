@@ -10,7 +10,7 @@ import java.util.List;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/api/passengers")
+@RequestMapping("/api/v1/passengers")
 public class PassengerController {
 
     private final PassengerService passengerService;
