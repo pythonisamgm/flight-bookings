@@ -2,6 +2,8 @@ package com.flightbookings.flight_bookings.models;
 
 import jakarta.persistence.*;
 
+@Entity
+@Table (name = "Seat")
 public class Seat {
 
     @Id

@@ -3,6 +3,9 @@ package com.flightbookings.flight_bookings.models;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
+
+@Entity
+@Table (name = "Passenger")
 public class Passenger {
 
 
