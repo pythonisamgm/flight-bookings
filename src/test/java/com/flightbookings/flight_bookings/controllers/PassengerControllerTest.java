@@ -72,9 +72,9 @@ public class PassengerControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.passengerId").value(1L))
         .andExpect(jsonPath("$.passengerName").value("Juan Antonio"))
-        .andExpect(jsonPath("$.identityDoc").value("7823"))
-        .andExpect(jsonPath("$.telephone").value(661888888))
-        .andExpect(jsonPath("$.nationality").value("Alemania"));
+        .andExpect(jsonPath("$.identityDoc").value("1337"))
+        .andExpect(jsonPath("$.telephone").value(661777777))
+        .andExpect(jsonPath("$.nationality").value("Irlandés"));
 
         verify(passengerService, times(1)).createPassenger(any(Passenger.class));
     }
@@ -104,7 +104,7 @@ public class PassengerControllerTest {
     public void testGetAllPassengers() throws Exception {
         when(passengerService.getAllPassengers()).thenReturn(passengerList);
 
-        mockMvc.perform(get("/api/passengers"))
+        mockMvc.perform(get("/api/passengers/"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].passengerId").value(1L))
                 .andExpect(jsonPath("$[1].passengerId").value(2L));
@@ -116,7 +116,7 @@ public class PassengerControllerTest {
     public void testUpdatePassenger() throws Exception {
         when(passengerService.updatePassenger(eq(1L), any(Passenger.class))).thenReturn(passenger1);
 
-        mockMvc.perform(put("/api/passengers/{id}", 1L)
+        mockMvc.perform(put("/api/passengers/update/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(passenger1)))
                 .andExpect(status().isOk())
@@ -129,7 +129,7 @@ public class PassengerControllerTest {
     public void testUpdatePassenger_NotFound() throws Exception {
         when(passengerService.updatePassenger(eq(3L), any(Passenger.class))).thenReturn(null);
 
-        mockMvc.perform(put("/api/passengers/{id}", 3L)
+        mockMvc.perform(put("/api/passengers/update/{id}", 3L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(passenger1)))
                 .andExpect(status().isNotFound());
