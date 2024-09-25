@@ -13,6 +13,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
+
 @Configuration
 public class ApplicationConfig {
 
@@ -49,5 +53,11 @@ public class ApplicationConfig {
     public UserDetailsService userDetailsService() {
         return username -> iUserRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("user not found"));
+    }
+
+        @Bean
+        public RestTemplate restTemplate() {
+            return new RestTemplate();
+
     }
 }
