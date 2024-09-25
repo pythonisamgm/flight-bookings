@@ -17,7 +17,7 @@ public class AirLabsController {
         this.airLabsService = airLabsService;
     }
 
-    @GetMapping("/flights")
+    @GetMapping("/getflights")
     public ResponseEntity<JsonNode> getFlights(@RequestParam String originCity, @RequestParam String destinationCity) {
         String originIata = airLabsService.getIataCodeForCity(originCity);
         String destinationIata = airLabsService.getIataCodeForCity(destinationCity);

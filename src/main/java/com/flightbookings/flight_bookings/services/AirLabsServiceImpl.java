@@ -2,11 +2,15 @@ package com.flightbookings.flight_bookings.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.flightbookings.flight_bookings.services.interfaces.AirLabsService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
 public class AirLabsServiceImpl implements AirLabsService {
+
+    @Value("${airlabs.api.key}")
+    private String apiKey;
 
     private static final String API_KEY = "YOUR_API_KEY";
     private static final String BASE_URL = "https://airlabs.co/api/v9/";
