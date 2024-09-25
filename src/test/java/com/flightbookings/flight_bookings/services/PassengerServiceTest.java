@@ -22,7 +22,7 @@ public class PassengerServiceTest {
     private IPassengerRepository passengerRepository;
 
     @InjectMocks
-    private PassengerService passengerService;
+    private PassengerServiceImpl passengerService;
 
     private Passenger passenger1;
     private Passenger passenger2;
