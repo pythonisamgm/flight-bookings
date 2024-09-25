@@ -3,11 +3,12 @@ package com.flightbookings.flight_bookings.services;
 import com.flightbookings.flight_bookings.models.Airport;
 import com.flightbookings.flight_bookings.repositories.IAirportRepository;
 import com.flightbookings.flight_bookings.services.interfaces.AirportService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-
+@Service
 public class AirportServiceImpl implements AirportService {
 
     private final IAirportRepository airportRepository;
@@ -19,7 +20,7 @@ public class AirportServiceImpl implements AirportService {
         return airportRepository.save(airport);
     }
 
-    public Airport upsateAirpot(Airport airport, Long id){
+    public Airport updateAirport(Airport airport, Long id){
         airport.setAirportId(id);
         return airportRepository.save(airport);
     }
@@ -28,8 +29,7 @@ public class AirportServiceImpl implements AirportService {
         return airportRepository.findAll();
     }
 
-    public Optional<Airport> getAirpotById (Long id){
-        Optional<Airport> airport = airportRepository.findById(id);
-        return airport.orElse(null);
+   public Optional<Airport> getAirportById(Long id) {
+        return airportRepository.findById(id);
     }
 }
