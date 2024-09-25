@@ -7,6 +7,7 @@ import com.flightbookings.flight_bookings.services.interfaces.AirportService;
 import java.util.List;
 import java.util.Optional;
 
+
 public class AirportServiceImpl implements AirportService {
 
     private final IAirportRepository airportRepository;
@@ -14,7 +15,6 @@ public class AirportServiceImpl implements AirportService {
     public AirportServiceImpl(IAirportRepository airportRepository) {
         this.airportRepository = airportRepository;
     }
-
     public Airport createAirport(Airport airport){
         return airportRepository.save(airport);
     }
