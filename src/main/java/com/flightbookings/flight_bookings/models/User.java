@@ -33,6 +33,8 @@ public class User implements UserDetails {
     @JsonManagedReference
     private List<Booking> bookings;
 
+    public User() {
+    }
 
     public User(Long id, String username, String password, String email, ERole role, List<Booking> bookings) {
         this.id = id;
