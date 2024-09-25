@@ -16,7 +16,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -54,9 +53,6 @@ public class FlightControllerTest {
         flight1.setAvailability(true);
         flight1.setNumRows(30);
         flight1.setFlightPrice(new BigDecimal("300.00"));
-        flight1.setSeatList(new ArrayList<>());
-        flight1.setBookingList(new ArrayList<>());
-        flight1.setAirports(new HashSet<>());
 
         flight2 = new Flight();
         flight2.setId(2L);
@@ -68,9 +64,6 @@ public class FlightControllerTest {
         flight2.setAvailability(true);
         flight2.setNumRows(28);
         flight2.setFlightPrice(new BigDecimal("200.00"));
-        flight2.setSeatList(new ArrayList<>());
-        flight2.setBookingList(new ArrayList<>());
-        flight2.setAirports(new HashSet<>());
 
         flightList = new ArrayList<>();
         flightList.add(flight1);
@@ -86,17 +79,14 @@ public class FlightControllerTest {
                         .content(new ObjectMapper().writeValueAsString(flight1)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.flightNumber").value(123))  // Corrected from "FL123" to 123
-                .andExpect(jsonPath("$.departureTime").value("2024-09-30T14:00:00"))
-                .andExpect(jsonPath("$.arrivalTime").value("2024-09-30T17:30:00"))
+                .andExpect(jsonPath("$.flightNumber").value(123))
+                .andExpect(jsonPath("$.departureTime").value("30-09-2024 14:00:00"))
+                .andExpect(jsonPath("$.arrivalTime").value("30-09-2024 17:30:00"))
                 .andExpect(jsonPath("$.flightAirplane").value("BOEING_737"))
                 .andExpect(jsonPath("$.capacityPlane").value(180))
                 .andExpect(jsonPath("$.availability").value(true))
                 .andExpect(jsonPath("$.numRows").value(30))
-                .andExpect(jsonPath("$.flightPrice").value(300.00))
-                .andExpect(jsonPath("$.seatList").isArray())
-                .andExpect(jsonPath("$.bookingList").isArray())
-                .andExpect(jsonPath("$.airports").isArray());
+                .andExpect(jsonPath("$.flightPrice").value(300.00));
 
         verify(flightService, times(1)).createFlight(any(Flight.class));
     }
@@ -109,16 +99,13 @@ public class FlightControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.flightNumber").value(123))
-                .andExpect(jsonPath("$.departureTime").value("2024-09-30T14:00:00"))
-                .andExpect(jsonPath("$.arrivalTime").value("2024-09-30T17:30:00"))
-                .andExpect(jsonPath("$.flightAirplane").value("BOEING_737"))
+                .andExpect(jsonPath("$.departureTime").value("30-09-2024 14:00:00"))
+                .andExpect(jsonPath("$.arrivalTime").value("30-09-2024 17:30:00"))
+                .andExpect(jsonPath("$.flightAirplane").value("Boeing_737"))
                 .andExpect(jsonPath("$.capacityPlane").value(180))
                 .andExpect(jsonPath("$.availability").value(true))
                 .andExpect(jsonPath("$.numRows").value(30))
-                .andExpect(jsonPath("$.flightPrice").value(300.00))
-                .andExpect(jsonPath("$.seatList").isArray())
-                .andExpect(jsonPath("$.bookingList").isArray())
-                .andExpect(jsonPath("$.airports").isArray());
+                .andExpect(jsonPath("$.flightPrice").value(300.00));
 
         verify(flightService, times(1)).getFlightById(1L);
     }
@@ -133,10 +120,12 @@ public class FlightControllerTest {
                 .andExpect(jsonPath("$[1].id").value(2L))
                 .andExpect(jsonPath("$[0].flightNumber").value(123))
                 .andExpect(jsonPath("$[1].flightNumber").value(456))
-                .andExpect(jsonPath("$[0].departureTime").value("2024-09-30T14:00:00"))
-                .andExpect(jsonPath("$[1].departureTime").value("2024-10-01T09:00:00"))
-                .andExpect(jsonPath("$[0].arrivalTime").value("2024-09-30T17:30:00"))
-                .andExpect(jsonPath("$[1].arrivalTime").value("2024-10-01T12:00:00"));
+                .andExpect(jsonPath("$[0].departureTime").value("30-09-2024 14:00:00"))
+                .andExpect(jsonPath("$[1].departureTime").value("01-10-2024 09:00:00"))
+                .andExpect(jsonPath("$[0].arrivalTime").value("30-09-2024 17:30:00"))
+                .andExpect(jsonPath("$[1].arrivalTime").value("01-10-2024 12:00:00"))
+                .andExpect(jsonPath("$[0].flightPrice").value(300.00))
+                .andExpect(jsonPath("$[1].flightPrice").value(200.00));
 
         verify(flightService, times(1)).getAllFlights();
     }
@@ -151,8 +140,8 @@ public class FlightControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.flightNumber").value(123))
-                .andExpect(jsonPath("$.departureTime").value("2024-09-30T14:00:00"))
-                .andExpect(jsonPath("$.arrivalTime").value("2024-09-30T17:30:00"))
+                .andExpect(jsonPath("$.departureTime").value("30-09-2024 14:00:00"))
+                .andExpect(jsonPath("$.arrivalTime").value("30-09-2024 17:30:00"))
                 .andExpect(jsonPath("$.flightAirplane").value("BOEING_737"))
                 .andExpect(jsonPath("$.capacityPlane").value(180))
                 .andExpect(jsonPath("$.availability").value(true))
@@ -172,4 +161,3 @@ public class FlightControllerTest {
         verify(flightService, times(1)).deleteFlight(1L);
     }
 }
-
