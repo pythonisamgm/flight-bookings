@@ -43,6 +43,9 @@ public class User implements UserDetails {
         this.bookings = bookings;
     }
 
+    public User() {
+    }
+
     public Long getId() {
         return id;}
 
