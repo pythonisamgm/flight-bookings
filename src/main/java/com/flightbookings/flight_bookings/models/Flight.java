@@ -3,8 +3,8 @@ package com.flightbookings.flight_bookings.models;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.flightbookings.flight_bookings.listeners.FlightEntityListener;
-import com.flightbookings.flight_bookings.listeners.FlightEntityListener;
+//import com.flightbookings.flight_bookings.listeners.FlightEntityListener;
+//import com.flightbookings.flight_bookings.listeners.FlightEntityListener;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -15,7 +15,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "flight")
-@EntityListeners(FlightEntityListener.class)
+//@EntityListeners(FlightEntityListener.class)
 public class Flight {
 
     @Id
@@ -48,7 +48,7 @@ public class Flight {
     @Column
     private BigDecimal flightPrice;
 
-    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "flight")
     private List<Seat> seats = new ArrayList<>();
 
     @OneToMany(mappedBy = "flight")
