@@ -55,29 +55,44 @@ public class Flight {
     @JsonManagedReference
     private List<Booking> bookingList;
 
-    @ManyToMany(mappedBy = "flight", fetch = FetchType.LAZY)
+    /*@ManyToMany(mappedBy = "flight", fetch = FetchType.LAZY)
     @JsonBackReference
-    private Set<Airport> airports;
+    private Set<Airport> airports;*/
 
 
     public Flight() {
     }
 
-    public Flight(Long id, int flightNumber, LocalDateTime departureTime, LocalDateTime arrivalTime,
-                  EFlightAirplane flightAirplane, int capacityPlane, boolean availability, int numRows,
-                  BigDecimal flightPrice, List<Seat> seatList, List<Booking> bookingList, Set<Airport> airports) {
-        this.flightId = id;
+//    public Flight(Long id, int flightNumber, LocalDateTime departureTime, LocalDateTime arrivalTime,
+//                  EFlightAirplane flightAirplane, int capacityPlane, boolean availability, int numRows,
+//                  BigDecimal flightPrice, List<Seat> seatList, List<Booking> bookingList, Set<Airport> airports) {
+//        this.flightId = id;
+//        this.flightNumber = flightNumber;
+//        this.departureTime = departureTime;
+//        this.arrivalTime = arrivalTime;
+//        this.flightAirplane = flightAirplane;
+//        this.capacityPlane = capacityPlane;
+//        this.availability = availability;
+//        this.numRows = numRows;
+//        this.flightPrice = flightPrice;
+//        this.seats = seats;
+//        this.bookingList = bookingList;
+//        this.airports = airports;
+//    }
+
+
+    public Flight(Long flightId, int numRows, int flightNumber, LocalDateTime departureTime, LocalDateTime arrivalTime, EFlightAirplane flightAirplane, int capacityPlane, boolean availability, BigDecimal flightPrice, List<Seat> seats, List<Booking> bookingList) {
+        this.flightId = flightId;
+        this.numRows = numRows;
         this.flightNumber = flightNumber;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
         this.flightAirplane = flightAirplane;
         this.capacityPlane = capacityPlane;
         this.availability = availability;
-        this.numRows = numRows;
         this.flightPrice = flightPrice;
         this.seats = seats;
         this.bookingList = bookingList;
-        this.airports = airports;
     }
 
     public Long getFlightId() {
@@ -168,11 +183,11 @@ public class Flight {
         this.bookingList = bookingList;
     }
 
-    public Set<Airport> getAirports() {
-        return airports;
-    }
-
-    public void setAirports(Set<Airport> airports) {
-        this.airports = airports;
-    }
+//    public Set<Airport> getAirports() {
+//        return airports;
+//    }
+//
+//    public void setAirports(Set<Airport> airports) {
+//        this.airports = airports;
+//    }
 }

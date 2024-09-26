@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface ISeatRepository extends JpaRepository<Seat, Long> {
-    Optional<Seat> findBySeatReference(Flight flight, String seatName);
+    Optional<Seat> findByFlightAndSeatName(Flight flight, String seatName);
 }

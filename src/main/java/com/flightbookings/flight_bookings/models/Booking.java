@@ -8,7 +8,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name= "Booking")
+@Table(name= "booking")
 public class Booking {
 
     @Id
@@ -35,6 +35,9 @@ public class Booking {
     @JoinColumn(name = "seat_id")
     private Seat seat;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public Booking() {
     }

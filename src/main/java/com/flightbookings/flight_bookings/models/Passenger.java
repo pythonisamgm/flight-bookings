@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 
 
 @Entity
-@Table (name = "Passenger")
+@Table (name = "passenger")
 public class Passenger {
 
 
