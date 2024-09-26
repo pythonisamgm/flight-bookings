@@ -35,7 +35,7 @@ public class FlightServiceImplTest {
         MockitoAnnotations.openMocks(this);
 
         flight1 = new Flight();
-        flight1.setId(1L);
+        flight1.setFlightId(1L);
         flight1.setFlightNumber(123);
         flight1.setDepartureTime(LocalDateTime.of(2024, 9, 30, 14, 0));
         flight1.setArrivalTime(LocalDateTime.of(2024, 9, 30, 17, 30));
@@ -44,12 +44,12 @@ public class FlightServiceImplTest {
         flight1.setAvailability(true);
         flight1.setNumRows(30);
         flight1.setFlightPrice(new BigDecimal("300.00"));
-        flight1.setSeatList(new ArrayList<>());
+        flight1.setSeats(new ArrayList<>());
         flight1.setBookingList(new ArrayList<>());
         flight1.setAirports(new HashSet<>());
 
         flight2 = new Flight();
-        flight2.setId(2L);
+        flight2.setFlightId(2L);
         flight2.setFlightNumber(456);
         flight2.setDepartureTime(LocalDateTime.of(2024, 10, 1, 9, 0));
         flight2.setArrivalTime(LocalDateTime.of(2024, 10, 1, 12, 0));
@@ -58,7 +58,7 @@ public class FlightServiceImplTest {
         flight2.setAvailability(true);
         flight2.setNumRows(28);
         flight2.setFlightPrice(new BigDecimal("200.00"));
-        flight2.setSeatList(new ArrayList<>());
+        flight2.setSeats(new ArrayList<>());
         flight2.setBookingList(new ArrayList<>());
         flight2.setAirports(new HashSet<>());
     }
@@ -70,7 +70,7 @@ public class FlightServiceImplTest {
         Flight createdFlight = flightService.createFlight(flight1);
 
         assertNotNull(createdFlight);
-        assertEquals(1L, createdFlight.getId());
+        assertEquals(1L, createdFlight.getFlightId());
         assertEquals(123, createdFlight.getFlightNumber());
         assertEquals(LocalDateTime.of(2024, 9, 30, 14, 0), createdFlight.getDepartureTime());
         assertEquals(LocalDateTime.of(2024, 9, 30, 17, 30), createdFlight.getArrivalTime());
@@ -79,7 +79,7 @@ public class FlightServiceImplTest {
         assertTrue(createdFlight.isAvailability());
         assertEquals(30, createdFlight.getNumRows());
         assertEquals(new BigDecimal("300.00"), createdFlight.getFlightPrice());
-        assertTrue(createdFlight.getSeatList().isEmpty());
+        assertTrue(createdFlight.getSeats().isEmpty());
         assertTrue(createdFlight.getBookingList().isEmpty());
         assertTrue(createdFlight.getAirports().isEmpty());
 
@@ -100,7 +100,7 @@ public class FlightServiceImplTest {
         assertEquals(2, allFlights.size());
 
         Flight firstFlight = allFlights.get(0);
-        assertEquals(1L, firstFlight.getId());
+        assertEquals(1L, firstFlight.getFlightId());
         assertEquals(123, firstFlight.getFlightNumber());
         assertEquals(LocalDateTime.of(2024, 9, 30, 14, 0), firstFlight.getDepartureTime());
         assertEquals(LocalDateTime.of(2024, 9, 30, 17, 30), firstFlight.getArrivalTime());
@@ -109,12 +109,12 @@ public class FlightServiceImplTest {
         assertTrue(firstFlight.isAvailability());
         assertEquals(30, firstFlight.getNumRows());
         assertEquals(new BigDecimal("300.00"), firstFlight.getFlightPrice());
-        assertTrue(firstFlight.getSeatList().isEmpty());
+        assertTrue(firstFlight.getSeats().isEmpty());
         assertTrue(firstFlight.getBookingList().isEmpty());
         assertTrue(firstFlight.getAirports().isEmpty());
 
         Flight secondFlight = allFlights.get(1);
-        assertEquals(2L, secondFlight.getId());
+        assertEquals(2L, secondFlight.getFlightId());
         assertEquals(456, secondFlight.getFlightNumber());
         assertEquals(LocalDateTime.of(2024, 10, 1, 9, 0), secondFlight.getDepartureTime());
         assertEquals(LocalDateTime.of(2024, 10, 1, 12, 0), secondFlight.getArrivalTime());
@@ -123,7 +123,7 @@ public class FlightServiceImplTest {
         assertTrue(secondFlight.isAvailability());
         assertEquals(28, secondFlight.getNumRows());
         assertEquals(new BigDecimal("200.00"), secondFlight.getFlightPrice());
-        assertTrue(secondFlight.getSeatList().isEmpty());
+        assertTrue(secondFlight.getSeats().isEmpty());
         assertTrue(secondFlight.getBookingList().isEmpty());
         assertTrue(secondFlight.getAirports().isEmpty());
 
@@ -137,7 +137,7 @@ public class FlightServiceImplTest {
         Flight foundFlight = flightService.getFlightById(1L);
 
         assertNotNull(foundFlight);
-        assertEquals(1L, foundFlight.getId());
+        assertEquals(1L, foundFlight.getFlightId());
         assertEquals(123, foundFlight.getFlightNumber());
         assertEquals(LocalDateTime.of(2024, 9, 30, 14, 0), foundFlight.getDepartureTime());
         assertEquals(LocalDateTime.of(2024, 9, 30, 17, 30), foundFlight.getArrivalTime());
@@ -146,7 +146,7 @@ public class FlightServiceImplTest {
         assertTrue(foundFlight.isAvailability());
         assertEquals(30, foundFlight.getNumRows());
         assertEquals(new BigDecimal("300.00"), foundFlight.getFlightPrice());
-        assertTrue(foundFlight.getSeatList().isEmpty());
+        assertTrue(foundFlight.getSeats().isEmpty());
         assertTrue(foundFlight.getBookingList().isEmpty());
         assertTrue(foundFlight.getAirports().isEmpty());
 
@@ -161,7 +161,7 @@ public class FlightServiceImplTest {
         Flight updatedFlight = flightService.updateFlight(1L, flight1);
 
         assertNotNull(updatedFlight);
-        assertEquals(1L, updatedFlight.getId());
+        assertEquals(1L, updatedFlight.getFlightId());
         assertEquals(123, updatedFlight.getFlightNumber());
         assertEquals(LocalDateTime.of(2024, 9, 30, 14, 0), updatedFlight.getDepartureTime());
         assertEquals(LocalDateTime.of(2024, 9, 30, 17, 30), updatedFlight.getArrivalTime());
@@ -170,7 +170,7 @@ public class FlightServiceImplTest {
         assertTrue(updatedFlight.isAvailability());
         assertEquals(30, updatedFlight.getNumRows());
         assertEquals(new BigDecimal("300.00"), updatedFlight.getFlightPrice());
-        assertTrue(updatedFlight.getSeatList().isEmpty());
+        assertTrue(updatedFlight.getSeats().isEmpty());
         assertTrue(updatedFlight.getBookingList().isEmpty());
         assertTrue(updatedFlight.getAirports().isEmpty());
 

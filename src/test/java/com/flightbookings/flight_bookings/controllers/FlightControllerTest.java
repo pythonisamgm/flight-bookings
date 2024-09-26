@@ -44,7 +44,7 @@ public class FlightControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(flightController).build();
 
         flight1 = new Flight();
-        flight1.setId(1L);
+        flight1.setFlightId(1L);
         flight1.setFlightNumber(123);
         flight1.setDepartureTime(LocalDateTime.of(2024, 9, 30, 14, 0));
         flight1.setArrivalTime(LocalDateTime.of(2024, 9, 30, 17, 30));
@@ -55,7 +55,7 @@ public class FlightControllerTest {
         flight1.setFlightPrice(new BigDecimal("300.00"));
 
         flight2 = new Flight();
-        flight2.setId(2L);
+        flight2.setFlightId(2L);
         flight2.setFlightNumber(456);
         flight2.setDepartureTime(LocalDateTime.of(2024, 10, 1, 9, 0));
         flight2.setArrivalTime(LocalDateTime.of(2024, 10, 1, 12, 0));
