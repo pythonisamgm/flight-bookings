@@ -2,21 +2,32 @@ package com.flightbookings.flight_bookings.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.flightbookings.flight_bookings.listeners.FlightEntityListener;
+import com.flightbookings.flight_bookings.listeners.FlightEntityListener;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "Task")
+@EntityListeners(FlightEntityListener.class)
 public class Flight {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+    private Long flightId;
+
+    private int numRows;
+
+    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Seat> seats = new ArrayList<>();
+
+    public Flight() {
+    }
 
     @Column
     private int flightNumber;

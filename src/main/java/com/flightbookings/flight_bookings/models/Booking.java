@@ -31,14 +31,20 @@ public class Booking {
     @JsonBackReference
     private Flight flight;
 
+    @OneToOne
+    @JoinColumn(name = "seat_id")
+    private Seat seat;
+
+
     public Booking() {
     }
 
-    public Booking(Flight flight, Passenger passenger, LocalDateTime dateOfBooking, Long bookingId) {
-        this.flight = flight;
-        this.passenger = passenger;
-        this.dateOfBooking = dateOfBooking;
+    public Booking(Long bookingId, LocalDateTime dateOfBooking, Passenger passenger, Flight flight, Seat seat) {
         this.bookingId = bookingId;
+        this.dateOfBooking = dateOfBooking;
+        this.passenger = passenger;
+        this.flight = flight;
+        this.seat = seat;
     }
 
     public Long getBookingId() {
@@ -71,5 +77,12 @@ public class Booking {
 
     public void setFlight(Flight flight) {
         this.flight = flight;
+    }
+    public Seat getSeat() {
+        return seat;
+    }
+
+    public void setSeat(Seat seat) {
+        this.seat = seat;
     }
 }
