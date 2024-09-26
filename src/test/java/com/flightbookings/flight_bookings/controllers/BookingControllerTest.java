@@ -57,11 +57,11 @@ public class BookingControllerTest {
     }
 
     @Test
-    public void testCreateBooking() throws Exception {
+    public void testCreateBooking2() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
 
-        when(bookingService.createBooking(any(Booking.class))).thenReturn(booking1);
+        when(bookingService.createBooking2(any(Booking.class))).thenReturn(booking1);
 
         mockMvc.perform(post("/api/bookings/create")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -70,7 +70,7 @@ public class BookingControllerTest {
                 .andExpect(jsonPath("$.bookingId").value(1L))
                 .andExpect(jsonPath("$.dateOfBooking").value("2024-09-24T10:00:00")); // Asegúrate de que el formato coincide
 
-        verify(bookingService, times(1)).createBooking(any(Booking.class));
+        verify(bookingService, times(1)).createBooking2(any(Booking.class));
     }
 
     @Test
@@ -107,8 +107,8 @@ public class BookingControllerTest {
     }
 
     @Test
-    public void testUpdateBooking() throws Exception {
-        when(bookingService.updateBooking(eq(1L), any(Booking.class))).thenReturn(booking1);
+    public void testUpdateBooking2() throws Exception {
+        when(bookingService.updateBooking2(eq(1L), any(Booking.class))).thenReturn(booking1);
 
         mockMvc.perform(put("/api/bookings/update/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -116,7 +116,7 @@ public class BookingControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.bookingId").value(1L));
 
-        verify(bookingService, times(1)).updateBooking(eq(1L), any(Booking.class));
+        verify(bookingService, times(1)).updateBooking2(eq(1L), any(Booking.class));
     }
 
     @Test
@@ -124,14 +124,14 @@ public class BookingControllerTest {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
 
-        when(bookingService.updateBooking(eq(3L), any(Booking.class))).thenReturn(null);
+        when(bookingService.updateBooking2(eq(3L), any(Booking.class))).thenReturn(null);
 
         mockMvc.perform(put("/api/bookings/update/{id}", 3L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(booking1)))
                 .andExpect(status().isNotFound());
 
-        verify(bookingService, times(1)).updateBooking(eq(3L), any(Booking.class));
+        verify(bookingService, times(1)).updateBooking2(eq(3L), any(Booking.class));
     }
 
     @Test
