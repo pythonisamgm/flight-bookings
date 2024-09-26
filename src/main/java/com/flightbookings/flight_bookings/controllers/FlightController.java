@@ -2,7 +2,7 @@ package com.flightbookings.flight_bookings.controllers;
 
 
 import com.flightbookings.flight_bookings.models.Flight;
-import com.flightbookings.flight_bookings.services.FlightServiceImpl;
+import com.flightbookings.flight_bookings.services.interfaces.FlightService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,9 +14,9 @@ import java.util.List;
 @RequestMapping("api/v1/flight")
 public class FlightController {
 
-    private final FlightServiceImpl flightService;
+    private final FlightService flightService;
 
-    public FlightController(FlightServiceImpl flightService) {
+    public FlightController(FlightService flightService) {
         this.flightService = flightService;
     }
 
