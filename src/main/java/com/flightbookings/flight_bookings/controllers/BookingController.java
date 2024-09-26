@@ -1,7 +1,7 @@
 package com.flightbookings.flight_bookings.controllers;
 
 import com.flightbookings.flight_bookings.models.Booking;
-import com.flightbookings.flight_bookings.services.BookingServiceImpl;
+import com.flightbookings.flight_bookings.services.interfaces.BookingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +22,7 @@ public class BookingController {
         this.bookingService = bookingService;
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<Booking> createBooking(@RequestParam Long flightId,
                                                  @RequestParam Long passengerId,
                                                  @RequestParam String seatName) {
@@ -36,16 +36,10 @@ public class BookingController {
         return new ResponseEntity<>(booking, HttpStatus.OK);
     }
 
-    private final BookingServiceImpl bookingService;
-
-    public BookingController(BookingServiceImpl bookingService) {
-        this.bookingService = bookingService;
-    }
-
 
     @PostMapping("/create")
-    public ResponseEntity<Booking> createBooking(@RequestBody Booking booking) {
-        Booking newBooking = bookingService.createBooking(booking);
+    public ResponseEntity<Booking> createBooking2(@RequestBody Booking booking) {
+        Booking newBooking = bookingService.createBooking2(booking);
         return new ResponseEntity<>(newBooking, HttpStatus.CREATED);
     }
 
@@ -66,8 +60,8 @@ public class BookingController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Booking> updateBooking(@PathVariable Long id, @RequestBody Booking bookingDetails) {
-        Booking updatedBooking = bookingService.updateBooking(id, bookingDetails);
+    public ResponseEntity<Booking> updateBooking2(@PathVariable Long id, @RequestBody Booking bookingDetails) {
+        Booking updatedBooking = bookingService.updateBooking2(id, bookingDetails);
         if (updatedBooking != null) {
             return new ResponseEntity<>(updatedBooking, HttpStatus.OK);
         } else {
