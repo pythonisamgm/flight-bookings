@@ -37,7 +37,7 @@ public class BookingController {
     }
 
 
-    @PostMapping("/create")
+    @PostMapping("/create2")
     public ResponseEntity<Booking> createBooking2(@RequestBody Booking booking) {
         Booking newBooking = bookingService.createBooking2(booking);
         return new ResponseEntity<>(newBooking, HttpStatus.CREATED);
