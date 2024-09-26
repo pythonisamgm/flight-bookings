@@ -1,15 +1,17 @@
 package com.flightbookings.flight_bookings.controllers;
 
 import com.flightbookings.flight_bookings.models.Passenger;
-import com.flightbookings.flight_bookings.services.PassengerService;
+import com.flightbookings.flight_bookings.services.PassengerServiceImpl;
+import com.flightbookings.flight_bookings.services.interfaces.PassengerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin("*")
 @RestController
-@RequestMapping("/api/passengers")
+@RequestMapping("/api/v1/passengers")
 public class PassengerController {
 
     private final PassengerService passengerService;

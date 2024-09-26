@@ -2,13 +2,13 @@ package com.flightbookings.flight_bookings.services;
 
 import com.flightbookings.flight_bookings.models.User;
 import com.flightbookings.flight_bookings.repositories.IUserRepository;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import com.flightbookings.flight_bookings.services.interfaces.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class UserServiceImpl {
+public class UserServiceImpl implements UserService {
 
     private final IUserRepository userRepository;
 
@@ -16,23 +16,22 @@ public class UserServiceImpl {
         this.userRepository = userRepository;
     }
 
+    @Override
     public User createUser(User user) {
         return userRepository.save(user);
     }
 
+    @Override
     public User getUserById(Long id) {
         return userRepository.findById(id).orElse(null);
     }
 
-    public User getUserByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-    }
-
+    @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
+    @Override
     public User updateUser(Long id, User userDetails) {
         if (userRepository.existsById(id)) {
             userDetails.setId(id);
@@ -41,6 +40,7 @@ public class UserServiceImpl {
         return null;
     }
 
+    @Override
     public boolean deleteUser(Long id) {
         if (userRepository.existsById(id)) {
             userRepository.deleteById(id);

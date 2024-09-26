@@ -1,41 +1,46 @@
 package com.flightbookings.flight_bookings.controllers;
 
-import com.flightbookings.flight_bookings.services.UserServiceImpl;
 import com.flightbookings.flight_bookings.models.Booking;
-import com.flightbookings.flight_bookings.models.User;
-import com.flightbookings.flight_bookings.services.BookingServiceImpl;
+import com.flightbookings.flight_bookings.services.interfaces.BookingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@CrossOrigin("*")
 @RestController
-@RequestMapping("/api/bookings")
+@RequestMapping("/api/v1/bookings")
 public class BookingController {
+    private final BookingService bookingService;
 
-    private final BookingServiceImpl bookingService;
-    private final UserServiceImpl userService;
-
-    public BookingController(BookingServiceImpl bookingService, UserServiceImpl userService) {
+    public BookingController(BookingService bookingService) {
         this.bookingService = bookingService;
-        this.userService = userService;
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Booking> createBooking(@RequestBody Booking booking) {
-        User user = userService.getUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-        Booking createdBooking = bookingService.createBooking(booking, user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdBooking);
+    public ResponseEntity<Booking> createBooking(@RequestParam Long flightId,
+                                                 @RequestParam Long passengerId,
+                                                 @RequestParam String seatName) {
+        Booking booking = bookingService.createBooking(flightId, passengerId, seatName);
+        return new ResponseEntity<>(booking, HttpStatus.CREATED);
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<Booking> updateBooking(@PathVariable Long id, @RequestBody Booking updatedBooking) {
+        updatedBooking.setBookingId(id);
+        Booking booking = bookingService.updateBooking(updatedBooking);
+        return new ResponseEntity<>(booking, HttpStatus.OK);
     }
 
-    @GetMapping("/user/{id}")
-    public ResponseEntity<List<Booking>> getBookingsByUser(@PathVariable Long id) {
-        User user = userService.getUserById(id); // Obtener el usuario por id si es necesario
-        List<Booking> bookings = bookingService.getBookingsByUser(user); // Cambia esto según tu lógica
-        return new ResponseEntity<>(bookings, HttpStatus.OK);
+
+    @PostMapping("/create2")
+    public ResponseEntity<Booking> createBooking2(@RequestBody Booking booking) {
+        Booking newBooking = bookingService.createBooking2(booking);
+        return new ResponseEntity<>(newBooking, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
@@ -55,12 +60,12 @@ public class BookingController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Booking> updateBooking(@PathVariable Long id, @RequestBody Booking booking) {
-        Booking updatedBooking = bookingService.updateBooking(id, booking);
+    public ResponseEntity<Booking> updateBooking2(@PathVariable Long id, @RequestBody Booking bookingDetails) {
+        Booking updatedBooking = bookingService.updateBooking2(id, bookingDetails);
         if (updatedBooking != null) {
-            return ResponseEntity.ok(updatedBooking);
+            return new ResponseEntity<>(updatedBooking, HttpStatus.OK);
         } else {
-            return ResponseEntity.notFound().build();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 

@@ -3,9 +3,11 @@ package com.flightbookings.flight_bookings.models;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
+
 @Entity
-@Table(name = "Passenger")
+@Table (name = "Passenger")
 public class Passenger {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,25 +25,15 @@ public class Passenger {
     @Column
     private String nationality;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+//    @Column
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+//    private LocalDate DOB;
 
     @OneToOne
-    @JsonBackReference("booking-passenger")
+    @JsonBackReference
     private Booking booking;
 
     public Passenger() {
-    }
-
-    public Passenger(Long passengerId, String passengerName, String identityDoc, int telephone, String nationality, User user, Booking booking) {
-        this.passengerId = passengerId;
-        this.passengerName = passengerName;
-        this.identityDoc = identityDoc;
-        this.telephone = telephone;
-        this.nationality = nationality;
-        this.user = user;
-        this.booking = booking;
     }
 
     public Long getPassengerId() {
@@ -84,14 +76,6 @@ public class Passenger {
         this.nationality = nationality;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public Booking getBooking() {
         return booking;
     }
@@ -99,4 +83,16 @@ public class Passenger {
     public void setBooking(Booking booking) {
         this.booking = booking;
     }
+
+    public Passenger(Long passengerId, String passengerName, String identityDoc, int telephone, String nationality, Booking booking) {
+        this.passengerId = passengerId;
+        this.passengerName = passengerName;
+        this.identityDoc = identityDoc;
+        this.telephone = telephone;
+        this.nationality = nationality;
+        this.booking = booking;
+
+    }
 }
+
+
