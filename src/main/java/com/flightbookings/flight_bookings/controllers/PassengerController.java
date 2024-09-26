@@ -14,9 +14,9 @@ import java.util.List;
 @RequestMapping("/api/v1/passengers")
 public class PassengerController {
 
-    private final PassengerServiceImpl passengerService;
+    private final PassengerService passengerService;
 
-    public PassengerController(PassengerServiceImpl passengerService) {
+    public PassengerController(PassengerService passengerService) {
         this.passengerService = passengerService;
     }
 
