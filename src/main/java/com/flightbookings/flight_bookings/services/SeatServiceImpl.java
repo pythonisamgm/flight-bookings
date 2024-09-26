@@ -46,19 +46,15 @@ public class SeatServiceImpl implements SeatService {
     @Override
     @Transactional
     public Seat reserveSeat(Flight flight, String seatName) {
-        // Find the seat by flight and seat name
         Seat seat = seatRepository.findByFlightAndSeatName(flight, seatName)
                 .orElseThrow(() -> new SeatNotFoundException("Seat not found"));
 
-        // Check if the seat is already booked
         if (seat.isBooked()) {
             throw new SeatAlreadyBookedException("Seat is already booked");
         }
 
-        // Mark the seat as booked
         seat.setBooked(true);
 
-        // Save the updated seat and return it
         return seatRepository.save(seat);
     }
 
