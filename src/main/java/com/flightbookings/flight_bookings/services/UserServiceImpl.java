@@ -1,5 +1,6 @@
 package com.flightbookings.flight_bookings.services;
 
+import com.flightbookings.flight_bookings.exceptions.UserNotFoundException;
 import com.flightbookings.flight_bookings.models.User;
 import com.flightbookings.flight_bookings.repositories.IUserRepository;
 import com.flightbookings.flight_bookings.services.interfaces.UserService;
@@ -47,5 +48,11 @@ public class UserServiceImpl implements UserService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
     }
 }

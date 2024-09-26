@@ -19,9 +19,6 @@ public class Booking {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime dateOfBooking = LocalDateTime.now();
 
-//    @Column
-//    private boolean status;
-
     @OneToOne(mappedBy = "booking")
     @JsonManagedReference("booking-passenger")
     private Passenger passenger;
@@ -35,21 +32,22 @@ public class Booking {
     @JoinColumn(name = "seat_id")
     private Seat seat;
 
-
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference("user-booking")
     private User user;
 
+
     public Booking() {
     }
 
-    public Booking(Long bookingId, LocalDateTime dateOfBooking, Passenger passenger, Flight flight, Seat seat) {
+    public Booking(Long bookingId, LocalDateTime dateOfBooking, Passenger passenger, Flight flight, Seat seat, User user) {
         this.bookingId = bookingId;
         this.dateOfBooking = dateOfBooking;
         this.passenger = passenger;
         this.flight = flight;
         this.seat = seat;
+        this.user = user;
     }
 
     public User getUser() {
@@ -91,6 +89,7 @@ public class Booking {
     public void setFlight(Flight flight) {
         this.flight = flight;
     }
+
     public Seat getSeat() {
         return seat;
     }

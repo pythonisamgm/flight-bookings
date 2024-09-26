@@ -1,10 +1,7 @@
 package com.flightbookings.flight_bookings.services;
 
-import com.flightbookings.flight_bookings.models.Booking;
+import com.flightbookings.flight_bookings.models.*;
 import com.flightbookings.flight_bookings.exceptions.*;
-import com.flightbookings.flight_bookings.models.Flight;
-import com.flightbookings.flight_bookings.models.Passenger;
-import com.flightbookings.flight_bookings.models.Seat;
 import com.flightbookings.flight_bookings.repositories.IBookingRepository;
 import com.flightbookings.flight_bookings.repositories.IFlightRepository;
 import com.flightbookings.flight_bookings.repositories.IPassengerRepository;
@@ -36,7 +33,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Booking createBooking(Long flightId, Long passengerId, String seatName) {
+    public Booking createBooking(Long flightId, Long passengerId, String seatName, User user) {
         Flight flight = flightRepository.findById(flightId)
                 .orElseThrow(() -> new FlightNotFoundException("Flight not found"));
 
@@ -45,7 +42,8 @@ public class BookingServiceImpl implements BookingService {
 
         Seat seat = seatService.reserveSeat(flight, seatName);
 
-        Booking booking = new Booking(null, LocalDateTime.now(), passenger, flight, seat);
+        Booking booking = new Booking(null, LocalDateTime.now(), passenger, flight, seat, user);
+
         seat.setBooking(booking);
 
         bookingRepository.save(booking);
@@ -92,14 +90,22 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Booking getBookingById(Long id) {
-        Optional<Booking> booking = bookingRepository.findById(id);
-        return booking.orElse(null);
+    public Booking getBookingById(Long id, User user) {
+        Optional<Booking> bookingOptional = bookingRepository.findById(id);
+        if (bookingOptional.isPresent()) {
+            Booking booking = bookingOptional.get();
+            if (booking.getUser().equals(user)) {
+                return booking;
+            } else {
+                throw new UnauthorizedAccessException("You do not have permission to view this booking.");
+            }
+        }
+        return null;
     }
 
     @Override
-    public List<Booking> getAllBookings() {
-        return bookingRepository.findAll();
+    public List<Booking> getAllBookings(User user) {
+        return bookingRepository.findByUser(user);
     }
 
     @Override

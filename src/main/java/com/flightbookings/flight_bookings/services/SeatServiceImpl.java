@@ -44,7 +44,7 @@ public class SeatServiceImpl implements SeatService {
 
     @Override
     public Seat reserveSeat(Flight flight, String seatName) {
-        Seat seat = seatRepository.findBySeatReference(flight, seatName)
+        Seat seat = seatRepository.findByFlightAndSeatName(seatName, flight)
                 .orElseThrow(() -> new SeatNotFoundException("Seat not found"));
 
         if (seat.isBooked()) {

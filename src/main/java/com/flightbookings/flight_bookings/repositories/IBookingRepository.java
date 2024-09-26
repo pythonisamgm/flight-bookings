@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface IBookingRepository extends JpaRepository<Booking, Long> {
-    List<Booking> findByPassenger_User(User user);
+    List<Booking> findByUser(User user);
 }
