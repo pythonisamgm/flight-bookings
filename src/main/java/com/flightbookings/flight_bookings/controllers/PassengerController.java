@@ -1,7 +1,6 @@
 package com.flightbookings.flight_bookings.controllers;
 
 import com.flightbookings.flight_bookings.models.Passenger;
-import com.flightbookings.flight_bookings.services.PassengerServiceImpl;
 import com.flightbookings.flight_bookings.services.interfaces.PassengerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +35,7 @@ public class PassengerController {
         }
     }
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<Passenger>> getAllPassengers() {
         List<Passenger> passengers = passengerService.getAllPassengers();
         return new ResponseEntity<>(passengers, HttpStatus.OK);
