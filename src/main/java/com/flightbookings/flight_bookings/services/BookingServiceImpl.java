@@ -1,5 +1,6 @@
 package com.flightbookings.flight_bookings.services;
 
+import com.flightbookings.flight_bookings.models.Booking;
 import com.flightbookings.flight_bookings.exceptions.*;
 import com.flightbookings.flight_bookings.models.Booking;
 import com.flightbookings.flight_bookings.models.Flight;
@@ -16,15 +17,16 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class BookingServiceImpl implements BookingService {
 
     private final IBookingRepository bookingRepository;
-    private final ISeatRepository seatRepository;
-    private final IFlightRepository flightRepository;
-    private final IPassengerRepository passengerRepository;
-    private final SeatService seatService;
 
+
+    public BookingServiceImpl(IBookingRepository bookingRepository) {
     public BookingServiceImpl(IBookingRepository bookingRepository, ISeatRepository seatRepository, IFlightRepository flightRepository, IPassengerRepository passengerRepository, SeatService seatService) {
         this.bookingRepository = bookingRepository;
         this.seatRepository = seatRepository;
@@ -84,4 +86,37 @@ public class BookingServiceImpl implements BookingService {
     }
 
 
+    public Booking createBooking(Booking booking) {
+        return bookingRepository.save(booking);
+    }
+
+    public Booking getBookingById(Long id) {
+        Optional<Booking> booking = bookingRepository.findById(id);
+        return booking.orElse(null);
+    }
+
+    public List<Booking> getAllBookings() {
+        return bookingRepository.findAll();
+    }
+
+    public Booking updateBooking(Long id, Booking bookingDetails) {
+        Optional<Booking> existingBooking = bookingRepository.findById(id);
+        if (existingBooking.isPresent()) {
+            Booking bookingToUpdate = existingBooking.get();
+            bookingToUpdate.setFlight(bookingDetails.getFlight());
+            bookingToUpdate.setPassenger(bookingDetails.getPassenger());
+            bookingToUpdate.setDateOfBooking(bookingDetails.getDateOfBooking());
+            return bookingRepository.save(bookingToUpdate);
+        }
+        return null;
+    }
+
+    public boolean deleteBooking(Long id) {
+        Optional<Booking> booking = bookingRepository.findById(id);
+        if (booking.isPresent()) {
+            bookingRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
 }
