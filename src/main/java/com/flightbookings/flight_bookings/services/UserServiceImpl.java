@@ -16,18 +16,22 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
+    @Override
     public User createUser(User user) {
         return userRepository.save(user);
     }
 
+    @Override
     public User getUserById(Long id) {
         return userRepository.findById(id).orElse(null);
     }
 
-    public List<User> getAllUsers()  {
+    @Override
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
+    @Override
     public User updateUser(Long id, User userDetails) {
         if (userRepository.existsById(id)) {
             userDetails.setId(id);
@@ -36,6 +40,7 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+    @Override
     public boolean deleteUser(Long id) {
         if (userRepository.existsById(id)) {
             userRepository.deleteById(id);

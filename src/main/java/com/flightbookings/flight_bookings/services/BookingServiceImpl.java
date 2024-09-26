@@ -2,7 +2,6 @@ package com.flightbookings.flight_bookings.services;
 
 import com.flightbookings.flight_bookings.models.Booking;
 import com.flightbookings.flight_bookings.exceptions.*;
-import com.flightbookings.flight_bookings.models.Booking;
 import com.flightbookings.flight_bookings.models.Flight;
 import com.flightbookings.flight_bookings.models.Passenger;
 import com.flightbookings.flight_bookings.models.Seat;
@@ -18,15 +17,16 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class BookingServiceImpl implements BookingService {
 
     private final IBookingRepository bookingRepository;
+    private final ISeatRepository seatRepository;
+    private final IFlightRepository flightRepository;
+    private final IPassengerRepository passengerRepository;
+    private final SeatService seatService;
 
-
-    public BookingServiceImpl(IBookingRepository bookingRepository) {
     public BookingServiceImpl(IBookingRepository bookingRepository, ISeatRepository seatRepository, IFlightRepository flightRepository, IPassengerRepository passengerRepository, SeatService seatService) {
         this.bookingRepository = bookingRepository;
         this.seatRepository = seatRepository;
@@ -53,6 +53,7 @@ public class BookingServiceImpl implements BookingService {
         return booking;
     }
 
+    @Override
     public Booking updateBooking(Booking updatedBooking) {
         Optional<Booking> existingBookingOptional = bookingRepository.findById(updatedBooking.getBookingId());
         if (existingBookingOptional.isPresent()) {
@@ -85,21 +86,24 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
-
-    public Booking createBooking(Booking booking) {
+    @Override
+    public Booking createBooking2(Booking booking) {
         return bookingRepository.save(booking);
     }
 
+    @Override
     public Booking getBookingById(Long id) {
         Optional<Booking> booking = bookingRepository.findById(id);
         return booking.orElse(null);
     }
 
+    @Override
     public List<Booking> getAllBookings() {
         return bookingRepository.findAll();
     }
 
-    public Booking updateBooking(Long id, Booking bookingDetails) {
+    @Override
+    public Booking updateBooking2(Long id, Booking bookingDetails) {
         Optional<Booking> existingBooking = bookingRepository.findById(id);
         if (existingBooking.isPresent()) {
             Booking bookingToUpdate = existingBooking.get();
@@ -111,6 +115,7 @@ public class BookingServiceImpl implements BookingService {
         return null;
     }
 
+    @Override
     public boolean deleteBooking(Long id) {
         Optional<Booking> booking = bookingRepository.findById(id);
         if (booking.isPresent()) {

@@ -20,6 +20,7 @@ public class SeatServiceImpl implements SeatService {
     public SeatServiceImpl(ISeatRepository seatRepository) {
         this.seatRepository = seatRepository;
     }
+
     @Override
     public List<String> initializeSeats(Flight flight, int numRows) {
         List<Seat> seats = new ArrayList<>();
@@ -42,7 +43,7 @@ public class SeatServiceImpl implements SeatService {
     }
 
     @Override
-    public Seat reserveSeat(Flight flight, String seatName){
+    public Seat reserveSeat(Flight flight, String seatName) {
         Seat seat = seatRepository.findBySeatReference(flight, seatName)
                 .orElseThrow(() -> new SeatNotFoundException("Seat not found"));
 
