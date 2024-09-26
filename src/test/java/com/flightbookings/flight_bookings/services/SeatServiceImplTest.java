@@ -61,7 +61,7 @@ class SeatServiceImplTest {
         Seat seat = new Seat(null, 1, ESeatLetter.A, false, flight, null);
         seat.setSeatName("1A");
 
-        when(seatRepository.findBySeatReference(flight, "1A")).thenReturn(Optional.of(seat));
+        when(seatRepository.findByFlightAndSeatName(flight, "1A")).thenReturn(Optional.of(seat));
         when(seatRepository.save(seat)).thenReturn(seat);
 
         Seat reservedSeat = seatService.reserveSeat(flight, "1A");
@@ -70,20 +70,20 @@ class SeatServiceImplTest {
         assertTrue(reservedSeat.isBooked());
         assertEquals("1A", reservedSeat.getSeatName());
 
-        verify(seatRepository, times(1)).findBySeatReference(flight, "1A");
+        verify(seatRepository, times(1)).findByFlightAndSeatName(flight, "1A");
         verify(seatRepository, times(1)).save(seat);
     }
     @Test
     void testReserveSeatThrowsSeatNotFoundException() {
         Flight flight = new Flight();
 
-        when(seatRepository.findBySeatReference(flight, "1A")).thenReturn(Optional.empty());
+        when(seatRepository.findByFlightAndSeatName(flight, "1A")).thenReturn(Optional.empty());
 
         assertThrows(SeatNotFoundException.class, () -> {
             seatService.reserveSeat(flight, "1A");
         });
 
-        verify(seatRepository, times(1)).findBySeatReference(flight, "1A");
+        verify(seatRepository, times(1)).findByFlightAndSeatName(flight, "1A");
         verify(seatRepository, times(0)).save(any(Seat.class));
     }
 
@@ -93,13 +93,13 @@ class SeatServiceImplTest {
         Seat seat = new Seat(null, 1, ESeatLetter.A, true, flight, null); // Seat already booked
         seat.setSeatName("1A");
 
-        when(seatRepository.findBySeatReference(flight, "1A")).thenReturn(Optional.of(seat));
+        when(seatRepository.findByFlightAndSeatName(flight, "1A")).thenReturn(Optional.of(seat));
 
         assertThrows(SeatAlreadyBookedException.class, () -> {
             seatService.reserveSeat(flight, "1A");
         });
 
-        verify(seatRepository, times(1)).findBySeatReference(flight, "1A");
+        verify(seatRepository, times(1)).findByFlightAndSeatName(flight, "1A");
         verify(seatRepository, times(0)).save(any(Seat.class));
     }
 }
