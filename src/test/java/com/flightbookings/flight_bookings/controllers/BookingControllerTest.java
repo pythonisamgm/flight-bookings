@@ -2,7 +2,7 @@ package com.flightbookings.flight_bookings.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flightbookings.flight_bookings.models.Booking;
-import com.flightbookings.flight_bookings.services.BookingServiceImpl;
+import com.flightbookings.flight_bookings.services.interfaces.BookingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -25,13 +25,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class BookingControllerTest {
 
     @Mock
-    private BookingServiceImpl bookingService;
+    private BookingService bookingService;
 
     @InjectMocks
     private BookingController bookingController;
 
     private MockMvc mockMvc;
-
+    private ObjectMapper objectMapper;
     private Booking booking1;
     private Booking booking2;
     private List<Booking> bookingList;
@@ -40,6 +40,10 @@ public class BookingControllerTest {
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(bookingController).build();
+
+        objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+
 
         booking1 = new Booking();
         booking1.setBookingId(1L);
@@ -63,12 +67,12 @@ public class BookingControllerTest {
 
         when(bookingService.createBooking2(any(Booking.class))).thenReturn(booking1);
 
-        mockMvc.perform(post("/api/bookings/create")
+        mockMvc.perform(post("/api/v1/bookings/create2")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(booking1)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.bookingId").value(1L))
-                .andExpect(jsonPath("$.dateOfBooking").value("2024-09-24T10:00:00")); // Asegúrate de que el formato coincide
+                .andExpect(jsonPath("$.dateOfBooking").value("24-09-2024 10:00:00")); // Asegúrate de que el formato coincide
 
         verify(bookingService, times(1)).createBooking2(any(Booking.class));
     }
@@ -77,7 +81,7 @@ public class BookingControllerTest {
     public void testGetBookingById() throws Exception {
         when(bookingService.getBookingById(1L)).thenReturn(booking1);
 
-        mockMvc.perform(get("/api/bookings/{id}", 1L))
+        mockMvc.perform(get("/api/v1/bookings/{id}", 1L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.bookingId").value(1L));
 
@@ -88,7 +92,7 @@ public class BookingControllerTest {
     public void testGetBookingById_NotFound() throws Exception {
         when(bookingService.getBookingById(3L)).thenReturn(null);
 
-        mockMvc.perform(get("/api/bookings/{id}", 3L))
+        mockMvc.perform(get("/api/v1/bookings/{id}", 3L))
                 .andExpect(status().isNotFound());
 
         verify(bookingService, times(1)).getBookingById(3L);
@@ -98,7 +102,7 @@ public class BookingControllerTest {
     public void testGetAllBookings() throws Exception {
         when(bookingService.getAllBookings()).thenReturn(bookingList);
 
-        mockMvc.perform(get("/api/bookings/"))
+        mockMvc.perform(get("/api/v1/bookings/"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].bookingId").value(1L))
                 .andExpect(jsonPath("$[1].bookingId").value(2L));
@@ -110,9 +114,9 @@ public class BookingControllerTest {
     public void testUpdateBooking2() throws Exception {
         when(bookingService.updateBooking2(eq(1L), any(Booking.class))).thenReturn(booking1);
 
-        mockMvc.perform(put("/api/bookings/update/{id}", 1L)
+        mockMvc.perform(put("/api/v1/bookings/update/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(booking1)))
+                        .content(objectMapper.writeValueAsString(booking1))) // Usa el objectMapper configurado
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.bookingId").value(1L));
 
@@ -126,7 +130,7 @@ public class BookingControllerTest {
 
         when(bookingService.updateBooking2(eq(3L), any(Booking.class))).thenReturn(null);
 
-        mockMvc.perform(put("/api/bookings/update/{id}", 3L)
+        mockMvc.perform(put("/api/v1/bookings/update/{id}", 3L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(booking1)))
                 .andExpect(status().isNotFound());
@@ -138,7 +142,7 @@ public class BookingControllerTest {
     public void testDeleteBooking() throws Exception {
         when(bookingService.deleteBooking(1L)).thenReturn(true);
 
-        mockMvc.perform(delete("/api/bookings/delete/{id}", 1L))
+        mockMvc.perform(delete("/api/v1/bookings/delete/{id}", 1L))
                 .andExpect(status().isNoContent());
 
         verify(bookingService, times(1)).deleteBooking(1L);
@@ -148,7 +152,7 @@ public class BookingControllerTest {
     public void testDeleteBooking_NotFound() throws Exception {
         when(bookingService.deleteBooking(4L)).thenReturn(false);
 
-        mockMvc.perform(delete("/api/bookings/delete/{id}", 4L))
+        mockMvc.perform(delete("/api/v1/bookings/delete/{id}", 4L))
                 .andExpect(status().isNotFound());
 
         verify(bookingService, times(1)).deleteBooking(4L);

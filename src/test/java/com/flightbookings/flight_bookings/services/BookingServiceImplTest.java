@@ -2,6 +2,7 @@ package com.flightbookings.flight_bookings.services;
 
 import com.flightbookings.flight_bookings.models.Booking;
 import com.flightbookings.flight_bookings.repositories.IBookingRepository;
+import com.flightbookings.flight_bookings.services.interfaces.BookingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -15,57 +16,19 @@ import java.util.Optional;
 
 import com.flightbookings.flight_bookings.exceptions.FlightNotFoundException;
 import com.flightbookings.flight_bookings.exceptions.PassengerNotFoundException;
-import com.flightbookings.flight_bookings.exceptions.SeatAlreadyBookedException;
-import com.flightbookings.flight_bookings.exceptions.SeatNotFoundException;
-import com.flightbookings.flight_bookings.models.Booking;
 import com.flightbookings.flight_bookings.models.Flight;
 import com.flightbookings.flight_bookings.models.Passenger;
 import com.flightbookings.flight_bookings.models.Seat;
-import com.flightbookings.flight_bookings.repositories.IBookingRepository;
 import com.flightbookings.flight_bookings.repositories.IFlightRepository;
 import com.flightbookings.flight_bookings.repositories.IPassengerRepository;
 import com.flightbookings.flight_bookings.repositories.ISeatRepository;
 import com.flightbookings.flight_bookings.services.interfaces.SeatService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 public class BookingServiceImplTest {
-
-    @Mock
-    private IBookingRepository bookingRepository;
-
-    @InjectMocks
-    private BookingServiceImpl bookingService;
-
-    private Booking booking1;
-    private Booking booking2;
-
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-
-        booking1 = new Booking();
-        booking1.setBookingId(1L);
-        booking1.setDateOfBooking(LocalDateTime.of(2024, 9, 24, 10, 0));
-        booking2 = new Booking();
-        booking2.setBookingId(2L);
-        booking2.setDateOfBooking(LocalDateTime.of(2024, 9, 25, 11, 0));
-
-
-
-        import static org.mockito.Mockito.*;
-
-class BookingServiceImplTest {
 
     @Mock
     private IBookingRepository bookingRepository;
@@ -85,10 +48,22 @@ class BookingServiceImplTest {
     @InjectMocks
     private BookingServiceImpl bookingService;
 
+
+    private Booking booking1;
+    private Booking booking2;
+
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         MockitoAnnotations.openMocks(this);
+
+        booking1 = new Booking();
+        booking1.setBookingId(1L);
+        booking1.setDateOfBooking(LocalDateTime.of(2024, 9, 24, 10, 0));
+        booking2 = new Booking();
+        booking2.setBookingId(2L);
+        booking2.setDateOfBooking(LocalDateTime.of(2024, 9, 25, 11, 0));
     }
+
 
     @Test
     void test_if_createBooking_creates_it_successfully() {
@@ -123,6 +98,7 @@ class BookingServiceImplTest {
         verify(seatService, times(1)).reserveSeat(flight, seatName);
         verify(bookingRepository, times(1)).save(any(Booking.class));
     }
+
     @Test
     void test_exception_for_flightNotFound() {
         Long flightId = 1L;
@@ -140,6 +116,7 @@ class BookingServiceImplTest {
         verify(seatService, times(0)).reserveSeat(any(Flight.class), anyString());
         verify(bookingRepository, times(0)).save(any(Booking.class));
     }
+
     @Test
     void test_exception_for_passengerNotFound() {
         Long flightId = 1L;
@@ -161,6 +138,7 @@ class BookingServiceImplTest {
         verify(seatService, times(0)).reserveSeat(any(Flight.class), anyString());
         verify(bookingRepository, times(0)).save(any(Booking.class));
     }
+
     @Test
     void test_update_method_basic_fields() {
         Long bookingId = 1L;
@@ -190,6 +168,7 @@ class BookingServiceImplTest {
         verify(bookingRepository, times(1)).findById(bookingId);
         verify(bookingRepository, times(1)).save(existingBooking);
     }
+
     @Test
     public void testUpdateBooking_WhenBookingExists_ShouldUpdateBookingAndFreePreviousSeat() {
         Long bookingId = 1L;
@@ -239,15 +218,6 @@ class BookingServiceImplTest {
         verify(bookingRepository, never()).save(any(Booking.class));
     }
 
-
-
-
-
-
-    }
-
-
-
     @Test
     public void testGetBookingById() {
         when(bookingRepository.findById(1L)).thenReturn(Optional.of(booking1));
@@ -286,7 +256,6 @@ class BookingServiceImplTest {
     }
 
 
-
     @Test
     public void testDeleteBooking() {
         when(bookingRepository.findById(1L)).thenReturn(Optional.of(booking1));
@@ -310,3 +279,7 @@ class BookingServiceImplTest {
         verify(bookingRepository, times(0)).deleteById(anyLong());
     }
 }
+
+
+
+
