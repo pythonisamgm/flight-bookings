@@ -8,9 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -41,7 +39,21 @@ class AirportServiceImplTest {
         assertEquals(savedAirport, result);
         verify(airportRepository, times(1)).save(airport);
     }
+    @Test
+    public void testCreateAirports() {
+        Airport airport1 = new Airport(null, "MAD", "Madrid Barajas Airport", "Madrid", "Spain");
+        Airport airport2 = new Airport(null, "BOG", "El Dorado International Airport", "Bogotá", "Colombia");
+        Set<Airport> airports = new HashSet<> (Arrays.asList(airport1, airport2));
 
+        when(airportRepository.saveAll(any(Set.class))).thenReturn(Arrays.asList(airport1, airport2));
+
+        List<Airport> result = airportService.createAirports(airports);
+
+        assertEquals(2, result.size());
+        assertTrue(result.contains(airport1));
+        assertTrue(result.contains(airport2));
+        verify(airportRepository, times(1)).saveAll(airports);
+    }
     @Test
     public void testGetAllAirports() {
         Airport airport1 = new Airport(1L, "MAD", "Madrid Barajas Airport", "Madrid", "Spain");
@@ -79,14 +91,5 @@ class AirportServiceImplTest {
         verify(airportRepository, times(1)).findById(1L);
     }
 
-    @Test
-    public void testUpdateAirport() {
-        Airport airportToUpdate = new Airport(1L, "MAD", "Madrid Barajas Airport", "Madrid", "Spain");
-        when(airportRepository.save(any(Airport.class))).thenReturn(airportToUpdate);
 
-        Airport result = airportService.updateAirport(airportToUpdate, 1L);
-
-        assertEquals(airportToUpdate, result);
-        verify(airportRepository, times(1)).save(airportToUpdate);
-    }
 }

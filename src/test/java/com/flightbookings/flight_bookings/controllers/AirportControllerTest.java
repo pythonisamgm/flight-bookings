@@ -29,19 +29,8 @@ class AirportControllerTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Test
-    public void testCreateAirport() {
-        Airport airport = new Airport(1L, "JFK", "John F. Kennedy International Airport", "New York", "USA");
-        when(airportService.createAirport(any(Airport.class))).thenReturn(airport);
 
-        ResponseEntity<Airport> response = airportController.createAirport(airport);
-
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(airport, response.getBody());
-        verify(airportService, times(1)).createAirport(any(Airport.class));
-    }
-
-    @Test
+   @Test
     public void testGetAirportByIdFound() {
         Airport airport = new Airport(1L, "JFK", "John F. Kennedy International Airport", "New York", "USA");
         when(airportService.getAirportById(1L)).thenReturn(Optional.of(airport));
@@ -77,15 +66,5 @@ class AirportControllerTest {
         verify(airportService, times(1)).getAllAirports();
     }
 
-    @Test
-    public void testUpdateAirport() {
-        Airport airport = new Airport(1L, "JFK", "John F. Kennedy International Airport", "New York", "USA");
-        when(airportService.updateAirport(any(Airport.class), eq(1L))).thenReturn(airport);
 
-        ResponseEntity<Airport> response = airportController.updateAirport(airport, 1L);
-
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(airport, response.getBody());
-        verify(airportService, times(1)).updateAirport(any(Airport.class), eq(1L));
-    }
 }

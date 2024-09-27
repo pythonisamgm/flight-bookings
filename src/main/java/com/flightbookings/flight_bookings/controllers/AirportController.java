@@ -20,13 +20,7 @@ public class AirportController {
         this.airportService = airportService;
     }
 
-    @PostMapping
-    public ResponseEntity<Airport> createAirport(@RequestBody Airport airport) {
-        Airport newAirport = airportService.createAirport(airport);
-        return ResponseEntity.ok(newAirport);
-    }
-
-    @GetMapping("/{id}")
+        @GetMapping("/{id}")
     public ResponseEntity<Airport> getAirportById(@PathVariable Long id) {
         Optional<Airport> airport = airportService.getAirportById(id);
         return airport.map(ResponseEntity::ok)
@@ -39,10 +33,5 @@ public class AirportController {
         return ResponseEntity.ok(airports);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Airport> updateAirport(@RequestBody Airport airport, @PathVariable Long id) {
-        Airport updatedAirport = airportService.updateAirport(airport, id);
-        return ResponseEntity.ok(updatedAirport);
-    }
 
 }

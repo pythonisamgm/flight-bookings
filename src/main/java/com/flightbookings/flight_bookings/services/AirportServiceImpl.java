@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class AirportServiceImpl implements AirportService {
@@ -16,15 +17,13 @@ public class AirportServiceImpl implements AirportService {
     public AirportServiceImpl(IAirportRepository airportRepository) {
         this.airportRepository = airportRepository;
     }
+
     public Airport createAirport(Airport airport){
         return airportRepository.save(airport);
     }
-
-    public Airport updateAirport(Airport airport, Long id){
-        airport.setAirportId(id);
-        return airportRepository.save(airport);
+    public List<Airport> createAirports(Set<Airport> airports) {
+        return airportRepository.saveAll(airports);
     }
-
     public List<Airport> getAllAirports(){
         return airportRepository.findAll();
     }

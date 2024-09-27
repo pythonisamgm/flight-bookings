@@ -4,11 +4,14 @@ import com.flightbookings.flight_bookings.models.Airport;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface AirportService {
+
     Airport createAirport(Airport airport);
 
-    Airport updateAirport(Airport airport, Long id);
+    List<Airport> createAirports(Set<Airport> airports); // Método para crear múltiples aeropuertos
+
 
     List<Airport> getAllAirports();
 
