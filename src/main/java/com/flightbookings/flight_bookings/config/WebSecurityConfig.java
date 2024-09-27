@@ -43,7 +43,7 @@ public class WebSecurityConfig {
                                 .requestMatchers("/api/v1/passengers/delete/{id}").permitAll()
                                 .requestMatchers("/api/v1/flight/create").permitAll()
                                 .requestMatchers("/api/v1/flight/{id}").permitAll()
-                                .requestMatchers("/api/v1/flight").permitAll()
+                                .requestMatchers("/api/v1/flight/").permitAll()
                                 .requestMatchers("/api/v1/flight/update/{id}").permitAll()
                                 .requestMatchers("/api/v1/flight/delete/{id}").permitAll()
 
