@@ -26,7 +26,7 @@ public class LoadAirports implements CommandLineRunner {
     private void loadAirports() {
         Set<Airport> airports = new HashSet<>();
 
-        // Aeropuertos en España
+
         airports.add(new Airport(null, "MAD", "Madrid-Barajas Adolfo Suárez", "Madrid", "España"));
         airports.add(new Airport(null, "BCN", "Barcelona-El Prat", "Barcelona", "España"));
         airports.add(new Airport(null, "VLC", "Valencia", "Valencia", "España"));
@@ -38,7 +38,7 @@ public class LoadAirports implements CommandLineRunner {
         airports.add(new Airport(null, "LPA", "Gran Canaria", "Las Palmas", "España"));
         airports.add(new Airport(null, "TFS", "Tenerife Sur", "Tenerife", "España"));
 
-        // Aeropuertos en América
+
         airports.add(new Airport(null, "LAX", "Los Angeles International Airport", "Los Ángeles", "EE.UU."));
         airports.add(new Airport(null, "JFK", "John F. Kennedy International Airport", "Nueva York", "EE.UU."));
         airports.add(new Airport(null, "ORD", "O'Hare International Airport", "Chicago", "EE.UU."));
@@ -50,7 +50,7 @@ public class LoadAirports implements CommandLineRunner {
         airports.add(new Airport(null, "BOG", "Bogotá El Dorado International Airport", "Bogotá", "Colombia"));
         airports.add(new Airport(null, "CUN", "Cancún International Airport", "Cancún", "México"));
 
-        // Aeropuertos en Europa
+
         airports.add(new Airport(null, "LHR", "London Heathrow Airport", "Londres", "Reino Unido"));
         airports.add(new Airport(null, "AMS", "Amsterdam Airport Schiphol", "Ámsterdam", "Países Bajos"));
         airports.add(new Airport(null, "CDG", "Charles de Gaulle Airport", "París", "Francia"));
@@ -62,7 +62,7 @@ public class LoadAirports implements CommandLineRunner {
         airports.add(new Airport(null, "LIS", "Lisbon Portela Airport", "Lisboa", "Portugal"));
         airports.add(new Airport(null, "BRU", "Brussels Airport", "Bruselas", "Bélgica"));
 
-        // Guardar aeropuertos en la base de datos
+
         airportService.createAirports(airports);
     }
 }
