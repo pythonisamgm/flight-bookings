@@ -1,9 +1,11 @@
 package com.flightbookings.flight_bookings.services.interfaces;
 
+import com.flightbookings.flight_bookings.models.EFlightAirplane;
 import com.flightbookings.flight_bookings.models.Flight;
 import com.flightbookings.flight_bookings.repositories.IFlightRepository;
 import com.flightbookings.flight_bookings.repositories.ISeatRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface FlightService {
@@ -17,4 +19,14 @@ public interface FlightService {
     Flight updateFlight(Long id, Flight flightDetails);
 
     boolean deleteFlight(Long id);
+
+    void cancelFlight(Long id);
+
+    //List<Flight> searchFlightsByCity(String city);
+
+    void delayFlight(Long id, LocalDateTime departureTime);
+
+    void updateFlightAvailability();
+
+    List<Flight> getFlightsByAirplaneType(EFlightAirplane airplaneType);
 }

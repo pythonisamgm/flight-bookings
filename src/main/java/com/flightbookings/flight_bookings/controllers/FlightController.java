@@ -1,12 +1,13 @@
 package com.flightbookings.flight_bookings.controllers;
 
-
 import com.flightbookings.flight_bookings.models.Flight;
+import com.flightbookings.flight_bookings.models.EFlightAirplane;
 import com.flightbookings.flight_bookings.services.interfaces.FlightService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @CrossOrigin("*")
@@ -50,4 +51,34 @@ public class FlightController {
         return isDeleted ? new ResponseEntity<>(HttpStatus.NO_CONTENT) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+//    @GetMapping("/search")
+//    public ResponseEntity<List<Flight>> searchFlightsByCity(@RequestParam String city) {
+//        List<Flight> flights = flightService.searchFlightsByCity(city);
+//        return new ResponseEntity<>(flights, HttpStatus.OK);
+//    }
+
+    @DeleteMapping("/{id}/cancel")
+    public ResponseEntity<String> cancelFlight(@PathVariable Long id) {
+        flightService.cancelFlight(id);
+        return ResponseEntity.ok("Flight canceled successfully.");
+    }
+
+    @PostMapping("/{id}/delay")
+    public ResponseEntity<String> delayFlight(@PathVariable Long id, @RequestParam String newDepartureTime) {
+        LocalDateTime departureTime = LocalDateTime.parse(newDepartureTime);
+        flightService.delayFlight(id, departureTime);
+        return ResponseEntity.ok("Flight delayed successfully.");
+    }
+
+    @PostMapping("/updateAvailability")
+    public ResponseEntity<String> updateAvailability() {
+        flightService.updateFlightAvailability();
+        return ResponseEntity.ok("Flight availability updated successfully.");
+    }
+
+    @GetMapping("/byAirplaneType")
+    public ResponseEntity<List<Flight>> getFlightsByAirplaneType(@RequestParam EFlightAirplane airplaneType) {
+        List<Flight> flights = flightService.getFlightsByAirplaneType(airplaneType);
+        return new ResponseEntity<>(flights, HttpStatus.OK);
+    }
 }
