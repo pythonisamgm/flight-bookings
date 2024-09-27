@@ -1,6 +1,7 @@
 package com.flightbookings.flight_bookings.services;
 
 import com.flightbookings.flight_bookings.models.Flight;
+import com.flightbookings.flight_bookings.repositories.IAirportRepository;
 import com.flightbookings.flight_bookings.repositories.IFlightRepository;
 import com.flightbookings.flight_bookings.repositories.ISeatRepository;
 import com.flightbookings.flight_bookings.services.interfaces.FlightService;
@@ -13,11 +14,12 @@ public class FlightServiceImpl implements FlightService {
 
     private final IFlightRepository flightRepository;
     private final ISeatRepository seatRepository;
+    private final IAirportRepository airportRepository;
 
-    public FlightServiceImpl(IFlightRepository flightRepository, ISeatRepository seatRepository) {
+    public FlightServiceImpl(IFlightRepository flightRepository, ISeatRepository seatRepository,IAirportRepository airportRepository) {
         this.flightRepository = flightRepository;
         this.seatRepository = seatRepository;
-
+        this.airportRepository = airportRepository;
     }
 
     @Override
