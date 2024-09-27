@@ -33,6 +33,7 @@ public class WebSecurityConfig {
                                 .requestMatchers("/api/v1/auth/login").permitAll()
                                 .requestMatchers("/api/v1/auth/register").permitAll()
                                 .requestMatchers("/api/v1/user/**").permitAll()
+                                .requestMatchers("/api/v1/bookings/**").authenticated()
 
                                 .anyRequest().authenticated()
                 )

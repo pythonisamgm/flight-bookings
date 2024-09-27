@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.util.List;
 
 @CrossOrigin("*")
@@ -55,9 +56,8 @@ public class BookingController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Booking> getBookingById(@PathVariable Long id,
-                                                  @AuthenticationPrincipal Authentication authentication) {
-        User user = userService.findByUsername(authentication.getName());
+    public ResponseEntity<Booking> getBookingById(@PathVariable Long id, Principal principal) {
+        User user = userService.findByUsername(principal.getName());
         Booking booking = bookingService.getBookingById(id, user);
 
         if (booking != null) {
