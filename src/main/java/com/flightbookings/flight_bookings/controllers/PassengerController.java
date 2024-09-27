@@ -19,7 +19,7 @@ public class PassengerController {
         this.passengerService = passengerService;
     }
 
-    @PostMapping("/create")
+    @PostMapping(value="/create",consumes = "application/json")
     public ResponseEntity<Passenger> createPassenger(@RequestBody Passenger passenger) {
         Passenger newPassenger = passengerService.createPassenger(passenger);
         return new ResponseEntity<>(newPassenger, HttpStatus.CREATED);

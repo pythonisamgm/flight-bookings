@@ -22,7 +22,7 @@ public class BookingController {
         this.bookingService = bookingService;
     }
 
-    @PostMapping("/create")
+    @PostMapping(value="/create",consumes = "application/json")
     public ResponseEntity<Booking> createBooking(@RequestParam Long flightId,
                                                  @RequestParam Long passengerId,
                                                  @RequestParam String seatName) {
@@ -37,7 +37,7 @@ public class BookingController {
     }
 
 
-    @PostMapping("/create2")
+    @PostMapping(value="/create2",consumes = "application/json")
     public ResponseEntity<Booking> createBooking2(@RequestBody Booking booking) {
         Booking newBooking = bookingService.createBooking2(booking);
         return new ResponseEntity<>(newBooking, HttpStatus.CREATED);
