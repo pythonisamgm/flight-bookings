@@ -2,6 +2,8 @@ package com.flightbookings.flight_bookings.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -11,48 +13,61 @@ import java.util.List;
 
 @Entity
 @Table(name = "flight")
+@ApiModel(description = "All details about the Flight entity.")
 public class Flight {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ApiModelProperty(notes = "The database generated flight ID")
     private Long flightId;
 
+    @ApiModelProperty(notes = "Number of rows in the airplane")
     @Column
     private int numRows;
 
+    @ApiModelProperty(notes = "Flight number")
     @Column
     private int flightNumber;
 
+    @ApiModelProperty(notes = "Time of departure")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     @Column
     private LocalDateTime departureTime;
 
+    @ApiModelProperty(notes = "Time of arrival")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     @Column
     private LocalDateTime arrivalTime;
 
+    @ApiModelProperty(notes = "Type of airplane used for the flight")
     @Column
     private EFlightAirplane flightAirplane;
 
+    @ApiModelProperty(notes = "Capacity of the airplane")
     @Column
     private int capacityPlane;
 
+    @ApiModelProperty(notes = "Availability status of the flight")
     @Column
     private boolean availability;
 
+    @ApiModelProperty(notes = "Price of the flight")
     @Column
     private BigDecimal flightPrice;
 
     @OneToMany(mappedBy = "flight")
     @JsonManagedReference(value = "flight-seat")
+    @ApiModelProperty(notes = "List of seats associated with this flight.")
     private List<Seat> seats = new ArrayList<>();
 
     @OneToMany(mappedBy = "flight")
     @JsonManagedReference(value = "booking-flight")
+    @ApiModelProperty(notes = "List of bookings associated with this flight.")
     private List<Booking> bookingList;
 
     /*@ManyToMany(mappedBy = "flight", fetch = FetchType.LAZY)
     @JsonBackReference
+    @ApiModelProperty(notes = "List of airports associated with this flight.")
     private Set<Airport> airports;*/
 
 
