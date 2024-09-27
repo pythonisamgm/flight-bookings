@@ -1,7 +1,6 @@
 package com.flightbookings.flight_bookings.services;
 
 import com.flightbookings.flight_bookings.models.Flight;
-import com.flightbookings.flight_bookings.models.Seat;
 import com.flightbookings.flight_bookings.repositories.IFlightRepository;
 import com.flightbookings.flight_bookings.repositories.ISeatRepository;
 import com.flightbookings.flight_bookings.services.interfaces.FlightService;
@@ -30,19 +29,12 @@ public class FlightServiceImpl implements FlightService {
     @Override
     @Transactional
     public Flight createFlight(Flight flight) {
-        // Step 1: Initially set seats to null or an empty list
-        flight.setSeats(new ArrayList<>()); // or setSeats(null);
-
-        // Step 2: Save the Flight entity to ensure it gets a generated ID
+        flight.setSeats(new ArrayList<>());
         Flight savedFlight = flightRepository.save(flight);
 
-        // Step 3: Initialize seats and associate them with the saved Flight
         List<String> seatIdentifiers = seatService.initializeSeats(savedFlight, flight.getNumRows());
 
-        // Step 4: Since seats are saved in initializeSeats method, set them to the savedFlight
         savedFlight.setSeats(seatRepository.findByFlight(savedFlight));
-
-        // Step 5: Return the saved Flight with seats initialized
         return savedFlight;
     }
 
