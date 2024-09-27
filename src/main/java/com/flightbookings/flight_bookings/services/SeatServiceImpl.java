@@ -23,21 +23,29 @@ public class SeatServiceImpl implements SeatService {
     }
 
     @Override
+    @Transactional
     public List<String> initializeSeats(Flight flight, int numRows) {
-        List<Seat> seats = flight.getSeats(); // Get the existing seats list from the flight
         List<String> seatIdentifiers = new ArrayList<>();
+        List<Seat> seats = new ArrayList<>();
 
         for (int row = 1; row <= numRows; row++) {
             for (ESeatLetter letter : ESeatLetter.values()) {
                 String seatName = row + letter.name();
-                Seat seat = new Seat(null, row, letter, false, flight, null);
-                seat.setSeatName(seatName);
-                seats.add(seat); // Add the new seat to the existing list
-                seatIdentifiers.add(seatName);
+
+                boolean seatExists = seatRepository.findByFlightAndSeatName(flight, seatName).isPresent();
+                if (!seatExists) {
+                    Seat seat = new Seat(null, row, letter, false, flight, null);
+                    seat.setSeatName(seatName);
+                    seats.add(seat);
+                    seatIdentifiers.add(seatName);
+                } else {
+                    System.out.println("Seat " + seatName + " already exists. Skipping...");
+                }
             }
         }
-
-        seatRepository.saveAll(seats);
+        if (!seats.isEmpty()) {
+            seatRepository.saveAll(seats);
+        }
 
         return seatIdentifiers;
     }
