@@ -1,40 +1,39 @@
 package com.flightbookings.flight_bookings.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 
 
 @Entity
 @Table(name = "passenger")
-@ApiModel(description = "All details about the Passenger entity.")
+@Schema(description = "All details about the Passenger entity.")
 public class Passenger {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @ApiModelProperty(notes = "The database generated passenger ID")
+    @Schema(description = "The database generated passenger ID")
     private Long passengerId;
 
     @Column
-    @ApiModelProperty(notes = "The name of the passenger")
+    @Schema(description = "The name of the passenger")
     private String passengerName;
 
     @Column
-    @ApiModelProperty(notes = "The identity document number of the passenger")
+    @Schema(description = "The identity document number of the passenger")
     private String identityDoc;
 
     @Column
-    @ApiModelProperty(notes = "The telephone number of the passenger")
+    @Schema(description = "The telephone number of the passenger")
     private Long telephone;
 
     @Column
-    @ApiModelProperty(notes = "The nationality of the passenger")
+    @Schema(description = "The nationality of the passenger")
     private String nationality;
 
     @OneToOne
     @JsonBackReference(value = "booking-passenger")
-    @ApiModelProperty(notes = "The booking associated with this passenger")
+    @Schema(description = "The booking associated with this passenger")
     private Booking booking;
 
 //    @Column

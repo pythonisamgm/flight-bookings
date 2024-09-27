@@ -1,8 +1,7 @@
 package com.flightbookings.flight_bookings.models;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,33 +11,33 @@ import java.util.Collection;
 import java.util.List;
 @Entity
 @Table(name = "user")
-@ApiModel(description = "All details about the User entity.")
+@Schema(description = "All details about the User entity.")
 public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @ApiModelProperty(notes = "The database generated user ID")
+    @Schema(description = "The database generated user ID")
     private Long id;
 
     @Column(nullable = false)
-    @ApiModelProperty(notes = "The username of the user")
+    @Schema(description = "The username of the user")
     private String username;
 
     @Column
-    @ApiModelProperty(notes = "The password of the user")
+    @Schema(description = "The password of the user")
     private String password;
 
     @Column
-    @ApiModelProperty(notes = "The email of the user")
+    @Schema(description = "The email of the user")
     private String email;
 
     @Enumerated(EnumType.STRING)
-    @ApiModelProperty(notes = "The role of the user")
+    @Schema(description = "The role of the user")
     private ERole role;
 
     @OneToMany(mappedBy= "user", orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference(value="user-booking")
-    @ApiModelProperty(notes = "The list of bookings made by the user")
+    @Schema(description = "The list of bookings made by the user")
     private List<Booking> bookings;
 
 

@@ -3,47 +3,46 @@ package com.flightbookings.flight_bookings.models;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "booking")
-@ApiModel(description = "All details about the Booking entity.")
+@Schema(description = "All details about the Booking entity.")
 public class Booking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @ApiModelProperty(notes = "The database generated booking ID")
+    @Schema(description = "The database generated booking ID")
     private Long bookingId;
 
     @Column
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
-    @ApiModelProperty(notes = "The date and time when the booking was made")
+    @Schema(description = "The date and time when the booking was made")
     private LocalDateTime dateOfBooking = LocalDateTime.now();
 
     @OneToOne(mappedBy = "booking")
     @JsonManagedReference(value = "booking-passenger")
-    @ApiModelProperty(notes = "The passenger associated with this booking")
+    @Schema(description = "The passenger associated with this booking")
     private Passenger passenger;
 
     @ManyToOne
     @JoinColumn(name = "flight_id", nullable = false)
     @JsonBackReference(value="booking-flight")
-    @ApiModelProperty(notes = "The flight associated with this booking")
+    @Schema(description = "The flight associated with this booking")
     private Flight flight;
 
     @OneToOne
     @JoinColumn(name = "seat_id")
     @JsonBackReference(value="booking-seat")
-    @ApiModelProperty(notes = "The seat reserved in this booking")
+    @Schema(description = "The seat reserved in this booking")
     private Seat seat;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonBackReference(value="user-booking")
-    @ApiModelProperty(notes = "The user who made the booking")
+    @Schema(description = "The user who made the booking")
     private User user;
 
     // Getters, Setters, Constructors

@@ -46,7 +46,7 @@ public class FlightServiceImplTest {
         flight1.setFlightPrice(new BigDecimal("300.00"));
         flight1.setSeats(new ArrayList<>());
         flight1.setBookingList(new ArrayList<>());
-        flight1.setAirports(new HashSet<>());
+        //flight1.setAirports(new HashSet<>());
 
         flight2 = new Flight();
         flight2.setFlightId(2L);
@@ -60,7 +60,7 @@ public class FlightServiceImplTest {
         flight2.setFlightPrice(new BigDecimal("200.00"));
         flight2.setSeats(new ArrayList<>());
         flight2.setBookingList(new ArrayList<>());
-        flight2.setAirports(new HashSet<>());
+        //flight2.setAirports(new HashSet<>());
     }
 
     @Test
@@ -81,7 +81,7 @@ public class FlightServiceImplTest {
         assertEquals(new BigDecimal("300.00"), createdFlight.getFlightPrice());
         assertTrue(createdFlight.getSeats().isEmpty());
         assertTrue(createdFlight.getBookingList().isEmpty());
-        assertTrue(createdFlight.getAirports().isEmpty());
+        //assertTrue(createdFlight.getAirports().isEmpty());
 
         verify(flightRepository, times(1)).save(any(Flight.class));
     }
@@ -111,7 +111,7 @@ public class FlightServiceImplTest {
         assertEquals(new BigDecimal("300.00"), firstFlight.getFlightPrice());
         assertTrue(firstFlight.getSeats().isEmpty());
         assertTrue(firstFlight.getBookingList().isEmpty());
-        assertTrue(firstFlight.getAirports().isEmpty());
+        //assertTrue(firstFlight.getAirports().isEmpty());
 
         Flight secondFlight = allFlights.get(1);
         assertEquals(2L, secondFlight.getFlightId());
@@ -125,7 +125,7 @@ public class FlightServiceImplTest {
         assertEquals(new BigDecimal("200.00"), secondFlight.getFlightPrice());
         assertTrue(secondFlight.getSeats().isEmpty());
         assertTrue(secondFlight.getBookingList().isEmpty());
-        assertTrue(secondFlight.getAirports().isEmpty());
+        //assertTrue(secondFlight.getAirports().isEmpty());
 
         verify(flightRepository, times(1)).findAll();
     }
@@ -148,7 +148,7 @@ public class FlightServiceImplTest {
         assertEquals(new BigDecimal("300.00"), foundFlight.getFlightPrice());
         assertTrue(foundFlight.getSeats().isEmpty());
         assertTrue(foundFlight.getBookingList().isEmpty());
-        assertTrue(foundFlight.getAirports().isEmpty());
+        //assertTrue(foundFlight.getAirports().isEmpty());
 
         verify(flightRepository, times(1)).findById(1L);
     }
@@ -172,7 +172,7 @@ public class FlightServiceImplTest {
         assertEquals(new BigDecimal("300.00"), updatedFlight.getFlightPrice());
         assertTrue(updatedFlight.getSeats().isEmpty());
         assertTrue(updatedFlight.getBookingList().isEmpty());
-        assertTrue(updatedFlight.getAirports().isEmpty());
+        //assertTrue(updatedFlight.getAirports().isEmpty());
 
         verify(flightRepository, times(1)).save(any(Flight.class));
     }

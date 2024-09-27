@@ -2,47 +2,46 @@ package com.flightbookings.flight_bookings.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name="seat")
-@ApiModel(description = "All details about the Seat entity.")
+@Schema(description = "All details about the Seat entity.")
 public class Seat {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
-    @ApiModelProperty(notes = "The database generated seat ID")
+    @Schema(description = "The database generated seat ID")
     private Long seatId;
 
     @Column
-    @ApiModelProperty(notes = "The row number of the seat")
+    @Schema(description = "The row number of the seat")
     private int row;
 
     @Enumerated(EnumType.STRING)
     @Column
-    @ApiModelProperty(notes = "The letter of the seat in the row")
+    @Schema(description = "The letter of the seat in the row")
     private ESeatLetter seatLetter;
 
     @Column
-    @ApiModelProperty(notes = "Booking status of the seat")
+    @Schema(description = "Booking status of the seat")
     private boolean booked = false;
 
     @Column(unique = true, nullable = false)
-    @ApiModelProperty(notes = "The unique identifier for the seat (row + letter)")
+    @Schema(description = "The unique identifier for the seat (row + letter)")
     private String seatName;
 
     @ManyToOne
     @JoinColumn(name="flight_id", nullable = false)
     @JsonBackReference(value = "flight-seat")
-    @ApiModelProperty(notes = "The flight associated with this seat")
+    @Schema(description = "The flight associated with this seat")
     private Flight flight;
 
     @OneToOne(mappedBy = "seat")
     @JsonManagedReference(value = "booking-seat")
-    @ApiModelProperty(notes = "The booking associated with this seat")
+    @Schema(description = "The booking associated with this seat")
     private Booking booking;
 
     public Seat() {
