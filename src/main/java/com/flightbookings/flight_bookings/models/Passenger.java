@@ -5,9 +5,8 @@ import jakarta.persistence.*;
 
 
 @Entity
-@Table (name = "passenger")
+@Table(name = "passenger")
 public class Passenger {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,13 +24,14 @@ public class Passenger {
     @Column
     private String nationality;
 
+    @OneToOne
+    @JsonBackReference(value = "booking-passenger")
+    private Booking booking;
+
 //    @Column
 //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 //    private LocalDate DOB;
 
-    @OneToOne
-    @JsonBackReference
-    private Booking booking;
 
     public Passenger() {
     }

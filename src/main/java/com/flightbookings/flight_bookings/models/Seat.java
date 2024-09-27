@@ -1,5 +1,7 @@
 package com.flightbookings.flight_bookings.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -26,9 +28,11 @@ public class Seat {
 
     @ManyToOne
     @JoinColumn(name="flight_id", nullable = false)
+    @JsonBackReference(value = "flight-seat")
     private Flight flight;
 
     @OneToOne(mappedBy = "seat")
+    @JsonManagedReference(value = "booking-seat")
     private Booking booking;
 
     public Seat() {

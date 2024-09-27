@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-
 @Entity
 @Table(name= "booking")
 public class Booking {
@@ -19,25 +18,28 @@ public class Booking {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime dateOfBooking = LocalDateTime.now();
 
-//    @Column
-//    private boolean status;
-
     @OneToOne(mappedBy = "booking")
-    @JsonManagedReference
+    @JsonManagedReference(value = "booking-passenger")
     private Passenger passenger;
 
     @ManyToOne
     @JoinColumn(name = "flight_id", nullable = false)
-    @JsonBackReference
+    @JsonBackReference(value="booking-flight")
     private Flight flight;
 
     @OneToOne
     @JoinColumn(name = "seat_id")
+    @JsonBackReference(value="booking-seat")
     private Seat seat;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonBackReference(value="user-booking")
     private User user;
+
+    // Getters, Setters, Constructors
+
+
 
     public Booking() {
     }

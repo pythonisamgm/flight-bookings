@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
-
 @Entity
 @Table(name = "user")
 public class User implements UserDetails {
@@ -30,7 +29,7 @@ public class User implements UserDetails {
     private ERole role;
 
     @OneToMany(mappedBy= "user", orphanRemoval = true, fetch = FetchType.LAZY)
-    @JsonManagedReference
+    @JsonManagedReference(value="user-booking")
     private List<Booking> bookings;
 
 

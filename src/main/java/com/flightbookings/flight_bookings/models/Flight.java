@@ -1,21 +1,16 @@
 package com.flightbookings.flight_bookings.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-//import com.flightbookings.flight_bookings.listeners.FlightEntityListener;
-//import com.flightbookings.flight_bookings.listeners.FlightEntityListener;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "flight")
-//@EntityListeners(FlightEntityListener.class)
 public class Flight {
 
     @Id
@@ -49,10 +44,11 @@ public class Flight {
     private BigDecimal flightPrice;
 
     @OneToMany(mappedBy = "flight")
+    @JsonManagedReference(value = "flight-seat")
     private List<Seat> seats = new ArrayList<>();
 
     @OneToMany(mappedBy = "flight")
-    @JsonManagedReference
+    @JsonManagedReference(value = "booking-flight")
     private List<Booking> bookingList;
 
     /*@ManyToMany(mappedBy = "flight", fetch = FetchType.LAZY)
