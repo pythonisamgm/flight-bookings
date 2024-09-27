@@ -19,26 +19,43 @@ public class Booking {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime dateOfBooking = LocalDateTime.now();
 
-//    @Column
-//    private boolean status;
-
     @OneToOne(mappedBy = "booking")
-    @JsonManagedReference
+    @JsonManagedReference("booking-passenger")
     private Passenger passenger;
 
     @ManyToOne
     @JoinColumn(name = "flight_id", nullable = false)
-    @JsonBackReference
+    @JsonBackReference("flight-booking")
     private Flight flight;
+
+    @OneToOne
+    @JoinColumn(name = "seat_id")
+    private Seat seat;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference("user-booking")
+    private User user;
+
 
     public Booking() {
     }
 
-    public Booking(Flight flight, Passenger passenger, LocalDateTime dateOfBooking, Long bookingId) {
-        this.flight = flight;
-        this.passenger = passenger;
-        this.dateOfBooking = dateOfBooking;
+    public Booking(Long bookingId, LocalDateTime dateOfBooking, Passenger passenger, Flight flight, Seat seat, User user) {
         this.bookingId = bookingId;
+        this.dateOfBooking = dateOfBooking;
+        this.passenger = passenger;
+        this.flight = flight;
+        this.seat = seat;
+        this.user = user;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Long getBookingId() {
@@ -71,5 +88,13 @@ public class Booking {
 
     public void setFlight(Flight flight) {
         this.flight = flight;
+    }
+
+    public Seat getSeat() {
+        return seat;
+    }
+
+    public void setSeat(Seat seat) {
+        this.seat = seat;
     }
 }

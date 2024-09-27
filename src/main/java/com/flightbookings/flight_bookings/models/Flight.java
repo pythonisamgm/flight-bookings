@@ -1,29 +1,38 @@
 package com.flightbookings.flight_bookings.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.flightbookings.flight_bookings.listeners.FlightEntityListener;
+import com.flightbookings.flight_bookings.listeners.FlightEntityListener;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "Task")
+@Table(name = "flight")
+@EntityListeners(FlightEntityListener.class)
 public class Flight {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+    private Long flightId;
+
+    @Column
+    private int numRows;
 
     @Column
     private int flightNumber;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     @Column
     private LocalDateTime departureTime;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     @Column
     private LocalDateTime arrivalTime;
 
@@ -37,14 +46,10 @@ public class Flight {
     private boolean availability;
 
     @Column
-    private int numRows;
-
-    @Column
     private BigDecimal flightPrice;
 
-    @OneToMany(mappedBy = "flight")
-    @JsonManagedReference
-    private List<Seat> seatList;
+    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Seat> seats = new ArrayList<>();
 
     @OneToMany(mappedBy = "flight")
     @JsonManagedReference
@@ -54,10 +59,14 @@ public class Flight {
     @JsonBackReference
     private Set<Airport> airports;
 
+
+    public Flight() {
+    }
+
     public Flight(Long id, int flightNumber, LocalDateTime departureTime, LocalDateTime arrivalTime,
                   EFlightAirplane flightAirplane, int capacityPlane, boolean availability, int numRows,
                   BigDecimal flightPrice, List<Seat> seatList, List<Booking> bookingList, Set<Airport> airports) {
-        this.id = id;
+        this.flightId = id;
         this.flightNumber = flightNumber;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
@@ -66,20 +75,17 @@ public class Flight {
         this.availability = availability;
         this.numRows = numRows;
         this.flightPrice = flightPrice;
-        this.seatList = seatList;
+        this.seats = seats;
         this.bookingList = bookingList;
         this.airports = airports;
     }
 
-    public Flight() {
+    public Long getFlightId() {
+        return flightId;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public void setFlightId(Long flightId) {
+        this.flightId = flightId;
     }
 
     public int getFlightNumber() {
@@ -146,12 +152,12 @@ public class Flight {
         this.flightPrice = flightPrice;
     }
 
-    public List<Seat> getSeatList() {
-        return seatList;
+    public List<Seat> getSeats() {
+        return seats;
     }
 
-    public void setSeatList(List<Seat> seatList) {
-        this.seatList = seatList;
+    public void setSeats(List<Seat> seats) {
+        this.seats = seats;
     }
 
     public List<Booking> getBookingList() {
