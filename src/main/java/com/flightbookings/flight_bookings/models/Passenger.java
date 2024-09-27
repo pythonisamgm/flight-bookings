@@ -19,7 +19,7 @@ public class Passenger {
     private String identityDoc;
 
     @Column
-    private int telephone;
+    private Long telephone;
 
     @Column
     private String nationality;
@@ -60,11 +60,11 @@ public class Passenger {
         this.identityDoc = identityDoc;
     }
 
-    public int getTelephone() {
+    public Long getTelephone() {
         return telephone;
     }
 
-    public void setTelephone(int telephone) {
+    public void setTelephone(Long telephone) {
         this.telephone = telephone;
     }
 
@@ -84,7 +84,7 @@ public class Passenger {
         this.booking = booking;
     }
 
-    public Passenger(Long passengerId, String passengerName, String identityDoc, int telephone, String nationality, Booking booking) {
+    public Passenger(Long passengerId, String passengerName, String identityDoc, Long telephone, String nationality, Booking booking) {
         this.passengerId = passengerId;
         this.passengerName = passengerName;
         this.identityDoc = identityDoc;
