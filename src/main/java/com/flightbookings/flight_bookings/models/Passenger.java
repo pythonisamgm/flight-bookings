@@ -33,7 +33,7 @@ public class Passenger {
     @Schema(description = "The nationality of the passenger")
     private String nationality;
 
-    @OneToOne
+    @OneToOne(mappedBy = "passenger", cascade = CascadeType.ALL)
     @JsonBackReference(value = "booking-passenger")
     @Schema(description = "The booking associated with this passenger")
     private Booking booking;

@@ -60,12 +60,12 @@ public class Flight {
     @Schema(description = "List of seats associated with this flight.")
     private List<Seat> seats = new ArrayList<>();
 
-    @OneToMany(mappedBy = "flight")
+    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL)
     @JsonManagedReference(value = "booking-flight")
     @Schema(description = "List of bookings associated with this flight.")
     private List<Booking> bookingList;
 
-    /*@ManyToMany(mappedBy = "flight", fetch = FetchType.LAZY)
+    /*@ManyToMany(mappedBy = "flight", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonBackReference
     private Set<Airport> airports;*/
 

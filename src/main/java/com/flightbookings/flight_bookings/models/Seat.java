@@ -33,13 +33,13 @@ public class Seat {
     @Schema(description = "The unique identifier for the seat (row + letter)")
     private String seatName;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="flight_id", nullable = false)
     @JsonBackReference(value = "flight-seat")
     @Schema(description = "The flight associated with this seat")
     private Flight flight;
 
-    @OneToOne(mappedBy = "seat")
+    @OneToOne(mappedBy = "seat", cascade = CascadeType.ALL)
     @JsonManagedReference(value = "booking-seat")
     @Schema(description = "The booking associated with this seat")
     private Booking booking;

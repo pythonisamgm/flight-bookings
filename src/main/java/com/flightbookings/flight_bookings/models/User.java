@@ -37,7 +37,7 @@ public class User implements UserDetails {
     @Schema(description = "The role of the user")
     private ERole role;
 
-    @OneToMany(mappedBy= "user", orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy= "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference(value="user-booking")
     @Schema(description = "The list of bookings made by the user")
     private List<Booking> bookings;

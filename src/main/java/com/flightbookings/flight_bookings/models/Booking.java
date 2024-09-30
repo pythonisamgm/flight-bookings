@@ -23,24 +23,25 @@ public class Booking {
     @Schema(description = "The date and time when the booking was made")
     private LocalDateTime dateOfBooking = LocalDateTime.now();
 
-    @OneToOne(mappedBy = "booking")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "passenger_id")
     @JsonManagedReference(value = "booking-passenger")
     @Schema(description = "The passenger associated with this booking")
     private Passenger passenger;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "flight_id", nullable = false)
     @JsonBackReference(value="booking-flight")
     @Schema(description = "The flight associated with this booking")
     private Flight flight;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "seat_id")
     @JsonBackReference(value="booking-seat")
     @Schema(description = "The seat reserved in this booking")
     private Seat seat;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference(value="user-booking")
     @Schema(description = "The user who made the booking")
