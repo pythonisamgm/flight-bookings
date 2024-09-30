@@ -4,11 +4,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flightbookings.flight_bookings.models.Weather;
 import com.flightbookings.flight_bookings.repositories.IWeatherRepository;
+import com.flightbookings.flight_bookings.services.interfaces.WeatherService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-public class WeatherServiceImpl {
+public class WeatherServiceImpl implements WeatherService {
 
     private final IWeatherRepository iWeatherRepository;
     private final RestTemplate restTemplate;
@@ -22,6 +23,7 @@ public class WeatherServiceImpl {
         this.objectMapper = new ObjectMapper();
     }
 
+    @Override
     public Weather fetchAndSaveWeather (String city, double lat, double lon){
         String response = restTemplate.getForObject(URL, String.class, lat, lon);
 
