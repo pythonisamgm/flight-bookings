@@ -6,7 +6,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="seat")
+@Table(name="seat", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"seat_name", "flight_id"})
+})
 @Schema(description = "All details about the Seat entity.")
 public class Seat {
 
