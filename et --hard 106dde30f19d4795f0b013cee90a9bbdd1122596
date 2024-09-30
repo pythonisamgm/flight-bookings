@@ -1,0 +1,258 @@
+[33mcommit 106dde30f19d4795f0b013cee90a9bbdd1122596[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeacture/airportpruebas[m[33m)[m
+Author: miangels1978 <einsteinvie@gmail.com>
+Date:   Mon Sep 30 15:06:43 2024 +0200
+
+    Guardando cambios en app.log
+
+[33mcommit c03b1adb97d838c8cf72998ffc1128c139097e04[m
+Author: miangels1978 <einsteinvie@gmail.com>
+Date:   Fri Sep 27 14:15:52 2024 +0200
+
+    Actualization 1.0
+
+[33mcommit 2f0eebed8271271e1a03c54a43698a65422bfda1[m
+Merge: 3275179 dbfa550
+Author: miangels1978 <einsteinvie@gmail.com>
+Date:   Fri Sep 27 14:12:22 2024 +0200
+
+    Test to load the airport database
+
+[33mcommit 3275179eff094b6b73f91e76763b90777792d7bc[m
+Author: miangels1978 <einsteinvie@gmail.com>
+Date:   Fri Sep 27 13:54:12 2024 +0200
+
+    Actualization application.properties
+
+[33mcommit 49b74a19dbfbfaf4e252a6bf5549112617753690[m
+Author: miangels1978 <einsteinvie@gmail.com>
+Date:   Fri Sep 27 13:40:11 2024 +0200
+
+    Modification of the code to load airport database
+
+[33mcommit dbfa550eaeaacb76783e9545f86d771f4e98376e[m[33m ([m[1;32mfeature/UserBookingTesting[m[33m)[m
+Author: JMPolvillo <rothkildam@gmail.com>
+Date:   Fri Sep 27 09:20:26 2024 +0200
+
+    booking for each user working properly now
+
+[33mcommit c26baba749cdbd71310ea676d0c97b512359ac58[m
+Author: JMPolvillo <rothkildam@gmail.com>
+Date:   Thu Sep 26 15:52:45 2024 +0200
+
+    testing booking under user function
+
+[33mcommit 2c516f1df5272dff0bb288c0320bbfa6bcf68759[m
+Merge: 47e9440 2e8c1dd
+Author: JMPolvillo <rothkildam@gmail.com>
+Date:   Thu Sep 26 12:58:42 2024 +0200
+
+    merged from dev
+
+[33mcommit 47e944019e5835ee20852e971d7af354d442634f[m
+Author: JMPolvillo <rothkildam@gmail.com>
+Date:   Thu Sep 26 12:57:58 2024 +0200
+
+    added exception for UserNotFound
+
+[33mcommit 1e0e36cd1b4fc71c7d0c553bf584a85632df9c73[m
+Merge: 6d6033e f0071a2
+Author: JMPolvillo <rothkildam@gmail.com>
+Date:   Thu Sep 26 11:37:52 2024 +0200
+
+    merged from dev
+
+[33mcommit 6d6033ef54150fb26e74578dc10555c9228c7ebe[m
+Author: JMPolvillo <rothkildam@gmail.com>
+Date:   Thu Sep 26 11:32:03 2024 +0200
+
+    deleted app.log
+
+[33mcommit f0071a2c4b9b835d8c48eb942c920942feb84f38[m
+Author: Marta Gonzalez Morales <pythonisamgm@gmail.com>
+Date:   Thu Sep 26 10:26:03 2024 +0200
+
+    fix: fix tests to allow both create methods. Fix endpoints and objectmapper problem with mocks. Fix datetime format to match expected
+
+[33mcommit 74d8f380a8fa89a75400326e7a973f605ce968a9[m
+Author: Marta Gonzalez Morales <pythonisamgm@gmail.com>
+Date:   Thu Sep 26 10:24:35 2024 +0200
+
+    fix: fix tests to match new naming in flight entity
+
+[33mcommit 1a30c4cc25dc78c40f764fcf7ec82c4809074916[m
+Author: Marta Gonzalez Morales <pythonisamgm@gmail.com>
+Date:   Thu Sep 26 10:23:56 2024 +0200
+
+    fix: correct endpoints
+
+[33mcommit 08e2f0ad85ed7faceaf5ceb543e0220a5f3eb323[m
+Author: Marta Gonzalez Morales <pythonisamgm@gmail.com>
+Date:   Thu Sep 26 09:41:53 2024 +0200
+
+    fix: fix controller methods to include both create and update's tests
+
+[33mcommit 82cbaeeb7ad1899698a837fdf14ff6e1eaa1fe6f[m
+Author: Marta Gonzalez Morales <pythonisamgm@gmail.com>
+Date:   Thu Sep 26 09:41:15 2024 +0200
+
+    refactor: remove unnecesary import
+
+[33mcommit d0b2e85538c10910b26f30683276f41d6371cb5a[m
+Author: Marta Gonzalez Morales <pythonisamgm@gmail.com>
+Date:   Thu Sep 26 09:40:22 2024 +0200
+
+    fix: change constructor to inject interface service
+
+[33mcommit 994ffaef648f672610dd28fda0db821e2ca83cfc[m
+Author: Marta Gonzalez Morales <pythonisamgm@gmail.com>
+Date:   Thu Sep 26 09:38:55 2024 +0200
+
+    fix: change constructor to inject interface service
+
+[33mcommit 39a8c632fd2dc43b955e604dcaf6fa14500a5351[m
+Author: Marta Gonzalez Morales <pythonisamgm@gmail.com>
+Date:   Thu Sep 26 09:37:05 2024 +0200
+
+    feat: implement methods in service file
+
+[33mcommit c7f0c4276e0882213107e07230bc1dc36bad06cc[m
+Author: Marta Gonzalez Morales <pythonisamgm@gmail.com>
+Date:   Thu Sep 26 09:35:58 2024 +0200
+
+    feat: add @Override notation in serviceImpl files to implement them in services
+
+[33mcommit 4e58290ff977530ff530f1e7e3770ed4f80abcb3[m
+Author: Marta Gonzalez Morales <pythonisamgm@gmail.com>
+Date:   Thu Sep 26 09:34:00 2024 +0200
+
+    refactor: refactor code for clarity
+
+[33mcommit 3abb9ac3c1d06bebd69ffa56ab7a740a57576ad6[m
+Merge: 89de608 791324b
+Author: Marta Gonzalez Morales <pythonisamgm@gmail.com>
+Date:   Thu Sep 26 09:17:55 2024 +0200
+
+    fix: fix flight entity after merging feature/seat
+
+[33mcommit 89de608a18aeea2cdb5dd8162e5a47fa664ee196[m
+Merge: 7760a55 d586ef2
+Author: Marta Gonzalez Morales <pythonisamgm@gmail.com>
+Date:   Thu Sep 26 09:07:53 2024 +0200
+
+    merge: merge from feature/seat
+
+[33mcommit 2e8c1ddee4882c595ded188ac8098715591c0067[m[33m ([m[1;31morigin/feature/airport[m[33m, [m[1;32mfeature/airport[m[33m)[m
+Author: miangels1978 <einsteinvie@gmail.com>
+Date:   Thu Sep 26 01:26:49 2024 +0200
+
+    Controller and test airport
+
+[33mcommit 791324b79ff44fc1e678474a3589b597d9ea1d98[m
+Author: JuanMolinaRey <Juanmolinarey7@gmail.com>
+Date:   Wed Sep 25 19:11:32 2024 +0200
+
+    update_delete_passageservice
+
+[33mcommit 5ea812a0996544b6991e33014dc629ab1585d7b8[m
+Author: JuanMolinaRey <Juanmolinarey7@gmail.com>
+Date:   Wed Sep 25 19:03:35 2024 +0200
+
+    update_test_controller
+
+[33mcommit c80ba5ab65408bbfb3e31da6e2b0a1840ea80df3[m
+Author: JuanMolinaRey <Juanmolinarey7@gmail.com>
+Date:   Wed Sep 25 18:17:21 2024 +0200
+
+    update_test_and_methods_flight
+
+[33mcommit fd412cd1dc41ee9acda459fd7a68d4af86775cae[m
+Merge: 9aa04cc 7c4ab33
+Author: JuanMolinaRey <Juanmolinarey7@gmail.com>
+Date:   Wed Sep 25 17:30:45 2024 +0200
+
+    update_delete_methods_airport
+
+[33mcommit 7c4ab338c0021ba9714b60b208f2824b2970d858[m
+Author: JuanMolinaRey <Juanmolinarey7@gmail.com>
+Date:   Wed Sep 25 17:25:22 2024 +0200
+
+    update_autocontroller
+
+[33mcommit 402b0ef0d11ecb8e0db505c356476ab9185d7f36[m
+Merge: bd6bec8 4072451
+Author: JuanMolinaRey <Juanmolinarey7@gmail.com>
+Date:   Wed Sep 25 17:09:47 2024 +0200
+
+    update_methods_passenger_and_test
+
+[33mcommit bd6bec88cc619989395ebef10489f8b2cc124605[m
+Merge: eb0a635 5bb43e0
+Author: JuanMolinaRey <Juanmolinarey7@gmail.com>
+Date:   Wed Sep 25 17:06:35 2024 +0200
+
+    update_methods_user_and_test
+
+[33mcommit eb0a635265c194337971d17ad820aefd304a9eb9[m
+Author: JuanMolinaRey <Juanmolinarey7@gmail.com>
+Date:   Wed Sep 25 16:59:30 2024 +0200
+
+    update_merge_booking
+
+[33mcommit f9a12c2d029fb9ffbf3f02327935e27ab46ebcf2[m
+Merge: d703fe3 c6944db
+Author: JuanMolinaRey <Juanmolinarey7@gmail.com>
+Date:   Wed Sep 25 16:46:55 2024 +0200
+
+    update_methods_booking_and_test
+
+[33mcommit 9aa04ccb901fbff0240b8a5ff3e3fa5d23d64ded[m
+Author: JuanMolinaRey <Juanmolinarey7@gmail.com>
+Date:   Wed Sep 25 14:34:34 2024 +0200
+
+    delete_methods_airport
+
+[33mcommit d703fe35224cf1daf96a4cd5cc330b9108af820a[m
+Author: JuanMolinaRey <Juanmolinarey7@gmail.com>
+Date:   Wed Sep 25 14:33:14 2024 +0200
+
+    update_delete_methods_Aiport_service
+
+[33mcommit 482f758ad667ddefb4a85f3fa520384b8db9f402[m
+Author: JuanMolinaRey <Juanmolinarey7@gmail.com>
+Date:   Wed Sep 25 14:32:04 2024 +0200
+
+    update_methods_service
+
+[33mcommit 7760a55839b0402a97438bc20b52c178e5849e1e[m
+Author: JuanMolinaRey <Juanmolinarey7@gmail.com>
+Date:   Wed Sep 25 14:20:41 2024 +0200
+
+    update_create_test_Airport
+
+[33mcommit 2c55819126423dbc3d5f561acdcc28e9f1bf1705[m
+Author: Francisco José Retamero Jaime <fjrj3d@gmail.com>
+Date:   Wed Sep 25 12:17:00 2024 +0200
+
+    update flight
+
+[33mcommit d8207b4682e534d8172c0ebac84b22dd0e6df2c5[m
+Author: JMPolvillo <rothkildam@gmail.com>
+Date:   Wed Sep 25 11:51:04 2024 +0200
+
+    minor changes
+
+[33mcommit 6ffea6165cd3fbe31b55801b7650faf7761b892d[m
+Author: JuanMolinaRey <Juanmolinarey7@gmail.com>
+Date:   Wed Sep 25 11:49:32 2024 +0200
+
+    update_class_Airport_and_EFlightAirplane
+
+[33mcommit 330de3712d82ca87e4d358309c03168f0ef439ed[m
+Merge: 7ab44e4 4072451
+Author: JMPolvillo <rothkildam@gmail.com>
+Date:   Tue Sep 24 22:30:00 2024 +0200
+
+    Merge branch 'feature/passenger' into feature/UserBookingTesting
+
+[33mcommit 7ab44e446ca3095eeb857329af19b252505c6211[m
+Author: JMPolvillo
