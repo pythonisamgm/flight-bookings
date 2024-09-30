@@ -15,5 +15,8 @@ public interface SeatService {
     List<String> initializeSeats(Flight flight, int numRows);
 
     @Transactional
+    void initializeSeatsForAllFlights();
+
+    @Transactional
     Seat reserveSeat(Flight flight, String seatName);
 }

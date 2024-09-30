@@ -23,9 +23,7 @@ public class SeatController {
 
     @PostMapping("/initialize")
     public ResponseEntity<String> initializeSeats() {
-        flightService.getAllFlights().forEach(flight -> {
-            seatService.initializeSeats(flight, flight.getNumRows());
-        });
+        seatService.initializeSeatsForAllFlights();
         return ResponseEntity.ok("Seats initialized for all flights.");
     }
 }
