@@ -31,7 +31,7 @@ public class Seat {
     @Schema(description = "Booking status of the seat")
     private boolean booked = false;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     @Schema(description = "The unique identifier for the seat (row + letter)")
     private String seatName;
 
