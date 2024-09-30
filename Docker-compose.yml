@@ -1,0 +1,27 @@
+services:
+  mysql_service:
+    image: mysql:8.0
+    container_name: mysql_flight-bookings
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: db_flight-bookings
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  springboot_app:
+    build: .
+    container_name: flight-bookings
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/db_flight-bookings
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD:
+      SPRING_JPA_HIBERNATE_DDL_AUTO: create-drop
+    depends_on:
+      - mysql_service
+
+volumes:
+  mysql_data:

@@ -173,7 +173,7 @@ public class User implements UserDetails {
             return this;
         }
 
-        public Builder projectsList(List<Booking> projectsList) {
+        public Builder bookingList(List<Booking> BookingList) {
             this.bookings = bookings;
             return this;
         }
