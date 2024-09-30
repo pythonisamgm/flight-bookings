@@ -3,7 +3,7 @@ name: Build, Initialize Seats
 on:
   push:
     branches:
-      - main
+      - testingDev
 
 jobs:
   build-and-initialize:
