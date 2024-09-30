@@ -20,7 +20,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Build API
-        run: ./mvnw clean package -DskipTests
+        run: ./mvnw clean package -DskipTests -Dmaven.test.skip=true
 
       - name: Start Application
         run: |
