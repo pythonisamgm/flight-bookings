@@ -73,7 +73,7 @@
 //                        .content(objectMapper.writeValueAsString(booking1)))
 //                .andExpect(status().isCreated())
 //                .andExpect(jsonPath("$.bookingId").value(1L))
-//                .andExpect(jsonPath("$.dateOfBooking").value("24-09-2024 10:00:00")); // Asegúrate de que el formato coincide
+//                .andExpect(jsonPath("$.dateOfBooking").value("24-09-2024 10:00:00"));
 //
 //        verify(bookingService, times(1)).createBooking2(any(Booking.class));
 //    }
