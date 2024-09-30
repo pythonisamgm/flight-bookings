@@ -1,34 +1,47 @@
 package com.flightbookings.flight_bookings.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name="seat")
+@Schema(description = "All details about the Seat entity.")
 public class Seat {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
+    @Schema(description = "The database generated seat ID")
     private Long seatId;
 
     @Column
+    @Schema(description = "The row number of the seat")
     private int row;
 
     @Enumerated(EnumType.STRING)
     @Column
+    @Schema(description = "The letter of the seat in the row")
     private ESeatLetter seatLetter;
 
     @Column
+    @Schema(description = "Booking status of the seat")
     private boolean booked = false;
 
     @Column(unique = true, nullable = false)
+    @Schema(description = "The unique identifier for the seat (row + letter)")
     private String seatName;
 
     @ManyToOne
     @JoinColumn(name="flight_id", nullable = false)
+    @JsonBackReference(value = "flight-seat")
+    @Schema(description = "The flight associated with this seat")
     private Flight flight;
 
     @OneToOne(mappedBy = "seat")
+    @JsonManagedReference(value = "booking-seat")
+    @Schema(description = "The booking associated with this seat")
     private Booking booking;
 
     public Seat() {

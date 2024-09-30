@@ -8,6 +8,7 @@ import com.flightbookings.flight_bookings.models.Seat;
 import com.flightbookings.flight_bookings.repositories.ISeatRepository;
 import com.flightbookings.flight_bookings.services.interfaces.SeatService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,27 +23,36 @@ public class SeatServiceImpl implements SeatService {
     }
 
     @Override
+    @Transactional
     public List<String> initializeSeats(Flight flight, int numRows) {
-        List<Seat> seats = new ArrayList<>();
         List<String> seatIdentifiers = new ArrayList<>();
+        List<Seat> seats = new ArrayList<>();
 
         for (int row = 1; row <= numRows; row++) {
             for (ESeatLetter letter : ESeatLetter.values()) {
                 String seatName = row + letter.name();
-                Seat seat = new Seat(null, row, letter, false, flight, null);
-                seat.setSeatName(seatName);
-                seats.add(seat);
-                seatIdentifiers.add(seatName);
+
+                boolean seatExists = seatRepository.findByFlightAndSeatName(flight, seatName).isPresent();
+                if (!seatExists) {
+                    Seat seat = new Seat(null, row, letter, false, flight, null);
+                    seat.setSeatName(seatName);
+                    seats.add(seat);
+                    seatIdentifiers.add(seatName);
+                } else {
+                    System.out.println("Seat " + seatName + " already exists. Skipping...");
+                }
             }
         }
-
-        seatRepository.saveAll(seats);
-        flight.setSeats(seats);
+        if (!seats.isEmpty()) {
+            seatRepository.saveAll(seats);
+        }
 
         return seatIdentifiers;
     }
 
+
     @Override
+    @Transactional
     public Seat reserveSeat(Flight flight, String seatName) {
         Seat seat = seatRepository.findByFlightAndSeatName(flight, seatName)
                 .orElseThrow(() -> new SeatNotFoundException("Seat not found"));
@@ -52,8 +62,8 @@ public class SeatServiceImpl implements SeatService {
         }
 
         seat.setBooked(true);
-        seatRepository.save(seat);
 
-        return seat;
+        return seatRepository.save(seat);
     }
+
 }

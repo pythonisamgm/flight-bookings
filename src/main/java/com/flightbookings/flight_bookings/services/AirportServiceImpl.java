@@ -1,4 +1,4 @@
-package com.flightbookings.flight_bookings.services;
+/*package com.flightbookings.flight_bookings.services;
 
 import com.flightbookings.flight_bookings.models.Airport;
 import com.flightbookings.flight_bookings.repositories.IAirportRepository;
@@ -33,3 +33,4 @@ public class AirportServiceImpl implements AirportService {
         return airportRepository.findById(id);
     }
 }
+*/

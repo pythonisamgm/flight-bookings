@@ -2,13 +2,16 @@ package com.flightbookings.flight_bookings.services;
 
 import com.flightbookings.flight_bookings.models.Flight;
 import com.flightbookings.flight_bookings.models.EFlightAirplane;
-import com.flightbookings.flight_bookings.repositories.IAirportRepository;
+//import com.flightbookings.flight_bookings.repositories.IAirportRepository;
 import com.flightbookings.flight_bookings.repositories.IFlightRepository;
 import com.flightbookings.flight_bookings.repositories.ISeatRepository;
 import com.flightbookings.flight_bookings.services.interfaces.FlightService;
+import com.flightbookings.flight_bookings.services.interfaces.SeatService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,17 +20,27 @@ public class FlightServiceImpl implements FlightService {
 
     private final IFlightRepository flightRepository;
     private final ISeatRepository seatRepository;
-    private final IAirportRepository airportRepository;
+    private final SeatService seatService;
+    //private final IAirportRepository airportRepository;
 
-    public FlightServiceImpl(IFlightRepository flightRepository, ISeatRepository seatRepository, IAirportRepository airportRepository) {
+    public FlightServiceImpl(IFlightRepository flightRepository, ISeatRepository seatRepository, SeatService seatService) {
         this.flightRepository = flightRepository;
         this.seatRepository = seatRepository;
-        this.airportRepository = airportRepository;
+        //this.airportRepository = airportRepository;
+        this.seatService = seatService;
+
     }
 
     @Override
+    @Transactional
     public Flight createFlight(Flight flight) {
-        return flightRepository.save(flight);
+        flight.setSeats(new ArrayList<>());
+        Flight savedFlight = flightRepository.save(flight);
+
+        List<String> seatIdentifiers = seatService.initializeSeats(savedFlight, flight.getNumRows());
+
+        savedFlight.setSeats(seatRepository.findByFlight(savedFlight));
+        return savedFlight;
     }
 
     @Override

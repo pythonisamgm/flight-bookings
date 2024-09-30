@@ -1,13 +1,9 @@
 //package com.flightbookings.flight_bookings.controllers;
 //
-//import com.flightbookings.flight_bookings.models.Airport;
 //import com.flightbookings.flight_bookings.services.interfaces.AirportService;
-//import org.springframework.http.HttpStatus;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.web.bind.annotation.*;
-//
-//import java.util.List;
-//import java.util.Optional;
+//import org.springframework.web.bind.annotation.CrossOrigin;
+//import org.springframework.web.bind.annotation.RequestMapping;
+//import org.springframework.web.bind.annotation.RestController;
 //
 //@CrossOrigin("*")
 //@RestController
@@ -20,29 +16,5 @@
 //        this.airportService = airportService;
 //    }
 //
-//    @PostMapping
-//    public ResponseEntity<Airport> createAirport(@RequestBody Airport airport) {
-//        Airport newAirport = airportService.createAirport(airport);
-//        return ResponseEntity.ok(newAirport);
-//    }
-//
-//    @GetMapping("/{id}")
-//    public ResponseEntity<Airport> getAirportById(@PathVariable Long id) {
-//        Optional<Airport> airport = airportService.getAirportById(id);
-//        return airport.map(ResponseEntity::ok)
-//                .orElse(ResponseEntity.notFound().build());
-//    }
-//
-//    @GetMapping
-//    public ResponseEntity<List<Airport>> getAllAirports() {
-//        List<Airport> airports = airportService.getAllAirports();
-//        return ResponseEntity.ok(airports);
-//    }
-//
-//    @PutMapping("/{id}")
-//    public ResponseEntity<Airport> updateAirport(@RequestBody Airport airport, @PathVariable Long id) {
-//        Airport updatedAirport = airportService.updateAirport(airport, id);
-//        return ResponseEntity.ok(updatedAirport);
-//    }
 //
 //}

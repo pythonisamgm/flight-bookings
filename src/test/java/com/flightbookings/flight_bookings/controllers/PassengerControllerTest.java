@@ -42,14 +42,14 @@ public class PassengerControllerTest {
         passenger1.setPassengerId(1L);
         passenger1.setPassengerName("Juan Antonio");
         passenger1.setIdentityDoc("1337");
-        passenger1.setTelephone(661777777);
+        passenger1.setTelephone(661777777L);
         passenger1.setNationality("Irlandés");
 
         passenger2 = new Passenger();
         passenger2.setPassengerId(2L);
         passenger2.setPassengerName("Miguel Angel");
         passenger2.setIdentityDoc("7823");
-        passenger2.setTelephone(661888888);
+        passenger2.setTelephone(661888888L);
         passenger2.setNationality("Alemania");
 
         passengerList = new ArrayList<>();
@@ -69,7 +69,7 @@ public class PassengerControllerTest {
                 .andExpect(jsonPath("$.passengerId").value(1L))
         .andExpect(jsonPath("$.passengerName").value("Juan Antonio"))
         .andExpect(jsonPath("$.identityDoc").value("1337"))
-        .andExpect(jsonPath("$.telephone").value(661777777))
+        .andExpect(jsonPath("$.telephone").value(661777777L))
         .andExpect(jsonPath("$.nationality").value("Irlandés"));
 
         verify(passengerService, times(1)).createPassenger(any(Passenger.class));
@@ -125,7 +125,7 @@ public class PassengerControllerTest {
     public void testUpdatePassenger_NotFound() throws Exception {
         when(passengerService.updatePassenger(eq(3L), any(Passenger.class))).thenReturn(null);
 
-        mockMvc.perform(put("/api/passengers/update/{id}", 3L)
+        mockMvc.perform(put("/api/passengers/{id}", 3L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(passenger1)))
                 .andExpect(status().isNotFound());

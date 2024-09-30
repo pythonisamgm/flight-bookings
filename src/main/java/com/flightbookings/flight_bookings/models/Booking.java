@@ -3,45 +3,55 @@ package com.flightbookings.flight_bookings.models;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name= "Booking")
+@Table(name = "booking")
+@Schema(description = "All details about the Booking entity.")
 public class Booking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "The database generated booking ID")
     private Long bookingId;
 
     @Column
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
+    @Schema(description = "The date and time when the booking was made")
     private LocalDateTime dateOfBooking = LocalDateTime.now();
 
     @OneToOne(mappedBy = "booking")
-    @JsonManagedReference("booking-passenger")
+    @JsonManagedReference(value = "booking-passenger")
+    @Schema(description = "The passenger associated with this booking")
     private Passenger passenger;
 
     @ManyToOne
     @JoinColumn(name = "flight_id", nullable = false)
-    @JsonBackReference("flight-booking")
+    @JsonBackReference(value="booking-flight")
+    @Schema(description = "The flight associated with this booking")
     private Flight flight;
 
     @OneToOne
     @JoinColumn(name = "seat_id")
+    @JsonBackReference(value="booking-seat")
+    @Schema(description = "The seat reserved in this booking")
     private Seat seat;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonBackReference("user-booking")
+    @JsonBackReference(value="user-booking")
+    @Schema(description = "The user who made the booking")
     private User user;
 
+    // Getters, Setters, Constructors
 
     public Booking() {
     }
 
-    public Booking(Long bookingId, LocalDateTime dateOfBooking, Passenger passenger, Flight flight, Seat seat, User user) {
+    public Booking(Long bookingId, LocalDateTime dateOfBooking, Passenger passenger, Flight flight, Seat seat) {
         this.bookingId = bookingId;
         this.dateOfBooking = dateOfBooking;
         this.passenger = passenger;
@@ -89,7 +99,6 @@ public class Booking {
     public void setFlight(Flight flight) {
         this.flight = flight;
     }
-
     public Seat getSeat() {
         return seat;
     }
