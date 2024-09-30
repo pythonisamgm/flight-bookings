@@ -1,7 +1,10 @@
 package com.flightbookings.flight_bookings.controllers;
 
-
+import com.flightbookings.flight_bookings.services.interfaces.FlightService;
+import com.flightbookings.flight_bookings.services.interfaces.SeatService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -9,4 +12,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("api/v1/seat")
 public class SeatController {
+
+    private final SeatService seatService;
+    private final FlightService flightService;
+
+    public SeatController(SeatService seatService, FlightService flightService) {
+        this.seatService = seatService;
+        this.flightService = flightService;
+    }
+
+    @PostMapping("/initialize")
+    public ResponseEntity<String> initializeSeats() {
+        flightService.getAllFlights().forEach(flight -> {
+            seatService.initializeSeats(flight, flight.getNumRows());
+        });
+        return ResponseEntity.ok("Seats initialized for all flights.");
+    }
 }
+
