@@ -2,6 +2,7 @@ package com.flightbookings.flight_bookings.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,27 +12,34 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name = "User")
+@Table(name = "user")
+@Schema(description = "All details about the User entity.")
 public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "The database generated user ID")
     private Long id;
 
     @Column(nullable = false)
+    @Schema(description = "The username of the user")
     private String username;
 
     @Column
+    @Schema(description = "The password of the user")
     private String password;
 
     @Column
+    @Schema(description = "The email of the user")
     private String email;
 
     @Enumerated(EnumType.STRING)
+    @Schema(description = "The role of the user")
     private ERole role;
 
     @OneToMany(mappedBy= "user", orphanRemoval = true, fetch = FetchType.LAZY)
-    @JsonManagedReference("user-booking")
+    @JsonManagedReference(value="user-booking")
+    @Schema(description = "The list of bookings made by the user")
     private List<Booking> bookings;
 
     public User() {
@@ -165,7 +173,7 @@ public class User implements UserDetails {
             return this;
         }
 
-        public Builder projectsList(List<Booking> projectsList) {
+        public Builder bookingList(List<Booking> BookingList) {
             this.bookings = bookings;
             return this;
         }

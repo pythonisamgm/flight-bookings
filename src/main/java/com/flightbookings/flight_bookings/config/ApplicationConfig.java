@@ -50,4 +50,5 @@ public class ApplicationConfig {
         return username -> iUserRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("user not found"));
     }
+
 }

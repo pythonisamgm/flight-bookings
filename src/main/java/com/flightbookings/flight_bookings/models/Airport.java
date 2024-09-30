@@ -91,4 +91,25 @@ public class Airport {
     public void setFlight(Set<Flight> flight) {
         this.flight = flight;
     }
-}
+}       return airportCity;
+//    }
+//
+//    public void setAirportCity(String airportCity) {
+//        this.airportCity = airportCity;
+//    }
+//
+//    public String getAirportCountry() {
+//        return airportCountry;
+//    }
+//
+//    public void setAirportCountry(String airportCountry) {
+//        this.airportCountry = airportCountry;
+//    }
+//    public Set<Flight> getFlight() {
+//        return flight;
+//    }
+//
+//    public void setFlight(Set<Flight> flight) {
+//        this.flight = flight;
+//    }
+//}

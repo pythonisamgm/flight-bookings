@@ -28,7 +28,7 @@ public class AirportServiceImpl implements AirportService {
         return airportRepository.findAll();
     }
 
-   public Optional<Airport> getAirportById(Long id) {
+    public Optional<Airport> getAirportById(Long id) {
         return airportRepository.findById(id);
     }
 }

@@ -2,39 +2,45 @@ package com.flightbookings.flight_bookings.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 
 
 @Entity
-@Table (name = "Passenger")
+@Table(name = "passenger")
+@Schema(description = "All details about the Passenger entity.")
 public class Passenger {
 
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "The database generated passenger ID")
     private Long passengerId;
 
     @Column
+    @Schema(description = "The name of the passenger")
     private String passengerName;
 
     @Column
+    @Schema(description = "The identity document number of the passenger")
     private String identityDoc;
 
     @Column
-    private int telephone;
+    @Schema(description = "The telephone number of the passenger")
+    private Long telephone;
 
     @Column
+    @Schema(description = "The nationality of the passenger")
     private String nationality;
+
+    @OneToOne
+    @JsonBackReference(value = "booking-passenger")
+    @Schema(description = "The booking associated with this passenger")
+    private Booking booking;
 
 //    @Column
 //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 //    private LocalDate DOB;
-
-
-    @OneToOne
-    @JoinColumn(name = "booking_id", nullable = false)
-    @JsonManagedReference("booking-passenger")
-    private Booking booking;
 
 
     public Passenger() {
@@ -64,11 +70,11 @@ public class Passenger {
         this.identityDoc = identityDoc;
     }
 
-    public int getTelephone() {
+    public Long getTelephone() {
         return telephone;
     }
 
-    public void setTelephone(int telephone) {
+    public void setTelephone(Long telephone) {
         this.telephone = telephone;
     }
 
@@ -88,7 +94,7 @@ public class Passenger {
         this.booking = booking;
     }
 
-    public Passenger(Long passengerId, String passengerName, String identityDoc, int telephone, String nationality, Booking booking) {
+    public Passenger(Long passengerId, String passengerName, String identityDoc, Long telephone, String nationality, Booking booking) {
         this.passengerId = passengerId;
         this.passengerName = passengerName;
         this.identityDoc = identityDoc;

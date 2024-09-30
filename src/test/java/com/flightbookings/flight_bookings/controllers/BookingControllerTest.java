@@ -2,6 +2,9 @@ package com.flightbookings.flight_bookings.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flightbookings.flight_bookings.models.Booking;
+import com.flightbookings.flight_bookings.models.Flight;
+import com.flightbookings.flight_bookings.models.Passenger;
+import com.flightbookings.flight_bookings.models.Seat;
 import com.flightbookings.flight_bookings.services.interfaces.BookingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,8 +22,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class BookingControllerTest {
 
@@ -36,6 +38,10 @@ public class BookingControllerTest {
     private Booking booking2;
     private List<Booking> bookingList;
 
+    private Passenger passenger1;
+    private Flight flight1;
+    private Seat seat1;
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -44,17 +50,12 @@ public class BookingControllerTest {
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
 
+        passenger1 = new Passenger(); // Configure this object as needed
+        flight1 = new Flight(); // Configure this object as needed
+        seat1 = new Seat(); // Configure this object as needed
 
-        booking1 = new Booking();
-        booking1.setBookingId(1L);
-        booking1.setDateOfBooking(LocalDateTime.of(2024, 9, 24, 10, 0));
-
-
-        booking2 = new Booking();
-        booking2.setBookingId(2L);
-        booking2.setDateOfBooking(LocalDateTime.of(2024, 9, 25, 12, 30));
-
-
+        booking1 = new Booking(1L, LocalDateTime.of(2024, 9, 24, 10, 0), passenger1, flight1, seat1);
+        booking2 = new Booking(2L, LocalDateTime.of(2024, 9, 25, 12, 30), passenger1, flight1, seat1);
         bookingList = new ArrayList<>();
         bookingList.add(booking1);
         bookingList.add(booking2);
@@ -101,6 +102,7 @@ public class BookingControllerTest {
     @Test
     public void testGetAllBookings() throws Exception {
         when(bookingService.getAllBookings()).thenReturn(bookingList);
+
 
         mockMvc.perform(get("/api/v1/bookings/"))
                 .andExpect(status().isOk())
@@ -157,4 +159,42 @@ public class BookingControllerTest {
 
         verify(bookingService, times(1)).deleteBooking(4L);
     }
+
+
+    @Test
+    void createBooking() throws Exception {
+        when(bookingService.createBooking(anyLong(), anyLong(), anyString())).thenReturn(booking1);
+
+        String bookingJson = "{"
+                + "\"flightId\": 1,"
+                + "\"passengerId\": 1,"
+                + "\"seatName\": \"1A\""
+                + "}";
+
+        mockMvc.perform(post("/api/v1/booking")
+                        .param("flightId", "1")
+                        .param("passengerId", "1")
+                        .param("seatName", "1A")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bookingJson))
+                .andExpect(status().isCreated())
+                .andExpect(content().json(objectMapper.writeValueAsString(booking1)));
+    }
+
+
+
+    @Test
+    void updateBooking() throws Exception {
+        when(bookingService.updateBooking(any(Booking.class))).thenReturn(booking1);
+
+        String updatedBookingJson = objectMapper.writeValueAsString(booking1);
+
+        mockMvc.perform(put("/api/v1/booking/{id}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(updatedBookingJson))
+                .andExpect(status().isOk())
+                .andExpect(content().json(updatedBookingJson));
+    }
+
+
 }

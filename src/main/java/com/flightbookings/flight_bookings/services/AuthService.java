@@ -30,13 +30,14 @@ public class AuthService {
     public AuthResponse login(LoginRequest login) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword()));
 
-        UserDetails user = iUserRepository.findByUsername(login.getUsername()).orElseThrow();
+        User user = iUserRepository.findByUsername(login.getUsername()).orElseThrow();
 
         String token = jwtService.getTokenService(user);
 
         return AuthResponse
                 .builder()
                 .token(token)
+                .role(user.getRole())
                 .build();
     }
 
