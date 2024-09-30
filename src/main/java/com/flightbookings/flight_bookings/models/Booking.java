@@ -51,7 +51,7 @@ public class Booking {
     public Booking() {
     }
 
-    public Booking(Long bookingId, LocalDateTime dateOfBooking, Passenger passenger, Flight flight, Seat seat) {
+    public Booking(Long bookingId, LocalDateTime dateOfBooking, Passenger passenger, Flight flight, Seat seat, User user) {
         this.bookingId = bookingId;
         this.dateOfBooking = dateOfBooking;
         this.passenger = passenger;
@@ -59,6 +59,7 @@ public class Booking {
         this.seat = seat;
         this.user = user;
     }
+
 
     public User getUser() {
         return user;
