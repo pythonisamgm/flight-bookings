@@ -5,28 +5,35 @@ import com.flightbookings.flight_bookings.models.Flight;
 import java.util.Set;//package com.flightbookings.flight_bookings.models;
 
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 
 import java.util.Set;
 
 @Entity
 @Table (name = "Airport")
+@Schema(description = "All details about the Airport entity.")
 public class Airport {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "The database generated airport ID", example = "1")
     private Long airportId;
 
     @Column
+    @Schema(description = "Airport code")
     private String airportCode;
 
     @Column
+    @Schema(description = "Airport name")
     private String airportName;
 
     @Column
+    @Schema(description = "City where the airport is located")
     private String airportCity;
 
     @Column
+    @Schema(description = "City where the airport is located")
     private String airportCountry;
 
     @ManyToMany(
@@ -36,6 +43,7 @@ public class Airport {
             name = "airport_flight",
             joinColumns = @JoinColumn(name = "airport_id"),
             inverseJoinColumns = @JoinColumn(name = "flight_id"))
+    @Schema(description = "Flights associated with this airport")
     private Set<Flight> flight;
 
     public Airport(Long airportId, String airportCode, String airportName, String airportCity, String airportCountry) {
