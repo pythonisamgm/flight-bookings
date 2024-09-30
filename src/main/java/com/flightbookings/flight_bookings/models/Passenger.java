@@ -1,6 +1,7 @@
 package com.flightbookings.flight_bookings.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 
@@ -29,9 +30,12 @@ public class Passenger {
 //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 //    private LocalDate DOB;
 
+
     @OneToOne
-    @JsonBackReference
+    @JoinColumn(name = "booking_id", nullable = false)
+    @JsonManagedReference("booking-passenger")
     private Booking booking;
+
 
     public Passenger() {
     }

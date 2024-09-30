@@ -1,5 +1,6 @@
 package com.flightbookings.flight_bookings.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -30,9 +31,11 @@ public class User implements UserDetails {
     private ERole role;
 
     @OneToMany(mappedBy= "user", orphanRemoval = true, fetch = FetchType.LAZY)
-    @JsonManagedReference
+    @JsonManagedReference("user-booking")
     private List<Booking> bookings;
 
+    public User() {
+    }
 
     public User(Long id, String username, String password, String email, ERole role, List<Booking> bookings) {
         this.id = id;
@@ -93,6 +96,7 @@ public class User implements UserDetails {
     }
 
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
     }

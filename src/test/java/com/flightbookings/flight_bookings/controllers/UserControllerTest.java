@@ -73,7 +73,7 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.username").value("juanantonio"))
                 .andExpect(jsonPath("$.password").value("1234"))
-                .andExpect(jsonPath("$.email").value("mangel@gmail.com"));
+                .andExpect(jsonPath("$.email").value("jantonio@gmail.com"));
 
         verify(userService, times(1)).createUser(any(User.class));
     }
@@ -103,6 +103,7 @@ public class UserControllerTest {
 
     @Test
     public void testUpdateUser() throws Exception {
+
         when(userService.updateUser(eq(1L), any(User.class))).thenReturn(user1);
 
         mockMvc.perform(put("/api/user/update/{id}", 1L)
