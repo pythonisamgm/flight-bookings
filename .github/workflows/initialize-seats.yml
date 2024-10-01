@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - testingDev
+  
 
 jobs:
   build-and-initialize:
