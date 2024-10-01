@@ -10,7 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+/**
+ * Controller for managing passenger-related operations such as creating, updating, retrieving, and deleting passengers.
+ */
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/api/v1/passengers")
@@ -18,18 +20,32 @@ import java.util.List;
 public class PassengerController {
 
     private final PassengerService passengerService;
-
+    /**
+     * Constructor to initialize the PassengerController with a PassengerService.
+     *
+     * @param passengerService the passenger service for managing passenger operations.
+     */
     public PassengerController(PassengerService passengerService) {
         this.passengerService = passengerService;
     }
-
+    /**
+     * Creates a new passenger.
+     *
+     * @param passenger the passenger object to be created.
+     * @return the created passenger.
+     */
     @Operation(summary = "Create a new passenger")
     @PostMapping(value="/create",consumes = "application/json")
     public ResponseEntity<Passenger> createPassenger(@RequestBody Passenger passenger) {
         Passenger newPassenger = passengerService.createPassenger(passenger);
         return new ResponseEntity<>(newPassenger, HttpStatus.CREATED);
     }
-
+    /**
+     * Retrieves a passenger by its ID.
+     *
+     * @param id the ID of the passenger.
+     * @return the passenger if found, otherwise 404.
+     */
     @Operation(summary = "Get a passenger by ID")
     @GetMapping("/{id}")
     public ResponseEntity<Passenger> getPassengerById(@Parameter(description = "ID of the booking  to be retrieved") @PathVariable Long id) {
@@ -40,12 +56,24 @@ public class PassengerController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+    /**
+     * Retrieves all passengers.
+     *
+     * @return the list of passengers.
+     */
     @Operation(summary = "Get all passengers")
     @GetMapping
     public ResponseEntity<List<Passenger>> getAllPassengers() {
         List<Passenger> passengers = passengerService.getAllPassengers();
         return new ResponseEntity<>(passengers, HttpStatus.OK);
     }
+    /**
+     * Updates a passenger by its ID.
+     *
+     * @param id              the ID of the passenger to be updated.
+     * @param passengerDetails the passenger details to update.
+     * @return the updated passenger.
+     */
     @Operation(summary = "Update a passenger")
     @PutMapping("/update/{id}")
     public ResponseEntity<Passenger> updatePassenger(@Parameter(description = "ID of the booking  to be retrieved") @PathVariable Long id, @RequestBody Passenger passengerDetails) {
@@ -56,6 +84,12 @@ public class PassengerController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+    /**
+     * Deletes a passenger by its ID.
+     *
+     * @param id the ID of the passenger.
+     * @return a 204 response if deleted, otherwise 404.
+     */
     @Operation(summary = "Delete a passenger by ID")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deletePassenger(@Parameter(description = "ID of the booking  to be retrieved") @PathVariable Long id) {
