@@ -3,10 +3,10 @@ name: Build, Initialize Seats
 on:
   push:
     branches:
-      - testingDev
+      - dev
   pull_request:
     branches:
-      - testingDev
+      - dev
 
 jobs:
   build-and-initialize:
