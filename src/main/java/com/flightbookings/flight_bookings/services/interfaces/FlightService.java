@@ -32,4 +32,5 @@ public interface FlightService {
     void updateFlightAvailability();
 
     List<Flight> getFlightsByAirplaneType(EFlightAirplane airplaneType);
+
 }

@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,10 +22,6 @@ public class Flight {
     @Schema(description = "The database generated flight ID")
     private Long flightId;
 
-    @Schema(description = "Number of rows in the airplane")
-    @Column
-    private int numRows;
-
     @Schema(description = "Flight number")
     @Column
     private int flightNumber;
@@ -39,6 +36,14 @@ public class Flight {
     @Column
     private LocalDateTime arrivalTime;
 
+    @Schema(description = "Price of the flight")
+    @Column
+    private BigDecimal flightPrice;
+
+    @Schema(description = "Number of rows in the airplane")
+    @Column
+    private int numRows;
+
     @Schema(description = "Type of airplane used for the flight")
     @Column
     private EFlightAirplane flightAirplane;
@@ -51,32 +56,27 @@ public class Flight {
     @Column
     private boolean availability;
 
-    @Schema(description = "Price of the flight")
+    @Schema(description = "Duration of the flight")
     @Column
-    private BigDecimal flightPrice;
+    private Duration flightDuration; // Nuevo campo para la duración del vuelo
 
-    @OneToMany(mappedBy = "flight",cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference(value = "flight-seat")
-    @Schema(description = "List of seats associated with this flight.")
-    private List<Seat> seats = new ArrayList<>();
+    // Relación ManyToOne para el aeropuerto de origen
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "origin_airport_id")
+    private Airport originAirport;
 
-    @OneToMany(mappedBy = "flight")
-    @JsonManagedReference(value = "booking-flight")
-    @Schema(description = "List of bookings associated with this flight.")
-    private List<Booking> bookingList;
-
-    /*@ManyToMany(mappedBy = "flight", fetch = FetchType.LAZY)
-    @JsonBackReference
-    private Set<Airport> airports;*/
-
+    // Relación ManyToOne para el aeropuerto de destino
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "destination_airport_id")
+    private Airport destinationAirport;
 
     public Flight() {
     }
 
-    public Flight(Long id, int flightNumber, LocalDateTime departureTime, LocalDateTime arrivalTime,
+    public Flight(Long flightId, int flightNumber, LocalDateTime departureTime, LocalDateTime arrivalTime,
                   EFlightAirplane flightAirplane, int capacityPlane, boolean availability, int numRows,
-                  BigDecimal flightPrice, List<Seat> seatList, List<Booking> bookingList) {
-        this.flightId = id;
+                  BigDecimal flightPrice, Duration flightDuration, Airport originAirport, Airport destinationAirport) {
+        this.flightId = flightId;
         this.flightNumber = flightNumber;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
@@ -85,10 +85,12 @@ public class Flight {
         this.availability = availability;
         this.numRows = numRows;
         this.flightPrice = flightPrice;
-        this.seats = seats;
-        this.bookingList = bookingList;
-        //this.airports = airports;
+        this.flightDuration = flightDuration; // Inicialización de la duración
+        this.originAirport = originAirport;
+        this.destinationAirport = destinationAirport;
     }
+
+    // Getters y setters...
 
     public Long getFlightId() {
         return flightId;
@@ -162,27 +164,27 @@ public class Flight {
         this.flightPrice = flightPrice;
     }
 
-    public List<Seat> getSeats() {
-        return seats;
+    public Airport getOriginAirport() {
+        return originAirport;
     }
 
-    public void setSeats(List<Seat> seats) {
-        this.seats = seats;
+    public void setOriginAirport(Airport originAirport) {
+        this.originAirport = originAirport;
     }
 
-    public List<Booking> getBookingList() {
-        return bookingList;
+    public Airport getDestinationAirport() {
+        return destinationAirport;
     }
 
-    public void setBookingList(List<Booking> bookingList) {
-        this.bookingList = bookingList;
+    public void setDestinationAirport(Airport destinationAirport) {
+        this.destinationAirport = destinationAirport;
     }
 
-//    public Set<Airport> getAirports() {
-//        return airports;
-//    }
-//
-//    public void setAirports(Set<Airport> airports) {
-//        this.airports = airports;
-//    }
+    public Duration getFlightDuration() { // Método getter para flightDuration
+        return flightDuration;
+    }
+
+    public void setFlightDuration(Duration flightDuration) { // Método setter para flightDuration
+        this.flightDuration = flightDuration;
+    }
 }

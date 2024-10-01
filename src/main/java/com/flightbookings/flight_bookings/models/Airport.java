@@ -10,49 +10,31 @@ import java.util.Set;
 public class Airport {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long airportId;
-
-    @Column
+    @Column(name = "airport_code", length = 3, nullable = false)
     private String airportCode;
 
-    @Column
+    @Column(name = "airport_name", nullable = false)
     private String airportName;
 
-    @Column
+    @Column(name = "city", nullable = false)
     private String airportCity;
 
-    @Column
+    @Column(name = "country", nullable = false)
     private String airportCountry;
 
-    @ManyToMany(
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "airport_flight",
-            joinColumns = @JoinColumn(name = "airport_id"),
-            inverseJoinColumns = @JoinColumn(name = "flight_id"))
-    private Set<Flight> flight;
-
-    public Airport(Long airportId, String airportCode, String airportName, String airportCity, String airportCountry) {
-        this.airportId = airportId;
+    // Constructor con parámetros
+    public Airport(String airportCode, String airportName, String airportCity, String airportCountry) {
         this.airportCode = airportCode;
         this.airportName = airportName;
         this.airportCity = airportCity;
         this.airportCountry = airportCountry;
     }
 
+    // Constructor vacío
     public Airport() {
     }
 
-    public Long getAirportId() {
-        return airportId;
-    }
-
-    public void setAirportId(Long airportId) {
-        this.airportId = airportId;
-    }
-
+    // Getters y Setters
     public String getAirportCode() {
         return airportCode;
     }
@@ -84,32 +66,4 @@ public class Airport {
     public void setAirportCountry(String airportCountry) {
         this.airportCountry = airportCountry;
     }
-    public Set<Flight> getFlight() {
-        return flight;
-    }
-
-    public void setFlight(Set<Flight> flight) {
-        this.flight = flight;
-    }
-}       return airportCity;
-//    }
-//
-//    public void setAirportCity(String airportCity) {
-//        this.airportCity = airportCity;
-//    }
-//
-//    public String getAirportCountry() {
-//        return airportCountry;
-//    }
-//
-//    public void setAirportCountry(String airportCountry) {
-//        this.airportCountry = airportCountry;
-//    }
-//    public Set<Flight> getFlight() {
-//        return flight;
-//    }
-//
-//    public void setFlight(Set<Flight> flight) {
-//        this.flight = flight;
-//    }
-//}
+}
