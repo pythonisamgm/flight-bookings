@@ -19,7 +19,7 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "The database generated user ID")
-    private Long id;
+    private Long userid;
 
     @Column(nullable = false)
     @Schema(description = "The username of the user")
@@ -46,7 +46,7 @@ public class User implements UserDetails {
     }
 
     public User(Long id, String username, String password, String email, ERole role, List<Booking> bookings) {
-        this.id = id;
+        this.userid = id;
         this.username = username;
         this.password = password;
         this.email = email;
@@ -54,11 +54,11 @@ public class User implements UserDetails {
         this.bookings = bookings;
     }
 
-    public Long getId() {
-        return id;}
+    public Long getUserId() {
+        return userid;}
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setUserId(Long userid) {
+        this.userid = userid;
     }
 
     @Override
