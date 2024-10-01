@@ -78,6 +78,7 @@ public class FlightServiceImpl implements FlightService {
 //                .collect(Collectors.toList());
 //    }
 
+    @Override
     public void cancelFlight(Long id) {
         Flight flight = getFlightById(id);
         if (flight != null) {
@@ -85,7 +86,7 @@ public class FlightServiceImpl implements FlightService {
             flightRepository.save(flight);
         }
     }
-
+    @Override
     public void delayFlight(Long id, LocalDateTime newDepartureTime) {
         Flight flight = getFlightById(id);
         if (flight != null) {
@@ -93,14 +94,14 @@ public class FlightServiceImpl implements FlightService {
             flightRepository.save(flight);
         }
     }
-
+    @Override
     public List<Flight> getFlightsByAirplaneType(EFlightAirplane airplaneType) {
         return flightRepository.findAll()
                 .stream()
                 .filter(flight -> flight.getFlightAirplane() == airplaneType)
                 .collect(Collectors.toList());
     }
-
+    @Override
     public void updateFlightAvailability() {
         LocalDateTime now = LocalDateTime.now();
         List<Flight> flights = flightRepository.findAll();
