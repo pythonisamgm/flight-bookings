@@ -5,6 +5,7 @@ on:
     branches:
       - dev
       - testingDev
+      - gh-pages
 
 jobs:
   generate-docs:
