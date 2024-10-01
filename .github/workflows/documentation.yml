@@ -32,6 +32,9 @@ jobs:
           mkdir -p docs
           cp -r ./target/site/apidocs/* ./docs/
 
+      - name: List docs folder content after copy
+        run: ls -R ./docs
+
       - name: Disable Jekyll
         run: touch docs/.nojekyll
 
