@@ -1,4 +1,4 @@
-name: Build, Initialize Seats
+name: Build and Test Automation
 
 on:
   push:
