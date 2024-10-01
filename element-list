@@ -1,13 +1,8 @@
 com.flightbookings.flight_bookings
 com.flightbookings.flight_bookings.config
 com.flightbookings.flight_bookings.controllers
-com.flightbookings.flight_bookings.dtos.booking
-com.flightbookings.flight_bookings.dtos.flight
-com.flightbookings.flight_bookings.dtos.passenger
 com.flightbookings.flight_bookings.dtos.request
 com.flightbookings.flight_bookings.dtos.response
-com.flightbookings.flight_bookings.dtos.seat
-com.flightbookings.flight_bookings.dtos.user
 com.flightbookings.flight_bookings.exceptions
 com.flightbookings.flight_bookings.initializer
 com.flightbookings.flight_bookings.jwt
