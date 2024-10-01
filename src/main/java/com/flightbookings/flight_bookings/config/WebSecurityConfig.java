@@ -68,6 +68,11 @@ public class WebSecurityConfig {
                                 .requestMatchers("api/v1/user/update/{id}").permitAll()
                                 .requestMatchers("api/v1/user/delete/{id}").permitAll()
 
+                                .requestMatchers(HttpMethod.POST,"api/v1/airport").permitAll()
+                                .requestMatchers(HttpMethod.GET,"api/v1/airport").permitAll()
+                                .requestMatchers(HttpMethod.GET,"api/v1/airport/{id}").permitAll()
+                                .requestMatchers(HttpMethod.PUT,"api/v1/airport/{id}").permitAll()
+
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManager ->
