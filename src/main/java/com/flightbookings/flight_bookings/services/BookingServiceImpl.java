@@ -14,7 +14,9 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import java.util.List;
-
+/**
+ * Implementation of the BookingService interface for managing booking operations.
+ */
 @Service
 public class BookingServiceImpl implements BookingService {
 
@@ -23,7 +25,15 @@ public class BookingServiceImpl implements BookingService {
     private final IFlightRepository flightRepository;
     private final IPassengerRepository passengerRepository;
     private final SeatService seatService;
-
+    /**
+     * Constructs a BookingServiceImpl with the necessary repositories and services.
+     *
+     * @param bookingRepository   the repository for managing bookings.
+     * @param seatRepository      the repository for managing seats.
+     * @param flightRepository    the repository for managing flights.
+     * @param passengerRepository the repository for managing passengers.
+     * @param seatService         the service for managing seat operations.
+     */
     public BookingServiceImpl(IBookingRepository bookingRepository, ISeatRepository seatRepository, IFlightRepository flightRepository, IPassengerRepository passengerRepository, SeatService seatService) {
         this.bookingRepository = bookingRepository;
         this.seatRepository = seatRepository;

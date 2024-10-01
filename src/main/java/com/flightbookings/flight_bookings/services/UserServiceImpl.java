@@ -7,12 +7,18 @@ import com.flightbookings.flight_bookings.services.interfaces.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+/**
+ * Implementation of the UserService interface for managing user operations.
+ */
 @Service
 public class UserServiceImpl implements UserService {
 
     private final IUserRepository userRepository;
-
+    /**
+     * Constructs a UserServiceImpl with the required user repository.
+     *
+     * @param userRepository the repository for managing users.
+     */
     public UserServiceImpl(IUserRepository userRepository) {
         this.userRepository = userRepository;
     }
