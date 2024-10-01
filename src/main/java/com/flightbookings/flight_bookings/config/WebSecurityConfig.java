@@ -8,23 +8,36 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * Configuration class for setting up web security and authentication filters.
+ */
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
 
     private final AuthenticationProvider authenticationProvider;
-
     private final AuthTokenFilter authTokenFilter;
-
+    /**
+     * Constructs a WebSecurityConfig with the required authentication provider and token filter.
+     *
+     * @param authenticationProvider the authentication provider.
+     * @param authTokenFilter        the JWT authentication filter.
+     */
     public WebSecurityConfig(AuthenticationProvider authenticationProvider, AuthTokenFilter authTokenFilter) {
         this.authenticationProvider = authenticationProvider;
         this.authTokenFilter = authTokenFilter;
     }
+
+    /**
+     * Configures the security filter chain for handling HTTP requests.
+     *
+     * @param http the HttpSecurity object for configuring security rules.
+     * @return a configured SecurityFilterChain instance.
+     * @throws Exception if there is an error during security configuration.
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
