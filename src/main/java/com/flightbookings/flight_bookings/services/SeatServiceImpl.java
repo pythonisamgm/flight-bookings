@@ -6,20 +6,30 @@ import com.flightbookings.flight_bookings.models.ESeatLetter;
 import com.flightbookings.flight_bookings.models.Flight;
 import com.flightbookings.flight_bookings.models.Seat;
 import com.flightbookings.flight_bookings.repositories.ISeatRepository;
+import com.flightbookings.flight_bookings.services.interfaces.FlightService;
 import com.flightbookings.flight_bookings.services.interfaces.SeatService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SeatServiceImpl implements SeatService {
 
     private final ISeatRepository seatRepository;
+    private final FlightService flightService;
 
-    public SeatServiceImpl(ISeatRepository seatRepository) {
+    public SeatServiceImpl(ISeatRepository seatRepository, @Lazy FlightService flightService) {
         this.seatRepository = seatRepository;
+        this.flightService = flightService;
+    }
+
+    @Override
+    public Optional<Seat> getSeatById(Long seatId) {
+        return seatRepository.findById(seatId);
     }
 
     @Override
@@ -50,6 +60,17 @@ public class SeatServiceImpl implements SeatService {
         return seatIdentifiers;
     }
 
+    @Override
+    @Transactional
+    public void initializeSeatsForAllFlights() {
+        List<Flight> flights = flightService.getAllFlights();
+
+        for (Flight flight : flights) {
+            initializeSeats(flight, flight.getNumRows());
+        }
+
+        System.out.println("Seats initialized for all flights.");
+    }
 
     @Override
     @Transactional
