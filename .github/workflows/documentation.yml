@@ -41,6 +41,9 @@ jobs:
       - name: List docs folder content
         run: ls -R ./docs
 
+      - name: Check permissions of target and docs folders
+        run: ls -ld ./target ./docs
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
