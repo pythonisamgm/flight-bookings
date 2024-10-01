@@ -4,9 +4,13 @@ on:
   push:
     branches:
       - testingDev
+      - dev
+      - main
   pull_request:
     branches:
       - testingDev
+      - dev
+      - main
 
 jobs:
   build-and-initialize:
