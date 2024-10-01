@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="8970f8d3-6ab3-4054-9e1c-2be37953addf" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../HelloDocker/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../HelloDocker/.idea/HelloDocker.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../HelloDocker/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../HelloDocker/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../HelloDocker/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../HelloDocker/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../HelloDocker/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../HelloDocker/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/../HelloDocker/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../HelloDocker/src/main/java/org/example/HelloController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mvc taskList/demo/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/../mvc taskList/demo/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mvc taskList/demo/docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../mvc taskList/demo/docker-compose.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mvc taskList/demo/src/main/java/com/example/demo/configuration/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../mvc taskList/demo/src/main/java/com/example/demo/configuration/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../sudoku/src/main/java/org/example/Position.java" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="ROOT_SYNC" value="DONT_SYNC" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;pythonisamgm&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/pythonisamgm/flight-bookings.git&quot;,
+    &quot;accountId&quot;: &quot;1b2992ca-a305-435f-8180-e6a7efdb2b35&quot;
+  }
+}</component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="DEPENDENCY_CHECKER_PROBLEMS_TAB" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="2mTDAVbAL5Rs6EUFYuCn8kGqg6O" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.FlightBookingsApplication.executor": "Run",
+    "JUnit.BookingControllerTest.createBooking.executor": "Run",
+    "JUnit.BookingControllerTest.executor": "Run",
+    "JUnit.BookingControllerTest.testCreateBooking.executor": "Run",
+    "JUnit.BookingControllerTest.testCreateBooking2.executor": "Run",
+    "JUnit.BookingControllerTest.testUpdateBooking2.executor": "Run",
+    "JUnit.BookingControllerTest.updateBooking.executor": "Run",
+    "JUnit.BookingServiceImplTest.executor": "Run",
+    "JUnit.BookingServiceImplTest.testCreateBookingFlightNotFound.executor": "Run",
+    "JUnit.BookingServiceImplTest.testCreateBookingPassengerNotFound.executor": "Run",
+    "JUnit.BookingServiceImplTest.testCreateBookingSuccessfully.executor": "Run",
+    "JUnit.BookingServiceImplTest.testUpdateBookingBasicFields.executor": "Run",
+    "JUnit.BookingServiceImplTest.testUpdateBookingSeatChange.executor": "Run",
+    "JUnit.BookingServiceImplTest.testUpdateBookingSuccessfully.executor": "Run",
+    "JUnit.BookingServiceImplTest.testUpdateBooking_WhenBookingDoesNotExist_ShouldThrowException.executor": "Run",
+    "JUnit.BookingServiceImplTest.testUpdateBooking_WhenBookingExists_ShouldUpdateBookingAndFreePreviousSeat.executor": "Run",
+    "JUnit.BookingServiceImplTest.test_if_createBooking_creates_it_successfully.executor": "Run",
+    "JUnit.BookingServiceImplTest.test_update_method_basic_fields.executor": "Run",
+    "JUnit.FlightBookingsApplicationTests.executor": "Run",
+    "JUnit.FlightControllerTest.executor": "Run",
+    "JUnit.FlightControllerTest.testCreateFlight.executor": "Run",
+    "JUnit.FlightControllerTest.testUpdateFlight.executor": "Run",
+    "JUnit.FlightServiceImplTest.executor": "Run",
+    "JUnit.PassengerControllerTest.executor": "Run",
+    "JUnit.PassengerServiceTest.executor": "Run",
+    "JUnit.SeatServiceImplTest.executor": "Run",
+    "JUnit.SeatServiceImplTest.testInitializeSeats.executor": "Run",
+    "JUnit.SeatServiceImplTest.testReserveSeatSuccessfully.executor": "Run",
+    "JUnit.SeatServiceImplTest.testReserveSeatThrowsSeatAlreadyBookedException.executor": "Run",
+    "JUnit.SeatServiceImplTest.testReserveSeatThrowsSeatNotFoundException.executor": "Run",
+    "JUnit.UserControllerTest.executor": "Run",
+    "JUnit.UserServiceImplTest.executor": "Run",
+    "JUnit.controllers in flight-bookings.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
+    "git-widget-placeholder": "testingDev",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/fgonz/Documents/dropbox pythonisa/Dropbox/bootcamp mirti/java/flight-bookings",
+    "project.structure.last.edited": "SDKs",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\fgonz\Documents\dropbox pythonisa\Dropbox\bootcamp mirti\java\flight-bookings\.github\workflows" />
+      <recent name="C:\Users\fgonz\Documents\dropbox pythonisa\Dropbox\bootcamp mirti\java\flight-bookings\.github" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="com.flightbookings.flight_bookings.services" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.FlightBookingsApplication">
+    <configuration name="FlightBookingsApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.flightbookings.flight_bookings.FlightBookingsApplication" />
+      <module name="flight-bookings" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.flightbookings.flight_bookings.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FlightControllerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="flight-bookings" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.flightbookings.flight_bookings.controllers.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.flightbookings.flight_bookings.controllers" />
+      <option name="MAIN_CLASS_NAME" value="com.flightbookings.flight_bookings.controllers.FlightControllerTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FlightControllerTest.testCreateFlight" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="flight-bookings" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.flightbookings.flight_bookings.controllers.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.flightbookings.flight_bookings.controllers" />
+      <option name="MAIN_CLASS_NAME" value="com.flightbookings.flight_bookings.controllers.FlightControllerTest" />
+      <option name="METHOD_NAME" value="testCreateFlight" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PassengerControllerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="flight-bookings" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.flightbookings.flight_bookings.controllers.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.flightbookings.flight_bookings.controllers" />
+      <option name="MAIN_CLASS_NAME" value="com.flightbookings.flight_bookings.controllers.PassengerControllerTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="controllers in flight-bookings" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="flight-bookings" />
+      <option name="TEST_OBJECT" value="directory" />
+      <dir value="$PROJECT_DIR$/src/test/java/com/flightbookings/flight_bookings/controllers" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.FlightBookingsApplication" />
+      <item itemvalue="JUnit.FlightControllerTest" />
+      <item itemvalue="JUnit.controllers in flight-bookings" />
+      <item itemvalue="JUnit.FlightControllerTest.testCreateFlight" />
+      <item itemvalue="JUnit.PassengerControllerTest" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.FlightBookingsApplication" />
+        <item itemvalue="JUnit.FlightControllerTest" />
+        <item itemvalue="JUnit.controllers in flight-bookings" />
+        <item itemvalue="JUnit.PassengerControllerTest" />
+        <item itemvalue="JUnit.FlightControllerTest.testCreateFlight" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="8970f8d3-6ab3-4054-9e1c-2be37953addf" name="Changes" comment="" />
+      <created>1727091528715</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1727091528715</updated>
+    </task>
+    <servers />
+  </component>
+</project>
