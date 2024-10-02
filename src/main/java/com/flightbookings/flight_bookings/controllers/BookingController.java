@@ -52,10 +52,10 @@ public class BookingController {
      */
     @Operation(summary =  "Create a new booking")
     @PostMapping(value="/create",consumes = "application/json")
-    public ResponseEntity<Booking> createBooking(@RequestParam Long flightId,
-                                                 @RequestParam Long passengerId,
-                                                 @RequestParam String seatName,
-                                                 @RequestParam Long userId,
+    public ResponseEntity<Booking> createBooking(@RequestParam("flightId") Long flightId,
+                                                 @RequestParam("passengerId") Long passengerId,
+                                                 @RequestParam("seatName") String seatName,
+                                                 @RequestParam("userId") Long userId,
                                                  @AuthenticationPrincipal Authentication authentication) {
         User user = userService.findByUsername(authentication.getName());
         Booking booking = bookingService.createBooking(flightId, passengerId, seatName, userId);
@@ -107,11 +107,22 @@ public class BookingController {
      * @param authentication the authentication object to get the current user.
      * @return the list of bookings.
      */
-    @Operation(summary =  "Get all bookings")
+    @Operation(summary =  "Get all the bookings for the current user")
     @GetMapping("/")
     public ResponseEntity<List<Booking>> getAllBookings(@AuthenticationPrincipal Authentication authentication) {
         User user = userService.findByUsername(authentication.getName());
         List<Booking> bookings = bookingService.getAllBookingsByUser(user);
+        return new ResponseEntity<>(bookings, HttpStatus.OK);
+    }
+    /**
+     * Retrieves all bookings.
+     *
+     * @return the list of bookings.
+     */
+    @Operation(summary = "Get all bookings")
+    @GetMapping("/all")
+    public ResponseEntity<List<Booking>> getAllBookings() {
+        List<Booking> bookings = bookingService.getAllBookings();
         return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
 
