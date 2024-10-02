@@ -30,10 +30,6 @@ public class AirportServiceImpl implements AirportService {
 
     @Override
     public Optional<Airport> getAirportById(String id) {
-        return Optional.empty ();
-    }
-
-    public Optional<Airport> getAirportById(Long id) {
         return airportRepository.findById(id);
     }
-}
+ }
