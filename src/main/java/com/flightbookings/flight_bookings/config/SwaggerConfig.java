@@ -12,14 +12,22 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
+/**
+ * Configuration class for setting up Swagger and OpenAPI documentation for the Flight Bookings API.
+ */
 @Configuration
 public class SwaggerConfig {
 
+    /**
+     * Creates a custom OpenAPI configuration.
+     *
+     * @return a configured OpenAPI instance.
+     */
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info().title("Flight Bookings API")
-                        .description("API documentation for Flight Bookings application")
+                        .description("API documentation for the Flight Bookings application")
                         .version("1.0")
                         .license(new License().name("Apache 2.0").url("http://springdoc.org")))
                 .servers(List.of(new Server().url("http://localhost:8080")))
@@ -32,6 +40,11 @@ public class SwaggerConfig {
                                         .bearerFormat("JWT")));
     }
 
+    /**
+     * Configures API documentation for public endpoints.
+     *
+     * @return a GroupedOpenApi instance for public endpoints.
+     */
     @Bean
     public GroupedOpenApi publicApi() {
         return GroupedOpenApi.builder()
@@ -40,6 +53,11 @@ public class SwaggerConfig {
                 .build();
     }
 
+    /**
+     * Configures API documentation for admin endpoints.
+     *
+     * @return a GroupedOpenApi instance for admin endpoints.
+     */
     @Bean
     public GroupedOpenApi adminApi() {
         return GroupedOpenApi.builder()

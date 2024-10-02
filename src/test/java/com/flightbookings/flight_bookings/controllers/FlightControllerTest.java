@@ -34,8 +34,6 @@ class FlightControllerTest {
     private Flight flight1;
     private Flight flight2;
 
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-
     @Mock
     private FlightService flightService;
 
@@ -46,6 +44,8 @@ class FlightControllerTest {
 
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
+
+        objectMapper.setDateFormat(new java.text.SimpleDateFormat("dd-MM-yyyy HH:mm:ss"));
 
         flight1 = new Flight();
         flight1.setFlightId(1L);
@@ -78,8 +78,8 @@ class FlightControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.flightId").value(flight1.getFlightId()))
                 .andExpect(jsonPath("$.flightNumber").value(flight1.getFlightNumber()))
-                .andExpect(jsonPath("$.departureTime").value(flight1.getDepartureTime().format(dateTimeFormatter)))
-                .andExpect(jsonPath("$.arrivalTime").value(flight1.getArrivalTime().format(dateTimeFormatter)))
+                .andExpect(jsonPath("$.departureTime").value("19-10-2024 20:10:20"))
+                .andExpect(jsonPath("$.arrivalTime").value("19-10-2024 21:10:20"))
                 .andExpect(jsonPath("$.flightAirplane").value(flight1.getFlightAirplane().toString()))
                 .andExpect(jsonPath("$.capacityPlane").value(flight1.getCapacityPlane()))
                 .andExpect(jsonPath("$.availability").value(flight1.isAvailability()))
@@ -94,8 +94,8 @@ class FlightControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.flightNumber").value(flight1.getFlightNumber()))
-                .andExpect(jsonPath("$.departureTime").value(flight1.getDepartureTime().format(dateTimeFormatter)))
-                .andExpect(jsonPath("$.arrivalTime").value(flight1.getArrivalTime().format(dateTimeFormatter)))
+                .andExpect(jsonPath("$.departureTime").value("19-10-2024 20:10:20"))
+                .andExpect(jsonPath("$.arrivalTime").value("19-10-2024 21:10:20"))
                 .andExpect(jsonPath("$.flightAirplane").value(flight1.getFlightAirplane().toString()))
                 .andExpect(jsonPath("$.capacityPlane").value(flight1.getCapacityPlane()))
                 .andExpect(jsonPath("$.availability").value(flight1.isAvailability()))
@@ -113,8 +113,8 @@ class FlightControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$[0].flightNumber").value(flight1.getFlightNumber()))
-                .andExpect(jsonPath("$[0].departureTime").value(flight1.getDepartureTime().format(dateTimeFormatter)))
-                .andExpect(jsonPath("$[0].arrivalTime").value(flight1.getArrivalTime().format(dateTimeFormatter)))
+                .andExpect(jsonPath("$[0].departureTime").value("19-10-2024 20:10:20"))
+                .andExpect(jsonPath("$[0].arrivalTime").value("19-10-2024 21:10:20"))
                 .andExpect(jsonPath("$[0].flightAirplane").value(flight1.getFlightAirplane().toString()))
                 .andExpect(jsonPath("$[0].capacityPlane").value(flight1.getCapacityPlane()))
                 .andExpect(jsonPath("$[0].availability").value(flight1.isAvailability()))
@@ -130,8 +130,8 @@ class FlightControllerTest {
                         .content(objectMapper.writeValueAsString(flight2)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.flightNumber").value(flight2.getFlightNumber()))
-                .andExpect(jsonPath("$.departureTime").value(flight2.getDepartureTime().format(dateTimeFormatter)))
-                .andExpect(jsonPath("$.arrivalTime").value(flight2.getArrivalTime().format(dateTimeFormatter)))
+                .andExpect(jsonPath("$.departureTime").value("19-10-2024 20:10:20"))
+                .andExpect(jsonPath("$.arrivalTime").value("19-10-2024 21:10:20"))
                 .andExpect(jsonPath("$.flightAirplane").value(flight2.getFlightAirplane().toString()))
                 .andExpect(jsonPath("$.capacityPlane").value(flight2.getCapacityPlane()))
                 .andExpect(jsonPath("$.availability").value(flight2.isAvailability()))

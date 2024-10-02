@@ -15,6 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Implementation of the FlightService interface for managing flight operations.
+ */
 @Service
 public class FlightServiceImpl implements FlightService {
 
@@ -22,6 +25,13 @@ public class FlightServiceImpl implements FlightService {
     private final ISeatRepository seatRepository;
     private final SeatService seatService;
     //private final IAirportRepository airportRepository;
+    /**
+     * Constructs a FlightServiceImpl with the required repositories and services.
+     *
+     * @param flightRepository the repository for managing flights.
+     * @param seatRepository   the repository for managing seats.
+     * @param seatService      the service for managing seat operations.
+     */
 
     public FlightServiceImpl(IFlightRepository flightRepository, ISeatRepository seatRepository, SeatService seatService) {
         this.flightRepository = flightRepository;
@@ -78,6 +88,7 @@ public class FlightServiceImpl implements FlightService {
 //                .collect(Collectors.toList());
 //    }
 
+    @Override
     public void cancelFlight(Long id) {
         Flight flight = getFlightById(id);
         if (flight != null) {
@@ -85,7 +96,7 @@ public class FlightServiceImpl implements FlightService {
             flightRepository.save(flight);
         }
     }
-
+    @Override
     public void delayFlight(Long id, LocalDateTime newDepartureTime) {
         Flight flight = getFlightById(id);
         if (flight != null) {
@@ -93,14 +104,14 @@ public class FlightServiceImpl implements FlightService {
             flightRepository.save(flight);
         }
     }
-
+    @Override
     public List<Flight> getFlightsByAirplaneType(EFlightAirplane airplaneType) {
         return flightRepository.findAll()
                 .stream()
                 .filter(flight -> flight.getFlightAirplane() == airplaneType)
                 .collect(Collectors.toList());
     }
-
+    @Override
     public void updateFlightAvailability() {
         LocalDateTime now = LocalDateTime.now();
         List<Flight> flights = flightRepository.findAll();

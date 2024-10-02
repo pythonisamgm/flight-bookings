@@ -1,4 +1,4 @@
-/*package com.flightbookings.flight_bookings.services;
+package com.flightbookings.flight_bookings.services;
 
 import com.flightbookings.flight_bookings.models.Airport;
 import com.flightbookings.flight_bookings.repositories.IAirportRepository;
@@ -16,21 +16,21 @@ public class AirportServiceImpl implements AirportService {
     public AirportServiceImpl(IAirportRepository airportRepository) {
         this.airportRepository = airportRepository;
     }
+    @Override
     public Airport createAirport(Airport airport){
         return airportRepository.save(airport);
     }
-
+    @Override
     public Airport updateAirport(Airport airport, Long id){
         airport.setAirportId(id);
         return airportRepository.save(airport);
     }
-
+    @Override
     public List<Airport> getAllAirports(){
         return airportRepository.findAll();
     }
-
+    @Override
    public Optional<Airport> getAirportById(Long id) {
         return airportRepository.findById(id);
     }
 }
-*/

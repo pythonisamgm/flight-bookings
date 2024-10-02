@@ -7,12 +7,18 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
+/**
+ * Implementation of the PassengerService interface for managing passenger operations.
+ */
 @Service
 public class PassengerServiceImpl implements PassengerService {
 
     private final IPassengerRepository passengerRepository;
-
+    /**
+     * Constructs a PassengerServiceImpl with the required passenger repository.
+     *
+     * @param passengerRepository the repository for managing passengers.
+     */
     public PassengerServiceImpl(IPassengerRepository passengerRepository) {
         this.passengerRepository = passengerRepository;
     }
