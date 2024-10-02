@@ -19,11 +19,12 @@ public class Airport {
     @Column(name = "city", nullable = false)
     private String airportCity;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "country", nullable = false)
-    private String airportCountry;
+    private ECountry airportCountry;
 
-    // Constructor con parámetros
-    public Airport(String airportCode, String airportName, String airportCity, String airportCountry) {
+
+    public Airport(String airportCode, String airportName, String airportCity, ECountry airportCountry) {
         this.airportCode = airportCode;
         this.airportName = airportName;
         this.airportCity = airportCity;
@@ -59,11 +60,11 @@ public class Airport {
         this.airportCity = airportCity;
     }
 
-    public String getAirportCountry() {
+    public ECountry getAirportCountry() { // Cambiado a ECountry
         return airportCountry;
     }
 
-    public void setAirportCountry(String airportCountry) {
+    public void setAirportCountry(ECountry airportCountry) { // Cambiado a ECountry
         this.airportCountry = airportCountry;
     }
 }
