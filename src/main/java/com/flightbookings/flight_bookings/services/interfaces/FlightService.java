@@ -80,4 +80,5 @@ public interface FlightService {
      * @return a list of Flight objects that match the airplane type.
      */
     List<Flight> getFlightsByAirplaneType(EFlightAirplane airplaneType);
+
 }
