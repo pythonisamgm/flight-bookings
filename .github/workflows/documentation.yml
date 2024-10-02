@@ -26,19 +26,13 @@ jobs:
       - name: List apidocs folder content
         run: ls -R ./target/site/apidocs
 
-
-      - name: Move Javadoc to docs folder
+      - name: Move Javadoc to docs folder and disable Jekyll
         run: |
           mkdir -p docs
           cp -r ./target/site/apidocs/* ./docs/
+          touch docs/.nojekyll
 
-      - name: List docs folder content after copy
-        run: ls -R ./docs
-
-      - name: Disable Jekyll
-        run: touch docs/.nojekyll
-
-      - name: List docs folder content
+      - name: List docs folder content after moving and adding .nojekyll
         run: ls -R ./docs
 
       - name: Deploy to GitHub Pages
@@ -47,5 +41,3 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
           publish_dir: ./docs
-
-
