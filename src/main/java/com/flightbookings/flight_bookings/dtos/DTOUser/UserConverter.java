@@ -1,38 +1,50 @@
 package com.flightbookings.flight_bookings.dtos.DTOUser;
 
-
 import com.flightbookings.flight_bookings.models.Booking;
 import com.flightbookings.flight_bookings.models.ERole;
 import com.flightbookings.flight_bookings.models.User;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
+import org.modelmapper.Converter;
 
-import java.util.stream.Collectors;
 
 public class UserConverter {
 
-    public static UserDTO toDTO(User user) {
-        if (user == null) {
-            return null;
-        }
-        UserDTO dto = new UserDTO();
-        dto.setUserId(user.getUserId());
-        dto.setUsername(user.getUsername());
-        dto.setEmail(user.getEmail());
-        dto.setRole(user.getRole().name());
-        dto.setBookingIds(user.getBookings().stream().map(Booking::getBookingId).collect(Collectors.toList()));
-        return dto;
+    private final ModelMapper modelMapper;
+
+    public UserConverter(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
+        configure();
     }
 
-    public static User toEntity(UserDTO dto) {
-        if (dto == null) {
-            return null;
-        }
-        User user = new User();
-        user.setUserId(dto.getUserId());
-        user.setUsername(dto.getUsername());
-        user.setEmail(dto.getEmail());
-        user.setPassword("");
-        user.setRole(ERole.valueOf(dto.getRole()));
-        return user;
+    private void configure() {
+        modelMapper.addMappings(new PropertyMap<User, UserDTO>() {
+            @Override
+            protected void configure() {
+                map().setRole(source.getRole() != null ? source.getRole().name() : null);
+                map().setBookingIds(source.getBookings() != null
+                        ? source.getBookings().stream().map(Booking::getBookingId).toList()
+                        : null);
+            }
+        });
+
+        modelMapper.addMappings(new PropertyMap<UserDTO, User>() {
+            @Override
+            protected void configure() {
+                using(roleConverter()).map(source.getRole()).setRole(null);
+            }
+        });
+    }
+
+    private Converter<String, ERole> roleConverter() {
+        return context -> context.getSource() != null ? ERole.valueOf(context.getSource()) : null;
+    }
+
+    public UserDTO converterToDto(User user) {
+        return modelMapper.map(user, UserDTO.class);
+    }
+
+    public User converterToEntity(UserDTO userDTO) {
+        return modelMapper.map(userDTO, User.class);
     }
 }
-
