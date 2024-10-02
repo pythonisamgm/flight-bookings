@@ -2,33 +2,35 @@ package com.flightbookings.flight_bookings.dtos.DTOBooking;
 
 import com.flightbookings.flight_bookings.dto.BookingDTO;
 import com.flightbookings.flight_bookings.models.Booking;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 
 public class BookingConverter {
 
-    public static BookingDTO toDTO (Booking booking) {
-        if (booking == null) {
-            return null;
-        }
+    private final ModelMapper modelMapper;
 
-        BookingDTO dto = new BookingDTO();
-        dto.setBookingId(booking.getBookingId());
-        dto.setDateOfBooking(booking.getDateOfBooking());
-        dto.setPassengerId(booking.getPassenger() != null ? booking.getPassenger().getPassengerId() : null);
-        dto.setFlightId(booking.getFlight() != null ? booking.getFlight().getFlightId() : null);
-        dto.setSeatId(booking.getSeat() != null ? booking.getSeat().getSeatId() : null);
-        dto.setUserId(booking.getUser() != null ? booking.getUser().getUserId() : null);
-
-        return dto;
+    public BookingConverter(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
+        configure();
     }
 
-    public static Booking toEntity (BookingDTO dto) {
-        if (dto == null) {
-            return null;
-        }
+    private void configure() {
+        modelMapper.addMappings(new PropertyMap<Booking, BookingDTO>() {
+            @Override
+            protected void configure() {
+                map().setPassengerId(source.getPassenger() != null ? source.getPassenger().getPassengerId() : null);
+                map().setFlightId(source.getFlight() != null ? source.getFlight().getFlightId() : null);
+                map().setSeatId(source.getSeat() != null ? source.getSeat().getSeatId() : null);
+                map().setUserId(source.getUser() != null ? source.getUser().getUserId() : null);
+            }
+        });
+    }
 
-        Booking booking = new Booking();
-        booking.setBookingId(dto.getBookingId());
-        booking.setDateOfBooking(dto.getDateOfBooking());
-        return booking;
+    public BookingDTO convertToDto(Booking booking) {
+        return modelMapper.map(booking, BookingDTO.class);
+    }
+
+    public Booking convertToEntity(BookingDTO bookingDTO) {
+        return modelMapper.map(bookingDTO, Booking.class);
     }
 }

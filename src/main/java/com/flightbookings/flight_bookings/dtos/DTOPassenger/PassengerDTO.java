@@ -71,4 +71,3 @@ public class PassengerDTO {
         this.bookingId = bookingId;
     }
 }
-

@@ -40,11 +40,11 @@ public class UserConverter {
         return context -> context.getSource() != null ? ERole.valueOf(context.getSource()) : null;
     }
 
-    public UserDTO converterToDto(User user) {
+    public UserDTO convertToDto(User user) {
         return modelMapper.map(user, UserDTO.class);
     }
 
-    public User converterToEntity(UserDTO userDTO) {
+    public User convertToEntity(UserDTO userDTO) {
         return modelMapper.map(userDTO, User.class);
     }
 }

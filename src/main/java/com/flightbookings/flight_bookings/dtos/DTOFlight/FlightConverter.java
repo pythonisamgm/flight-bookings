@@ -1,49 +1,52 @@
 package com.flightbookings.flight_bookings.dtos.DTOFlight;
 
-
 import com.flightbookings.flight_bookings.models.EFlightAirplane;
 import com.flightbookings.flight_bookings.models.Flight;
 import com.flightbookings.flight_bookings.models.Seat;
 import com.flightbookings.flight_bookings.models.Booking;
-
-import java.util.stream.Collectors;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 
 public class FlightConverter {
 
-    public static FlightDTO toDTO(Flight flight) {
-        if (flight == null) {
-            return null;
-        }
-        FlightDTO dto = new FlightDTO();
-        dto.setFlightId(flight.getFlightId());
-        dto.setFlightNumber(flight.getFlightNumber());
-        dto.setDepartureTime(flight.getDepartureTime());
-        dto.setArrivalTime(flight.getArrivalTime());
-        dto.setFlightAirplane(flight.getFlightAirplane().name());
-        dto.setCapacityPlane(flight.getCapacityPlane());
-        dto.setAvailability(flight.isAvailability());
-        dto.setNumRows(flight.getNumRows());
-        dto.setFlightPrice(flight.getFlightPrice());
-        dto.setSeatIds(flight.getSeats().stream().map(Seat::getSeatId).collect(Collectors.toList()));
-        dto.setBookingIds(flight.getBookingList().stream().map(Booking::getBookingId).collect(Collectors.toList()));
+    private final ModelMapper modelMapper;
 
-        return dto;
+    public FlightConverter(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
+        configure();
     }
 
-    public static Flight toEntity(FlightDTO dto) {
-        if (dto == null) {
-            return null;
-        }
-        Flight flight = new Flight();
-        flight.setFlightId(dto.getFlightId());
-        flight.setFlightNumber(dto.getFlightNumber());
-        flight.setDepartureTime(dto.getDepartureTime());
-        flight.setArrivalTime(dto.getArrivalTime());
-        flight.setFlightAirplane(EFlightAirplane.valueOf(dto.getFlightAirplane()));
-        flight.setCapacityPlane(dto.getCapacityPlane());
-        flight.setAvailability(dto.isAvailability());
-        flight.setNumRows(dto.getNumRows());
-        flight.setFlightPrice(dto.getFlightPrice());
-        return flight;
+    private void configure() {
+        modelMapper.addMappings(new PropertyMap<Flight, FlightDTO>() {
+            @Override
+            protected void configure() {
+                map().setFlightAirplane(source.getFlightAirplane().name());
+                map().setSeatIds(source.getSeats() != null
+                        ? source.getSeats().stream().map(Seat::getSeatId).toList()
+                        : null);
+                map().setBookingIds(source.getBookingList() != null
+                        ? source.getBookingList().stream().map(Booking::getBookingId).toList()
+                        : null);
+            }
+        });
+
+        modelMapper.addMappings(new PropertyMap<FlightDTO, Flight>() {
+            @Override
+            protected void configure() {
+                using(airplaneConverter()).map(source.getFlightAirplane()).setFlightAirplane(null);
+            }
+        });
+    }
+
+    private EFlightAirplane airplaneConverter() {
+        return context -> context.getSource() != null ? EFlightAirplane.valueOf(context.getSource()) : null;
+    }
+
+    public FlightDTO convertToDto(Flight flight) {
+        return modelMapper.map(flight, FlightDTO.class);
+    }
+
+    public Flight convertToEntity(FlightDTO flightDTO) {
+        return modelMapper.map(flightDTO, Flight.class);
     }
 }

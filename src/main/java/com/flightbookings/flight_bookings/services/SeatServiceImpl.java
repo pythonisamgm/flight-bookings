@@ -1,5 +1,7 @@
 package com.flightbookings.flight_bookings.services;
 
+import com.flightbookings.flight_bookings.dtos.DTOSeat.SeatConverter;
+import com.flightbookings.flight_bookings.dtos.DTOSeat.SeatDTO;
 import com.flightbookings.flight_bookings.exceptions.SeatAlreadyBookedException;
 import com.flightbookings.flight_bookings.exceptions.SeatNotFoundException;
 import com.flightbookings.flight_bookings.models.ESeatLetter;
@@ -17,9 +19,11 @@ import java.util.List;
 public class SeatServiceImpl implements SeatService {
 
     private final ISeatRepository seatRepository;
+    private final SeatConverter seatConverter;
 
-    public SeatServiceImpl(ISeatRepository seatRepository) {
+    public SeatServiceImpl(ISeatRepository seatRepository, SeatConverter seatConverter) {
         this.seatRepository = seatRepository;
+        this.seatConverter = seatConverter;
     }
 
     @Override
@@ -50,10 +54,9 @@ public class SeatServiceImpl implements SeatService {
         return seatIdentifiers;
     }
 
-
     @Override
     @Transactional
-    public Seat reserveSeat(Flight flight, String seatName) {
+    public SeatDTO reserveSeat(Flight flight, String seatName) {
         Seat seat = seatRepository.findByFlightAndSeatName(flight, seatName)
                 .orElseThrow(() -> new SeatNotFoundException("Seat not found"));
 
@@ -62,8 +65,7 @@ public class SeatServiceImpl implements SeatService {
         }
 
         seat.setBooked(true);
-
-        return seatRepository.save(seat);
+        Seat updatedSeat = seatRepository.save(seat);
+        return seatConverter.convertToDto(updatedSeat);
     }
-
 }

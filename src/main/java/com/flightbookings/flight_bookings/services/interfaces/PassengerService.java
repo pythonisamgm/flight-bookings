@@ -1,17 +1,19 @@
 package com.flightbookings.flight_bookings.services.interfaces;
 
+import com.flightbookings.flight_bookings.dtos.DTOPassenger.PassengerDTO;
 import com.flightbookings.flight_bookings.models.Passenger;
 
 import java.util.List;
 
 public interface PassengerService {
-    Passenger createPassenger(Passenger passenger);
 
-    Passenger getPassengerById(Long id);
+    PassengerDTO createPassenger(PassengerDTO passengerDTO);
 
-    List<Passenger> getAllPassengers();
+    PassengerDTO getPassengerById(Long id);
 
-    Passenger updatePassenger(Long id, Passenger passengerDetails);
+    List<PassengerDTO> getAllPassengers();
+
+    PassengerDTO updatePassenger(Long id, PassengerDTO passengerDetails);
 
     boolean deletePassenger(Long id);
 }

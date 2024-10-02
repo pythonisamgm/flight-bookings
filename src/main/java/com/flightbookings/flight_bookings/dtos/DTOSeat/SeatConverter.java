@@ -1,37 +1,41 @@
 package com.flightbookings.flight_bookings.dtos.DTOSeat;
 
-
 import com.flightbookings.flight_bookings.models.ESeatLetter;
 import com.flightbookings.flight_bookings.models.Seat;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 
 public class SeatConverter {
 
-    public static SeatDTO toDTO(Seat seat) {
-        if (seat == null) {
-            return null;
-        }
-        SeatDTO dto = new SeatDTO();
-        dto.setSeatId(seat.getSeatId());
-        dto.setRow(seat.getRow());
-        dto.setSeatLetter(seat.getSeatLetter().name());
-        dto.setBooked(seat.isBooked());
-        dto.setSeatName(seat.getSeatName());
-        if (seat.getFlight() != null) {
-            dto.setFlightId(seat.getFlight().getFlightId());
-        }
-        return dto;
+    private final ModelMapper modelMapper;
+
+    public SeatConverter(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
+        configure();
     }
 
-    public static Seat toEntity(SeatDTO dto) {
-        if (dto == null) {
-            return null;
-        }
-        Seat seat = new Seat();
-        seat.setSeatId(dto.getSeatId());
-        seat.setRow(dto.getRow());
-        seat.setSeatLetter(ESeatLetter.valueOf(dto.getSeatLetter()));
-        seat.setBooked(dto.isBooked());
-        seat.setSeatName(dto.getSeatName());
-        return seat;
+    private void configure() {
+        modelMapper.addMappings(new PropertyMap<Seat, SeatDTO>() {
+            @Override
+            protected void configure() {
+                map().setSeatLetter(source.getSeatLetter().name());
+                map().setFlightId(source.getFlight() != null ? source.getFlight().getFlightId() : null);
+            }
+        });
+
+        modelMapper.addMappings(new PropertyMap<SeatDTO, Seat>() {
+            @Override
+            protected void configure() {
+                using(context -> ESeatLetter.valueOf(context.getSource())).map(source.getSeatLetter(), destination.getSeatLetter());
+            }
+        });
+    }
+
+    public SeatDTO convertToDto(Seat seat) {
+        return modelMapper.map(seat, SeatDTO.class);
+    }
+
+    public Seat convertToEntity(SeatDTO seatDTO) {
+        return modelMapper.map(seatDTO, Seat.class);
     }
 }

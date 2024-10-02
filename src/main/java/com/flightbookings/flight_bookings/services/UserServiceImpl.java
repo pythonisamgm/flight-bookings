@@ -9,7 +9,6 @@ import com.flightbookings.flight_bookings.services.interfaces.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,32 +24,32 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO createUser(UserDTO userDTO) {
-        User user = userConverter.converterToEntity(userDTO);
+        User user = userConverter.convertToEntity(userDTO);
         User savedUser = userRepository.save(user);
-        return userConverter.converterToDto(savedUser);
+        return userConverter.convertToDto(savedUser);
     }
 
     @Override
     public UserDTO getUserById(Long id) {
         return userRepository.findById(id)
-                .map(userConverter::converterToDto)
+                .map(userConverter::convertToDto)
                 .orElse(null);
     }
 
     @Override
     public List<UserDTO> getAllUsers() {
         return userRepository.findAll().stream()
-                .map(userConverter::converterToDto)
+                .map(userConverter::convertToDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public UserDTO updateUser(Long id, UserDTO userDTO) {
         if (userRepository.existsById(id)) {
-            User userToUpdate = userConverter.converterToEntity(userDTO);
+            User userToUpdate = userConverter.convertToEntity(userDTO);
             userToUpdate.setUserId(id);
             User updatedUser = userRepository.save(userToUpdate);
-            return userConverter.converterToDto(updatedUser);
+            return userConverter.convertToDto(updatedUser);
         }
         return null;
     }
@@ -68,6 +67,6 @@ public class UserServiceImpl implements UserService {
     public UserDTO findByUsername(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
-        return userConverter.converterToDto(user);
+        return userConverter.convertToDto(user);
     }
 }
