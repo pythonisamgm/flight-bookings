@@ -16,10 +16,11 @@ public interface BookingService {
      * @param flightId   the ID of the flight to book.
      * @param passengerId the ID of the passenger for whom the booking is being created.
      * @param seatName   the name of the seat to reserve.
-     * @param user       the user making the booking.
+     * @param userId       the user making the booking.
      * @return the created Booking object.
      */
-    Booking createBooking(Long flightId, Long passengerId, String seatName, User user);
+
+    Booking createBooking(Long flightId, Long passengerId, String seatName, Long userId);
 
     /**
      * Updates an existing booking with new details.
@@ -46,13 +47,21 @@ public interface BookingService {
      */
     Booking getBookingById(Long id, User user);
 
+
+
     /**
      * Retrieves all bookings for a specific user.
      *
      * @param user the user whose bookings are to be retrieved.
      * @return a list of Booking objects for the user.
      */
-    List<Booking> getAllBookings(User user);
+    List<Booking> getAllBookingsByUser(User user);
+    /**
+     * Retrieves all bookings.
+     *
+     * @return a list of Booking objects.
+     */
+    List<Booking> getAllBookings();
 
     /**
      * Updates a booking by its ID.
@@ -62,6 +71,8 @@ public interface BookingService {
      * @return the updated Booking object.
      */
     Booking updateBooking2(Long id, Booking bookingDetails);
+
+    Booking updateBooking2(Long id, Booking bookingDetails, Long userId);
 
     /**
      * Deletes a booking by its ID.

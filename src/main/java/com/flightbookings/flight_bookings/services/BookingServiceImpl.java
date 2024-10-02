@@ -2,10 +2,7 @@ package com.flightbookings.flight_bookings.services;
 
 import com.flightbookings.flight_bookings.models.*;
 import com.flightbookings.flight_bookings.exceptions.*;
-import com.flightbookings.flight_bookings.repositories.IBookingRepository;
-import com.flightbookings.flight_bookings.repositories.IFlightRepository;
-import com.flightbookings.flight_bookings.repositories.IPassengerRepository;
-import com.flightbookings.flight_bookings.repositories.ISeatRepository;
+import com.flightbookings.flight_bookings.repositories.*;
 import com.flightbookings.flight_bookings.services.interfaces.BookingService;
 import com.flightbookings.flight_bookings.services.interfaces.SeatService;
 import org.springframework.stereotype.Service;
@@ -24,7 +21,9 @@ public class BookingServiceImpl implements BookingService {
     private final ISeatRepository seatRepository;
     private final IFlightRepository flightRepository;
     private final IPassengerRepository passengerRepository;
+    private final IUserRepository userRepository;
     private final SeatService seatService;
+
     /**
      * Constructs a BookingServiceImpl with the necessary repositories and services.
      *
@@ -32,23 +31,31 @@ public class BookingServiceImpl implements BookingService {
      * @param seatRepository      the repository for managing seats.
      * @param flightRepository    the repository for managing flights.
      * @param passengerRepository the repository for managing passengers.
+     * @param userRepository      the repository for managing users.
      * @param seatService         the service for managing seat operations.
      */
-    public BookingServiceImpl(IBookingRepository bookingRepository, ISeatRepository seatRepository, IFlightRepository flightRepository, IPassengerRepository passengerRepository, SeatService seatService) {
+    public BookingServiceImpl(IBookingRepository bookingRepository, ISeatRepository seatRepository, IFlightRepository flightRepository, IPassengerRepository passengerRepository, IUserRepository userRepository, SeatService seatService) {
         this.bookingRepository = bookingRepository;
         this.seatRepository = seatRepository;
         this.flightRepository = flightRepository;
         this.passengerRepository = passengerRepository;
+        this.userRepository = userRepository;
         this.seatService = seatService;
     }
 
+
+
+
     @Override
-    public Booking createBooking(Long flightId, Long passengerId, String seatName, User user) {
+    public Booking createBooking(Long flightId, Long passengerId, String seatName, Long userId) {
         Flight flight = flightRepository.findById(flightId)
                 .orElseThrow(() -> new FlightNotFoundException("Flight not found"));
 
         Passenger passenger = passengerRepository.findById(passengerId)
                 .orElseThrow(() -> new PassengerNotFoundException("Passenger not found"));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         Seat seat = seatService.reserveSeat(flight, seatName);
 
@@ -114,18 +121,33 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<Booking> getAllBookings(User user) {
+    public List<Booking> getAllBookingsByUser(User user) {
         return bookingRepository.findByUser(user);
     }
 
     @Override
+    public List<Booking> getAllBookings() {
+        return bookingRepository.findAll();
+    }
+
+
+    @Override
     public Booking updateBooking2(Long id, Booking bookingDetails) {
+        return null;
+    }
+
+    @Override
+    public Booking updateBooking2(Long id, Booking bookingDetails, Long userId) {
         Optional<Booking> existingBooking = bookingRepository.findById(id);
         if (existingBooking.isPresent()) {
             Booking bookingToUpdate = existingBooking.get();
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId));
             bookingToUpdate.setFlight(bookingDetails.getFlight());
             bookingToUpdate.setPassenger(bookingDetails.getPassenger());
             bookingToUpdate.setDateOfBooking(bookingDetails.getDateOfBooking());
+            bookingToUpdate.setUser(user);
+
             return bookingRepository.save(bookingToUpdate);
         }
         return null;
