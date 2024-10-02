@@ -66,11 +66,11 @@ public class UserControllerTest {
     public void testCreateUser() throws Exception {
         when(userService.createUser(any(User.class))).thenReturn(user1);
 
-        mockMvc.perform(post("/api/user/create")
+        mockMvc.perform(post("/api/v1/user/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(user1)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.userId").value(1L))
                 .andExpect(jsonPath("$.username").value("juanantonio"))
                 .andExpect(jsonPath("$.password").value("1234"))
                 .andExpect(jsonPath("$.email").value("jantonio@gmail.com"));
@@ -82,9 +82,9 @@ public class UserControllerTest {
     public void testGetUserById() throws Exception {
         when(userService.getUserById(1L)).thenReturn(user1);
 
-        mockMvc.perform(get("/api/user/{id}", 1L))
+        mockMvc.perform(get("/api/v1/user/{id}", 1L))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1L));
+                .andExpect(jsonPath("$.userId").value(1L));
 
         verify(userService, times(1)).getUserById(1L);
     }
@@ -93,10 +93,10 @@ public class UserControllerTest {
     public void testGetAllUsers() throws Exception {
         when(userService.getAllUsers()).thenReturn(userList);
 
-        mockMvc.perform(get("/api/user/"))
+        mockMvc.perform(get("/api/v1/user/"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(1L))
-                .andExpect(jsonPath("$[1].id").value(2L));
+                .andExpect(jsonPath("$[0].userId").value(1L))
+                .andExpect(jsonPath("$[1].userId").value(2L));
 
         verify(userService, times(1)).getAllUsers();
     }
@@ -106,11 +106,11 @@ public class UserControllerTest {
 
         when(userService.updateUser(eq(1L), any(User.class))).thenReturn(user1);
 
-        mockMvc.perform(put("/api/user/update/{id}", 1L)
+        mockMvc.perform(put("/api/v1/user/update/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(user1)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1L));
+                .andExpect(jsonPath("$.userId").value(1L));
 
         verify(userService, times(1)).updateUser(eq(1L), any(User.class));
     }
@@ -119,7 +119,7 @@ public class UserControllerTest {
     public void testDeleteUser() throws Exception {
         when(userService.deleteUser(1L)).thenReturn(true);
 
-        mockMvc.perform(delete("/api/user/delete/{id}", 1L))
+        mockMvc.perform(delete("/api/v1/user/delete/{id}", 1L))
                 .andExpect(status().isNoContent());
 
         verify(userService, times(1)).deleteUser(1L);
