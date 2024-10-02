@@ -7,31 +7,25 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
-@CrossOrigin("*")
 @RestController
-@RequestMapping("api/v1/airport")
+@RequestMapping("/api/airports")
 public class AirportController {
-
     private final AirportService airportService;
 
     public AirportController(AirportService airportService) {
         this.airportService = airportService;
     }
 
-        @GetMapping("/{id}")
-    public ResponseEntity<Airport> getAirportById(@PathVariable Long id) {
-        Optional<Airport> airport = airportService.getAirportById(id);
-        return airport.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
     @GetMapping
     public ResponseEntity<List<Airport>> getAllAirports() {
         List<Airport> airports = airportService.getAllAirports();
-        return ResponseEntity.ok(airports);
+        return new ResponseEntity<>(airports, HttpStatus.OK);
     }
 
-
+    @PostMapping
+    public ResponseEntity<Airport> createAirport(@RequestBody Airport airport) {
+        Airport createdAirport = airportService.createAirport(airport);
+        return new ResponseEntity<>(createdAirport, HttpStatus.CREATED);
+    }
 }

@@ -15,7 +15,7 @@ public interface AirportService {
 
     List<Airport> getAllAirports();
 
-    Optional<Airport> getAirportById(Long id);
+    Optional<Airport> getAirportById(String id);
 
 
 }

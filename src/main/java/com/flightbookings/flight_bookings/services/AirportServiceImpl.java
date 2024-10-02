@@ -28,6 +28,11 @@ public class AirportServiceImpl implements AirportService {
         return airportRepository.findAll();
     }
 
+    @Override
+    public Optional<Airport> getAirportById(String id) {
+        return Optional.empty ();
+    }
+
     public Optional<Airport> getAirportById(Long id) {
         return airportRepository.findById(id);
     }

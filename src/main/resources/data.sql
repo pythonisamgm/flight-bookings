@@ -1,4 +1,4 @@
--- Inserción de aeropuertos
+
 INSERT INTO airport (airport_code, airport_name, city, country) VALUES
 ('MAD', 'Madrid-Barajas Adolfo Suárez', 'Madrid', 'España'),
 ('BCN', 'Barcelona-El Prat', 'Barcelona', 'España'),
@@ -31,7 +31,7 @@ INSERT INTO airport (airport_code, airport_name, city, country) VALUES
 ('LIS', 'Lisbon Portela Airport', 'Lisboa', 'Portugal'),
 ('BRU', 'Brussels Airport', 'Bruselas', 'Bélgica');
 
--- Inserción de vuelos
+
 INSERT INTO flight
 (availability, capacity_plane, flight_airplane, flight_number, flight_price, num_rows, departure_time, arrival_time, flight_duration, origin_airport_id, destination_airport_id)
 VALUES
