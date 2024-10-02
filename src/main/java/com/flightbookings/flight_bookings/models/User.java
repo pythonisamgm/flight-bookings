@@ -26,7 +26,7 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "The database generated user ID")
-    private Long id;
+    private Long userId;
 
     /**
      * The username of the user.
@@ -81,7 +81,7 @@ public class User implements UserDetails {
      * @param bookings  The list of bookings associated with the user.
      */
     public User(Long id, String username, String password, String email, ERole role, List<Booking> bookings) {
-        this.id = id;
+        this.userId = id;
         this.username = username;
         this.password = password;
         this.email = email;
@@ -94,17 +94,17 @@ public class User implements UserDetails {
      *
      * @return The user ID.
      */
-    public Long getId() {
-        return id;
+    public Long getUserId() {
+        return userId;
     }
 
     /**
      * Sets the user ID.
      *
-     * @param id The user ID.
+     * @param userId The user ID.
      */
-    public void setId(Long id) {
-        this.id = id;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     /**
@@ -263,7 +263,7 @@ public class User implements UserDetails {
      * Builder class for constructing User instances.
      */
     public static class Builder {
-        private Long id;
+        private Long userId;
         private String username;
         private String email;
         private String password;
@@ -276,8 +276,8 @@ public class User implements UserDetails {
          * @param id The user ID.
          * @return The current Builder instance.
          */
-        public Builder id(Long id) {
-            this.id = id;
+        public Builder userId(Long id) {
+            this.userId = id;
             return this;
         }
 
@@ -342,7 +342,7 @@ public class User implements UserDetails {
          * @return A new User object.
          */
         public User build() {
-            return new User(id, username, password, email, role, bookings);
+            return new User(userId, username, password, email, role, bookings);
         }
     }
 }

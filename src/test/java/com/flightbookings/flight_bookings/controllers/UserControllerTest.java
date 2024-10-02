@@ -40,7 +40,7 @@ public class UserControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
 
         user1 = User.builder()
-                .id(1L)
+                .userId(1L)
                 .username("juanantonio")
                 .password("1234")
                 .email("jantonio@gmail.com")
@@ -49,7 +49,7 @@ public class UserControllerTest {
                 .build();
 
         user2 = User.builder()
-                .id(2L)
+                .userId(2L)
                 .username("miguelangel")
                 .password("12345")
                 .email("mangel@gmail.com")

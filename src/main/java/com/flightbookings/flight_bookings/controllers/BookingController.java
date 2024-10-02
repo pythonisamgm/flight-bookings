@@ -46,6 +46,7 @@ public class BookingController {
      * @param flightId    the ID of the flight.
      * @param passengerId the ID of the passenger.
      * @param seatName    the name of the seat.
+     * @param userId      the ID of the user.
      * @param authentication the authentication object to retrieve the current user.
      * @return the created booking.
      */
@@ -54,9 +55,10 @@ public class BookingController {
     public ResponseEntity<Booking> createBooking(@RequestParam Long flightId,
                                                  @RequestParam Long passengerId,
                                                  @RequestParam String seatName,
+                                                 @RequestParam Long userId,
                                                  @AuthenticationPrincipal Authentication authentication) {
         User user = userService.findByUsername(authentication.getName());
-        Booking booking = bookingService.createBooking(flightId, passengerId, seatName, user);
+        Booking booking = bookingService.createBooking(flightId, passengerId, seatName, userId);
         return new ResponseEntity<>(booking, HttpStatus.CREATED);
     }
     /**
@@ -109,7 +111,7 @@ public class BookingController {
     @GetMapping("/")
     public ResponseEntity<List<Booking>> getAllBookings(@AuthenticationPrincipal Authentication authentication) {
         User user = userService.findByUsername(authentication.getName());
-        List<Booking> bookings = bookingService.getAllBookings(user);
+        List<Booking> bookings = bookingService.getAllBookingsByUser(user);
         return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
 
