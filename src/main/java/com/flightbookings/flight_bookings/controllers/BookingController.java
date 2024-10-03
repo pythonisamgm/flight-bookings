@@ -1,103 +1,93 @@
 package com.flightbookings.flight_bookings.controllers;
 
-import com.flightbookings.flight_bookings.models.Booking;
-import com.flightbookings.flight_bookings.models.User;
-import com.flightbookings.flight_bookings.services.UserServiceImpl;
+import com.flightbookings.flight_bookings.dtos.DTOBooking.BookingDTO;
+import com.flightbookings.flight_bookings.dtos.DTOUser.UserDTO;
 import com.flightbookings.flight_bookings.services.interfaces.BookingService;
 import com.flightbookings.flight_bookings.services.interfaces.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.security.Principal;
 import java.util.List;
 
-@CrossOrigin("*")
 @RestController
-@RequestMapping("/api/v1/bookings")
-@Tag(name = "Booking Management", description = "Operations pertaining to booking management")
+@RequestMapping("/api/bookings")
 public class BookingController {
-    private final BookingService bookingService;
-    private final UserServiceImpl userService;
 
-    public BookingController(BookingService bookingService, UserServiceImpl userService) {
+    private final BookingService bookingService;
+    private final UserService userService;
+
+    public BookingController(BookingService bookingService, UserService userService) {
         this.bookingService = bookingService;
         this.userService = userService;
     }
 
-    @Operation(summary =  "Create a new booking")
-    @PostMapping(value="/create",consumes = "application/json")
-    public ResponseEntity<Booking> createBooking(@RequestParam Long flightId,
-                                                 @RequestParam Long passengerId,
-                                                 @RequestParam String seatName,
-                                                 @AuthenticationPrincipal Authentication authentication) {
-        User user = userService.findByUsername(authentication.getName());
-        Booking booking = bookingService.createBooking(flightId, passengerId, seatName, user);
-        return new ResponseEntity<>(booking, HttpStatus.CREATED);
-    }
-    @Operation(summary =  "Update existing booking")
-    @PutMapping("/{id}")
-    public ResponseEntity<Booking> updateBooking(@Parameter(description = "ID of the booking  to be retrieved") @PathVariable Long id, @RequestBody Booking updatedBooking) {
-        updatedBooking.setBookingId(id);
-        Booking booking = bookingService.updateBooking(updatedBooking);
-        return new ResponseEntity<>(booking, HttpStatus.OK);
-    }
-
-    @Operation(summary =  "Create a new booking. Version 1")
-    @PostMapping(value="/create2",consumes = "application/json")
-    public ResponseEntity<Booking> createBooking2(@RequestBody Booking booking) {
-        Booking newBooking = bookingService.createBooking2(booking);
-        return new ResponseEntity<>(newBooking, HttpStatus.CREATED);
-    }
-
-    @Operation(summary =  "Get booking by ID")
-    @GetMapping("/{id}")
-    public ResponseEntity<Booking> getBookingById(@Parameter(description = "ID of the booking  to be retrieved")@PathVariable Long id, Principal principal) {
-        User user = userService.findByUsername(principal.getName());
-        Booking booking = bookingService.getBookingById(id, user);
-
-        if (booking != null) {
-            return new ResponseEntity<>(booking, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @Operation(summary =  "Get all bookings")
-    @GetMapping("/")
-    public ResponseEntity<List<Booking>> getAllBookings(@AuthenticationPrincipal Authentication authentication) {
-        User user = userService.findByUsername(authentication.getName());
-        List<Booking> bookings = bookingService.getAllBookings(user);
+    @Operation(summary = "Get all bookings for the authenticated user")
+    @GetMapping
+    public ResponseEntity<List<BookingDTO>> getAllBookings(@AuthenticationPrincipal UserDetails userDetails) {
+        UserDTO user = userService.findByUsername(userDetails.getUsername());
+        List<BookingDTO> bookings = bookingService.getAllBookings(user);
         return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
 
-    @Operation(summary =  "Update an existing booking-Version 1")
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Booking> updateBooking2(@Parameter(description = "ID of the booking  to be retrieved")@PathVariable Long id, @RequestBody Booking bookingDetails) {
-        Booking updatedBooking = bookingService.updateBooking2(id, bookingDetails);
+    @Operation(summary = "Get booking by ID")
+    @GetMapping("/{id}")
+    public ResponseEntity<BookingDTO> getBookingById(
+            @Parameter(description = "ID of the booking to be retrieved") @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        UserDTO user = userService.findByUsername(userDetails.getUsername());
+        BookingDTO bookingDTO = bookingService.getBookingById(id, user);
+
+        if (bookingDTO != null) {
+            return new ResponseEntity<>(bookingDTO, HttpStatus.OK);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    @Operation(summary = "Create a new booking")
+    @PostMapping
+    public ResponseEntity<BookingDTO> createBooking(
+            @Parameter(description = "Booking details") @RequestBody BookingDTO bookingDTO,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        UserDTO user = userService.findByUsername(userDetails.getUsername());
+        bookingDTO.setUserId(user.getUserId());
+        BookingDTO createdBooking = bookingService.createBooking(bookingDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdBooking);
+    }
+
+    @Operation(summary = "Update an existing booking")
+    @PutMapping("/{id}")
+    public ResponseEntity<BookingDTO> updateBooking(
+            @Parameter(description = "ID of the booking to be updated") @PathVariable Long id,
+            @Parameter(description = "Updated booking details") @RequestBody BookingDTO bookingDTO,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        UserDTO user = userService.findByUsername(userDetails.getUsername());
+        BookingDTO updatedBooking = bookingService.updateBooking(id, bookingDTO, user);
+
         if (updatedBooking != null) {
             return new ResponseEntity<>(updatedBooking, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
-    @Operation(summary =  "Delete existing booking by ID")
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteBooking(@Parameter(description = "ID of the booking  to be retrieved") @PathVariable Long id) {
-        boolean isDeleted = bookingService.deleteBooking(id);
+
+    @Operation(summary = "Delete a booking by ID")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteBooking(
+            @Parameter(description = "ID of the booking to be deleted") @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        UserDTO user = userService.findByUsername(userDetails.getUsername());
+        boolean isDeleted = bookingService.deleteBooking(id, user);
+
         if (isDeleted) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return ResponseEntity.noContent().build();
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 }

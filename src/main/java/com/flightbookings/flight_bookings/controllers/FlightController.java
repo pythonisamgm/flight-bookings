@@ -15,7 +15,7 @@ import java.util.List;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("api/v1/flight")
+@RequestMapping("api/v1/flights") // Cambié la ruta para que sea más RESTful
 @Tag(name = "Flight", description = "Operations pertaining to flight management")
 public class FlightController {
 
@@ -25,68 +25,68 @@ public class FlightController {
         this.flightService = flightService;
     }
 
-    @Operation(summary =  "Create a new flight")
-    @PostMapping(value="/create",consumes = "application/json")
+    @Operation(summary = "Create a new flight")
+    @PostMapping(consumes = "application/json")
     public ResponseEntity<Flight> createFlight(@RequestBody Flight flight) {
         Flight newFlight = flightService.createFlight(flight);
         return new ResponseEntity<>(newFlight, HttpStatus.CREATED);
     }
 
-    @Operation(summary =  "Get flight by ID")
+    @Operation(summary = "Get flight by ID")
     @GetMapping("/{id}")
     public ResponseEntity<Flight> getFlightById(@Parameter(description = "ID of the flight to be retrieved") @PathVariable Long id) {
         Flight flight = flightService.getFlightById(id);
-        return flight != null ? new ResponseEntity<>(flight, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return flight != null ? new ResponseEntity<>(flight, HttpStatus.OK) : ResponseEntity.notFound().build();
     }
 
-    @Operation(summary =  "Get all flights")
-    @GetMapping("/")
+    @Operation(summary = "Get all flights")
+    @GetMapping
     public ResponseEntity<List<Flight>> getAllFlights() {
         List<Flight> flights = flightService.getAllFlights();
         return new ResponseEntity<>(flights, HttpStatus.OK);
     }
 
-    @Operation(summary =  "Update an existing flight")
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Flight> updateFlight(@Parameter(description = "ID of the flight to be retrieved") @PathVariable Long id, @RequestBody Flight flightDetails) {
+    @Operation(summary = "Update an existing flight")
+    @PutMapping("/{id}")
+    public ResponseEntity<Flight> updateFlight(@Parameter(description = "ID of the flight to be updated") @PathVariable Long id, @RequestBody Flight flightDetails) {
         Flight updatedFlight = flightService.updateFlight(id, flightDetails);
-        return updatedFlight != null ? new ResponseEntity<>(updatedFlight, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return updatedFlight != null ? new ResponseEntity<>(updatedFlight, HttpStatus.OK) : ResponseEntity.notFound().build();
     }
 
-    @Operation(summary =  "Delete a flight by ID")
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteFlight(@Parameter(description = "ID of the flight to be retrieved") @PathVariable Long id) {
+    @Operation(summary = "Delete a flight by ID")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteFlight(@Parameter(description = "ID of the flight to be deleted") @PathVariable Long id) {
         boolean isDeleted = flightService.deleteFlight(id);
-        return isDeleted ? new ResponseEntity<>(HttpStatus.NO_CONTENT) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return isDeleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
-//    @GetMapping("/search")
-//    public ResponseEntity<List<Flight>> searchFlightsByCity(@RequestParam String city) {
-//        List<Flight> flights = flightService.searchFlightsByCity(city);
-//        return new ResponseEntity<>(flights, HttpStatus.OK);
-//    }
-
+    @Operation(summary = "Cancel a flight")
     @DeleteMapping("/{id}/cancel")
-    public ResponseEntity<String> cancelFlight(@PathVariable Long id) {
+    public ResponseEntity<String> cancelFlight(@Parameter(description = "ID of the flight to be canceled") @PathVariable Long id) {
         flightService.cancelFlight(id);
         return ResponseEntity.ok("Flight canceled successfully.");
     }
 
+    @Operation(summary = "Delay a flight")
     @PostMapping("/{id}/delay")
-    public ResponseEntity<String> delayFlight(@PathVariable Long id, @RequestParam String newDepartureTime) {
+    public ResponseEntity<String> delayFlight(
+            @Parameter(description = "ID of the flight to be delayed") @PathVariable Long id,
+            @Parameter(description = "New departure time in ISO format") @RequestParam String newDepartureTime) {
         LocalDateTime departureTime = LocalDateTime.parse(newDepartureTime);
         flightService.delayFlight(id, departureTime);
         return ResponseEntity.ok("Flight delayed successfully.");
     }
 
+    @Operation(summary = "Update flight availability")
     @PostMapping("/updateAvailability")
     public ResponseEntity<String> updateAvailability() {
         flightService.updateFlightAvailability();
         return ResponseEntity.ok("Flight availability updated successfully.");
     }
 
+    @Operation(summary = "Get flights by airplane type")
     @GetMapping("/byAirplaneType")
-    public ResponseEntity<List<Flight>> getFlightsByAirplaneType(@RequestParam EFlightAirplane airplaneType) {
+    public ResponseEntity<List<Flight>> getFlightsByAirplaneType(@Parameter(description = "Type of airplane") @RequestParam EFlightAirplane airplaneType) {
         List<Flight> flights = flightService.getFlightsByAirplaneType(airplaneType);
         return new ResponseEntity<>(flights, HttpStatus.OK);
     }

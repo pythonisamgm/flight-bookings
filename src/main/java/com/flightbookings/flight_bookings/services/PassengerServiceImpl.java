@@ -24,21 +24,21 @@ public class PassengerServiceImpl implements PassengerService {
 
     @Override
     public PassengerDTO createPassenger(PassengerDTO passengerDTO) {
-        Passenger passenger = passengerConverter.toEntity(passengerDTO);
+        Passenger passenger = passengerConverter.convertToEntity(passengerDTO);
         Passenger savedPassenger = passengerRepository.save(passenger);
-        return passengerConverter.toDTO(savedPassenger);
+        return passengerConverter.convertToDto(savedPassenger);
     }
 
     @Override
     public PassengerDTO getPassengerById(Long id) {
         Optional<Passenger> passenger = passengerRepository.findById(id);
-        return passenger.map(passengerConverter::toDTO).orElse(null);
+        return passenger.map(passengerConverter::convertToDto).orElse(null);
     }
 
     @Override
     public List<PassengerDTO> getAllPassengers() {
         return passengerRepository.findAll().stream()
-                .map(passengerConverter::toDTO)
+                .map(passengerConverter::convertToDto)
                 .collect(Collectors.toList());
     }
 
@@ -52,7 +52,7 @@ public class PassengerServiceImpl implements PassengerService {
             passengerToUpdate.setTelephone(passengerDetails.getTelephone());
             passengerToUpdate.setNationality(passengerDetails.getNationality());
             Passenger updatedPassenger = passengerRepository.save(passengerToUpdate);
-            return passengerConverter.toDTO(updatedPassenger);
+            return passengerConverter.convertToDto(updatedPassenger);
         }
         return null;
     }

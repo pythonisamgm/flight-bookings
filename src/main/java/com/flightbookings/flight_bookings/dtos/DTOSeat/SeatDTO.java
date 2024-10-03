@@ -23,7 +23,6 @@ public class SeatDTO {
     @Schema(description = "The flight associated with this seat")
     private Long flightId;
 
-    // Getters and Setters
     public Long getSeatId() {
         return seatId;
     }

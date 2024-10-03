@@ -9,13 +9,13 @@ public interface UserService {
 
     UserDTO createUser(UserDTO userDTO);
 
-    UserDTO getUserById(Long id);
+    UserDTO getUserById(Long userId);
 
     List<UserDTO> getAllUsers();
 
-    UserDTO updateUser(Long id, UserDTO userDTO);
+    UserDTO updateUser(Long userId, UserDTO userDTO);
 
-    boolean deleteUser(Long id);
+    boolean deleteUser(Long userId);
 
     UserDTO findByUsername(String username);
 }

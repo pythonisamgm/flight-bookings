@@ -45,8 +45,8 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(Long id, String username, String password, String email, ERole role, List<Booking> bookings) {
-        this.userid = id;
+    public User(Long userid, String username, String password, String email, ERole role, List<Booking> bookings) {
+        this.userid = userid;
         this.username = username;
         this.password = password;
         this.email = email;
@@ -135,7 +135,7 @@ public class User implements UserDetails {
     }
 
     public static class Builder {
-        private Long id;
+        private Long userid;
         private String username;
         private String email;
         private String password;
@@ -143,8 +143,8 @@ public class User implements UserDetails {
         private List<Booking> bookings;
 
 
-        public Builder id(Long id) {
-            this.id = id;
+        public Builder userid(Long userid) {
+            this.userid = userid;
             return this;
         }
 
@@ -179,7 +179,7 @@ public class User implements UserDetails {
         }
 
         public User build() {
-            return new User(id, username, password, email, role, bookings);
+            return new User(userid, username, password, email, role, bookings);
 
         }
     }

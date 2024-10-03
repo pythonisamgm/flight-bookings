@@ -1,19 +1,24 @@
 package com.flightbookings.flight_bookings.services;
 
-import com.flightbookings.flight_bookings.models.*;
+import com.flightbookings.flight_bookings.dtos.DTOBooking.BookingDTO;
+import com.flightbookings.flight_bookings.dtos.DTOSeat.SeatDTO;
+import com.flightbookings.flight_bookings.dtos.DTOUser.UserDTO;
 import com.flightbookings.flight_bookings.exceptions.*;
+import com.flightbookings.flight_bookings.models.*;
 import com.flightbookings.flight_bookings.repositories.IBookingRepository;
 import com.flightbookings.flight_bookings.repositories.IFlightRepository;
 import com.flightbookings.flight_bookings.repositories.IPassengerRepository;
 import com.flightbookings.flight_bookings.repositories.ISeatRepository;
 import com.flightbookings.flight_bookings.services.interfaces.BookingService;
 import com.flightbookings.flight_bookings.services.interfaces.SeatService;
+import com.flightbookings.flight_bookings.dtos.DTOBooking.BookingConverter;
+import com.flightbookings.flight_bookings.dtos.DTOSeat.SeatConverter;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
-
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class BookingServiceImpl implements BookingService {
@@ -23,24 +28,32 @@ public class BookingServiceImpl implements BookingService {
     private final IFlightRepository flightRepository;
     private final IPassengerRepository passengerRepository;
     private final SeatService seatService;
+    private final BookingConverter bookingConverter;
+    private final SeatConverter seatConverter;
 
-    public BookingServiceImpl(IBookingRepository bookingRepository, ISeatRepository seatRepository, IFlightRepository flightRepository, IPassengerRepository passengerRepository, SeatService seatService) {
+    public BookingServiceImpl(IBookingRepository bookingRepository, ISeatRepository seatRepository,
+                              IFlightRepository flightRepository, IPassengerRepository passengerRepository,
+                              SeatService seatService, BookingConverter bookingConverter, SeatConverter seatConverter) {
         this.bookingRepository = bookingRepository;
         this.seatRepository = seatRepository;
         this.flightRepository = flightRepository;
         this.passengerRepository = passengerRepository;
         this.seatService = seatService;
+        this.bookingConverter = bookingConverter;
+        this.seatConverter = seatConverter;
     }
 
     @Override
-    public Booking createBooking(Long flightId, Long passengerId, String seatName, User user) {
+    public BookingDTO createBooking(Long flightId, Long passengerId, String seatName, User user) {
         Flight flight = flightRepository.findById(flightId)
                 .orElseThrow(() -> new FlightNotFoundException("Flight not found"));
 
         Passenger passenger = passengerRepository.findById(passengerId)
                 .orElseThrow(() -> new PassengerNotFoundException("Passenger not found"));
 
-        Seat seat = seatService.reserveSeat(flight, seatName);
+        SeatDTO seatDTO = seatService.reserveSeat(flight, seatName);
+
+        Seat seat = seatConverter.convertToEntity(seatDTO);
 
         Booking booking = new Booking(null, LocalDateTime.now(), passenger, flight, seat, user);
 
@@ -48,21 +61,21 @@ public class BookingServiceImpl implements BookingService {
 
         bookingRepository.save(booking);
 
-        return booking;
+        return bookingConverter.convertToDto(booking);
     }
 
     @Override
-    public Booking updateBooking(Booking updatedBooking) {
-        Optional<Booking> existingBookingOptional = bookingRepository.findById(updatedBooking.getBookingId());
+    public BookingDTO updateBooking(BookingDTO updatedBookingDTO) {
+        Optional<Booking> existingBookingOptional = bookingRepository.findById(updatedBookingDTO.getBookingId());
         if (existingBookingOptional.isPresent()) {
             Booking existingBooking = existingBookingOptional.get();
 
             Seat previousSeat = existingBooking.getSeat();
+            Booking updatedBooking = bookingConverter.convertToEntity(updatedBookingDTO);
 
             existingBooking.setDateOfBooking(updatedBooking.getDateOfBooking());
             existingBooking.setPassenger(updatedBooking.getPassenger());
             existingBooking.setFlight(updatedBooking.getFlight());
-
             existingBooking.setSeat(updatedBooking.getSeat());
 
             if (previousSeat != null) {
@@ -78,24 +91,21 @@ public class BookingServiceImpl implements BookingService {
                 seatRepository.save(newSeat);
             }
 
-            return bookingRepository.save(existingBooking);
+            bookingRepository.save(existingBooking);
+
+            return bookingConverter.convertToDto(existingBooking);
         } else {
-            throw new BookingNotFoundException("Booking not found with ID: " + updatedBooking.getBookingId());
+            throw new BookingNotFoundException("Booking not found with ID: " + updatedBookingDTO.getBookingId());
         }
     }
 
     @Override
-    public Booking createBooking2(Booking booking) {
-        return bookingRepository.save(booking);
-    }
-
-    @Override
-    public Booking getBookingById(Long id, User user) {
+    public BookingDTO getBookingById(Long id, User user) {
         Optional<Booking> bookingOptional = bookingRepository.findById(id);
         if (bookingOptional.isPresent()) {
             Booking booking = bookingOptional.get();
             if (booking.getUser().equals(user)) {
-                return booking;
+                return bookingConverter.convertToDto(booking);
             } else {
                 throw new UnauthorizedAccessException("You do not have permission to view this booking.");
             }
@@ -104,19 +114,27 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<Booking> getAllBookings(User user) {
-        return bookingRepository.findByUser(user);
+    public List<BookingDTO> getAllBookings(UserDTO user) {
+        List<Booking> bookings = bookingRepository.findByUser(user);
+        return bookings.stream()
+                .map(bookingConverter::convertToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Booking updateBooking2(Long id, Booking bookingDetails) {
+    public BookingDTO updateBooking2(Long id, BookingDTO bookingDetailsDTO) {
         Optional<Booking> existingBooking = bookingRepository.findById(id);
         if (existingBooking.isPresent()) {
             Booking bookingToUpdate = existingBooking.get();
-            bookingToUpdate.setFlight(bookingDetails.getFlight());
-            bookingToUpdate.setPassenger(bookingDetails.getPassenger());
-            bookingToUpdate.setDateOfBooking(bookingDetails.getDateOfBooking());
-            return bookingRepository.save(bookingToUpdate);
+            Booking updatedBooking = bookingConverter.convertToEntity(bookingDetailsDTO);
+
+            bookingToUpdate.setFlight(updatedBooking.getFlight());
+            bookingToUpdate.setPassenger(updatedBooking.getPassenger());
+            bookingToUpdate.setDateOfBooking(updatedBooking.getDateOfBooking());
+
+            bookingRepository.save(bookingToUpdate);
+
+            return bookingConverter.convertToDto(bookingToUpdate);
         }
         return null;
     }

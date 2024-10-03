@@ -1,23 +1,22 @@
 package com.flightbookings.flight_bookings.services.interfaces;
 
-import com.flightbookings.flight_bookings.models.Booking;
+import com.flightbookings.flight_bookings.dtos.DTOBooking.BookingDTO;
+import com.flightbookings.flight_bookings.dtos.DTOUser.UserDTO;
 import com.flightbookings.flight_bookings.models.User;
 
 import java.util.List;
 
 public interface BookingService {
 
-    Booking createBooking(Long flightId, Long passengerId, String seatName, User user);
+    BookingDTO createBooking(Long flightId, Long passengerId, String seatName, UserDTO user);
 
-    Booking updateBooking(Booking updatedBooking);
+    BookingDTO updateBooking(BookingDTO updatedBookingDTO);
 
-    Booking createBooking2(Booking booking);
+    BookingDTO getBookingById(Long userid, UserDTO user);
 
-    Booking getBookingById(Long id, User user);
+    List<BookingDTO> getAllBookings(UserDTO user);
 
-    List<Booking> getAllBookings(User user);
-
-    Booking updateBooking2(Long id, Booking bookingDetails);
+    BookingDTO updateBooking2(Long id, BookingDTO bookingDetailsDTO);
 
     boolean deleteBooking(Long id);
 }

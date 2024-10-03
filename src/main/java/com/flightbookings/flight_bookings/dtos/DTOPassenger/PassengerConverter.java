@@ -2,7 +2,6 @@ package com.flightbookings.flight_bookings.dtos.DTOPassenger;
 
 import com.flightbookings.flight_bookings.models.Passenger;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 
 public class PassengerConverter {
 
@@ -10,22 +9,6 @@ public class PassengerConverter {
 
     public PassengerConverter(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
-        configure();
-    }
-
-    private void configure() {
-        modelMapper.addMappings(new PropertyMap<Passenger, PassengerDTO>() {
-            @Override
-            protected void configure() {
-                map().setBookingId(source.getBooking() != null ? source.getBooking().getBookingId() : null);
-            }
-        });
-
-        modelMapper.addMappings(new PropertyMap<PassengerDTO, Passenger>() {
-            @Override
-            protected void configure() {
-            }
-        });
     }
 
     public PassengerDTO convertToDto(Passenger passenger) {

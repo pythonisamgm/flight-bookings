@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
     public UserDTO getUserById(Long id) {
         return userRepository.findById(id)
                 .map(userConverter::convertToDto)
-                .orElse(null);
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
     }
 
     @Override
@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
             User updatedUser = userRepository.save(userToUpdate);
             return userConverter.convertToDto(updatedUser);
         }
-        return null;
+        throw new UserNotFoundException("User not found with id: " + id);
     }
 
     @Override
@@ -60,13 +60,13 @@ public class UserServiceImpl implements UserService {
             userRepository.deleteById(id);
             return true;
         }
-        return false;
+        throw new UserNotFoundException("User not found with id: " + id);
     }
 
     @Override
     public UserDTO findByUsername(String username) {
-        User user = userRepository.findByUsername(username)
+        return userRepository.findByUsername(username)
+                .map(userConverter::convertToDto)
                 .orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
-        return userConverter.convertToDto(user);
     }
 }

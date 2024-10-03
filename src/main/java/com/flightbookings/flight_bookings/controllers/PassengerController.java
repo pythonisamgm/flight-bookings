@@ -24,7 +24,7 @@ public class PassengerController {
     }
 
     @Operation(summary = "Create a new passenger")
-    @PostMapping(value="/create", consumes = "application/json")
+    @PostMapping(consumes = "application/json")
     public ResponseEntity<PassengerDTO> createPassenger(@RequestBody PassengerDTO passengerDTO) {
         PassengerDTO newPassenger = passengerService.createPassenger(passengerDTO);
         return new ResponseEntity<>(newPassenger, HttpStatus.CREATED);
@@ -32,13 +32,12 @@ public class PassengerController {
 
     @Operation(summary = "Get a passenger by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<PassengerDTO> getPassengerById(@Parameter(description = "ID of the passenger to be retrieved") @PathVariable Long id) {
+    public ResponseEntity<PassengerDTO> getPassengerById(
+            @Parameter(description = "ID of the passenger to be retrieved") @PathVariable Long id) {
         PassengerDTO passengerDTO = passengerService.getPassengerById(id);
-        if (passengerDTO != null) {
-            return new ResponseEntity<>(passengerDTO, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return passengerDTO != null ?
+                new ResponseEntity<>(passengerDTO, HttpStatus.OK) :
+                ResponseEntity.notFound().build();
     }
 
     @Operation(summary = "Get all passengers")
@@ -49,24 +48,23 @@ public class PassengerController {
     }
 
     @Operation(summary = "Update a passenger")
-    @PutMapping("/update/{id}")
-    public ResponseEntity<PassengerDTO> updatePassenger(@Parameter(description = "ID of the passenger to be updated") @PathVariable Long id, @RequestBody PassengerDTO passengerDetails) {
+    @PutMapping("/{id}")
+    public ResponseEntity<PassengerDTO> updatePassenger(
+            @Parameter(description = "ID of the passenger to be updated") @PathVariable Long id,
+            @RequestBody PassengerDTO passengerDetails) {
         PassengerDTO updatedPassenger = passengerService.updatePassenger(id, passengerDetails);
-        if (updatedPassenger != null) {
-            return new ResponseEntity<>(updatedPassenger, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return updatedPassenger != null ?
+                new ResponseEntity<>(updatedPassenger, HttpStatus.OK) :
+                ResponseEntity.notFound().build();
     }
 
     @Operation(summary = "Delete a passenger by ID")
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deletePassenger(@Parameter(description = "ID of the passenger to be deleted") @PathVariable Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePassenger(
+            @Parameter(description = "ID of the passenger to be deleted") @PathVariable Long id) {
         boolean isDeleted = passengerService.deletePassenger(id);
-        if (isDeleted) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return isDeleted ?
+                ResponseEntity.noContent().build() :
+                ResponseEntity.notFound().build();
     }
 }

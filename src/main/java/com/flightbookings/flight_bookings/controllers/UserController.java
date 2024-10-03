@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.util.List;
 
 @CrossOrigin("*")
@@ -29,7 +28,7 @@ public class UserController {
     }
 
     @Operation(summary = "Create a new user")
-    @PostMapping(value="/create", consumes = "application/json")
+    @PostMapping(consumes = "application/json")
     public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO userDTO) {
         UserDTO newUser = userService.createUser(userDTO);
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
@@ -37,9 +36,10 @@ public class UserController {
 
     @Operation(summary = "Get a user by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> getUserById(@Parameter(description = "ID of the user to be retrieved") @PathVariable Long id) {
+    public ResponseEntity<UserDTO> getUserById(
+            @Parameter(description = "ID of the user to be retrieved") @PathVariable Long id) {
         UserDTO user = userService.getUserById(id);
-        return user != null ? new ResponseEntity<>(user, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return user != null ? new ResponseEntity<>(user, HttpStatus.OK) : ResponseEntity.notFound().build();
     }
 
     @Operation(summary = "Get all users")
@@ -51,15 +51,17 @@ public class UserController {
 
     @Operation(summary = "Update a user")
     @PutMapping("/update/{id}")
-    public ResponseEntity<UserDTO> updateUser(@Parameter(description = "ID of the user to be updated") @PathVariable Long id, @Valid @RequestBody UserDTO userDetails) {
+    public ResponseEntity<UserDTO> updateUser(
+            @Parameter(description = "ID of the user to be updated") @PathVariable Long id,
+            @Valid @RequestBody UserDTO userDetails) {
         UserDTO updatedUser = userService.updateUser(id, userDetails);
-        return updatedUser != null ? new ResponseEntity<>(updatedUser, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return updatedUser != null ? new ResponseEntity<>(updatedUser, HttpStatus.OK) : ResponseEntity.notFound().build();
     }
 
     @Operation(summary = "Deletes a user by ID")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteUser(@Parameter(description = "ID of the user to be deleted") @PathVariable Long id) {
         boolean isDeleted = userService.deleteUser(id);
-        return isDeleted ? new ResponseEntity<>(HttpStatus.NO_CONTENT) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return isDeleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 }
