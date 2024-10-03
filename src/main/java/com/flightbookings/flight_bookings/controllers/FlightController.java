@@ -15,7 +15,7 @@ import java.util.List;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("api/v1/flights") // Cambié la ruta para que sea más RESTful
+@RequestMapping("api/v1/flights")
 @Tag(name = "Flight", description = "Operations pertaining to flight management")
 public class FlightController {
 
