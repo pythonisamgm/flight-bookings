@@ -215,34 +215,22 @@ public class BookingControllerTest {
         user1.setUserId(1L);
         user1.setUsername("testuser");
 
-        // Simulamos la autenticación
         Authentication authentication = mock(Authentication.class);
         when(authentication.getName()).thenReturn("testuser");
 
-        // Mockeamos el servicio de usuarios
         when(userService.findByUsername("testuser")).thenReturn(user1);
 
-        // Mockeamos el servicio de reservas
         when(bookingService.createBooking(anyLong(), anyLong(), anyString(), eq(1L))).thenReturn(booking1);
 
-        // JSON que representa la solicitud
-        String bookingJson = "{"
-                + "\"flightId\": 1,"
-                + "\"passengerId\": 1,"
-                + "\"seatName\": \"1A\","
-                + "\"userId\": 1"
-                + "}";
-
-        // Ejecutamos la solicitud con el contenido en formato JSON
-        mockMvc.perform(post("/api/v1/bookings/create")
-                        .principal(authentication)  // Simulamos autenticación
-                        .contentType(MediaType.APPLICATION_JSON)  // Indicamos que el contenido es JSON
-                        .content(bookingJson))  // Pasamos el contenido como JSON
+        mockMvc.perform(post("/api/v1/bookings/create/1/1/1A/1")
+                        .principal(authentication)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.bookingId").value(1L));
 
         verify(bookingService, times(1)).createBooking(1L, 1L, "1A", 1L);
     }
+
 
 
 
