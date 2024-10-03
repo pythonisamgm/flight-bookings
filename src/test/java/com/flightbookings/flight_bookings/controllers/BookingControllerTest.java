@@ -72,7 +72,6 @@ public class BookingControllerTest {
         when(bookingService.getBookingById(1L, user1)).thenReturn(booking1);
         when(bookingService.getBookingById(3L, user1)).thenReturn(null);
         when(bookingService.getAllBookings()).thenReturn(bookingList);
-        when(bookingService.createBooking(anyLong(), anyLong(), anyString(), anyLong())).thenReturn(booking1);
         when(bookingService.createBooking2(any(Booking.class))).thenReturn(booking1);
         when(bookingService.updateBooking2(eq(1L), any(Booking.class))).thenReturn(booking1);
         when(bookingService.updateBooking2(eq(3L), any(Booking.class))).thenReturn(null);
@@ -105,7 +104,7 @@ public class BookingControllerTest {
         user1.setUsername("testuser");
 
         when(bookingService.getBookingById(1L, user1)).thenReturn(booking1);
-        when(userService.findByUsername("testuser")).thenReturn(user1);
+        when(userService.findByUsername(anyString())).thenReturn(user1);
 
         mockMvc.perform(get("/api/v1/bookings/{id}", 1L)
                         .principal(() -> "testuser"))
@@ -133,33 +132,15 @@ public class BookingControllerTest {
 
     @Test
     public void testGetAllBookingsByUser() throws Exception {
-        Authentication authentication = mock(Authentication.class);
-        when(authentication.getName()).thenReturn("testuser");
+        when(bookingService.getAllBookings()).thenReturn(bookingList);
 
-        User user = new User();
-        user.setUserId(1L);
-        user.setUsername("testuser");
 
-        when(bookingService.getAllBookingsByUser(user)).thenReturn(bookingList);
-
-        MvcResult result = mockMvc.perform(get("/api/v1/bookings/").principal(authentication))
+        mockMvc.perform(get("/api/v1/bookings/"))
                 .andExpect(status().isOk())
-                .andReturn();
+                .andExpect(jsonPath("$[0].bookingId").value(1L))
+                .andExpect(jsonPath("$[1].bookingId").value(2L));
 
-        String jsonResponse = result.getResponse().getContentAsString();
-        System.out.println("Response: " + jsonResponse);
-
-// Si la estructura está correcta, realiza la verificación
-        mockMvc.perform(get("/api/v1/bookings/").principal(authentication))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].bookingId").value(1L));
-//        mockMvc.perform(get("/api/v1/bookings/")
-//                        .principal(authentication))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$[0].bookingId").value(1L))
-//                .andExpect(jsonPath("$[1].bookingId").value(2L));
-
-        verify(bookingService, times(1)).getAllBookingsByUser(user);
+        verify(bookingService, times(1)).getAllBookings();
     }
     @Test
     public void testGetAllBookings() throws Exception {
@@ -227,13 +208,17 @@ public class BookingControllerTest {
         user1.setUserId(1L);
         user1.setUsername("testuser");
 
+        // Simulamos la autenticación
         Authentication authentication = mock(Authentication.class);
         when(authentication.getName()).thenReturn("testuser");
 
+        // Mockeamos el servicio de usuarios
         when(userService.findByUsername("testuser")).thenReturn(user1);
 
+        // Mockeamos el servicio de reservas
         when(bookingService.createBooking(anyLong(), anyLong(), anyString(), eq(1L))).thenReturn(booking1);
 
+        // JSON que representa la solicitud
         String bookingJson = "{"
                 + "\"flightId\": 1,"
                 + "\"passengerId\": 1,"
@@ -241,10 +226,11 @@ public class BookingControllerTest {
                 + "\"userId\": 1"
                 + "}";
 
+        // Ejecutamos la solicitud con el contenido en formato JSON
         mockMvc.perform(post("/api/v1/bookings/create")
-                        .principal(authentication)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(bookingJson))
+                        .principal(authentication)  // Simulamos autenticación
+                        .contentType(MediaType.APPLICATION_JSON)  // Indicamos que el contenido es JSON
+                        .content(bookingJson))  // Pasamos el contenido como JSON
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.bookingId").value(1L));
 

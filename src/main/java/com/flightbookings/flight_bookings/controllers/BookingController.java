@@ -29,14 +29,14 @@ import java.util.List;
 @Tag(name = "Booking Management", description = "Operations pertaining to booking management")
 public class BookingController {
     private final BookingService bookingService;
-    private final UserService userService;
+    private final UserServiceImpl userService;
     /**
      * Constructor to initialize the BookingController with BookingService and UserService.
      *
      * @param bookingService the service for booking management.
      * @param userService    the service for user management.
      */
-    public BookingController(BookingService bookingService, UserService userService) {
+    public BookingController(BookingService bookingService, UserServiceImpl userService) {
         this.bookingService = bookingService;
         this.userService = userService;
     }
