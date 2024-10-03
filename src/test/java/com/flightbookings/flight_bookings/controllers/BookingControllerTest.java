@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.test.web.servlet.MvcResult;
@@ -19,11 +20,11 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class BookingControllerTest {
@@ -132,15 +133,21 @@ public class BookingControllerTest {
 
     @Test
     public void testGetAllBookingsByUser() throws Exception {
-        when(bookingService.getAllBookings()).thenReturn(bookingList);
 
+        User testUser = new User(1L, "testUser", "password", "test@example.com", ERole.USER, bookingList);
 
-        mockMvc.perform(get("/api/v1/bookings/"))
+        when(userService.findByUsername("testUser")).thenReturn(testUser);
+        when(bookingService.getAllBookingsByUser(testUser)).thenReturn(bookingList);
+
+        Principal mockPrincipal = () -> "testUser";
+
+        mockMvc.perform(get("/api/v1/bookings/")
+                        .principal(mockPrincipal))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].bookingId").value(1L))
                 .andExpect(jsonPath("$[1].bookingId").value(2L));
 
-        verify(bookingService, times(1)).getAllBookings();
+        verify(bookingService, times(1)).getAllBookingsByUser(testUser);
     }
     @Test
     public void testGetAllBookings() throws Exception {
