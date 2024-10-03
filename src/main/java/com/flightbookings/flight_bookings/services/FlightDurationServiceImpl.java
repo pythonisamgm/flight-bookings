@@ -13,6 +13,6 @@ public class FlightDurationServiceImpl implements FlightDurationService {
         if (flight.getDepartureTime() != null && flight.getArrivalTime() != null) {
             return Duration.between(flight.getDepartureTime(), flight.getArrivalTime());
         }
-        return null; // O establece un valor predeterminado
+        return null;
     }
 }
