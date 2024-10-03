@@ -57,6 +57,7 @@ public class FlightServiceImpl implements FlightService {
             existingFlight.setNumRows(flightDetails.getNumRows());
             existingFlight.setFlightPrice(flightDetails.getFlightPrice());
 
+            // Recalcula la duración después de la actualización
             existingFlight.setFlightDuration(flightDurationService.calculateFlightDuration(existingFlight));
             return flightRepository.save(existingFlight);
         }
@@ -83,6 +84,7 @@ public class FlightServiceImpl implements FlightService {
         Flight flight = getFlightById(id);
         if (flight != null) {
             flight.setDepartureTime(departureTime);
+            // Recalcula la duración después de cambiar la hora de salida
             flight.setFlightDuration(flightDurationService.calculateFlightDuration(flight));
             flightRepository.save(flight);
         }
@@ -90,10 +92,12 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     public void updateFlightAvailability() {
+        // Implementación de la lógica para actualizar la disponibilidad del vuelo
     }
 
     @Override
     public List<Flight> getFlightsByAirplaneType(EFlightAirplane airplaneType) {
+        // Implementación de la lógica para obtener vuelos por tipo de avión
         return null;
     }
 
