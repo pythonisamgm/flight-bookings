@@ -1,44 +1,41 @@
 package com.flightbookings.flight_bookings.controllers;
 
-import com.flightbookings.flight_bookings.dtos.DTOSeat.SeatDTO;
-import com.flightbookings.flight_bookings.models.Flight;
+import com.flightbookings.flight_bookings.services.interfaces.FlightService;
 import com.flightbookings.flight_bookings.services.interfaces.SeatService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+/**
+ * Controller for managing seat-related operations such as seat initialization.
+ */
 @CrossOrigin("*")
 @RestController
 @RequestMapping("api/v1/seat")
-@Tag(name = "Seat Management", description = "Operations pertaining to seat management")
 public class SeatController {
 
     private final SeatService seatService;
-
-    public SeatController(SeatService seatService) {
+    private final FlightService flightService;
+    /**
+     * Constructor to initialize the SeatController with SeatService and FlightService.
+     *
+     * @param seatService   the seat service for managing seat operations.
+     * @param flightService the flight service for managing flight operations.
+     */
+    public SeatController(SeatService seatService, FlightService flightService) {
         this.seatService = seatService;
+        this.flightService = flightService;
     }
-
-    @Operation(summary = "Initialize seats for a flight")
+    /**
+     * Initializes seats for all flights.
+     *
+     * @return a response indicating successful initialization.
+     */
     @PostMapping("/initialize")
-    public ResponseEntity<List<String>> initializeSeats(
-            @Parameter(description = "Flight object") @RequestBody Flight flight,
-            @Parameter(description = "Number of rows") @RequestParam int numRows) {
-        List<String> seatList = seatService.initializeSeats(flight, numRows);
-        return new ResponseEntity<>(seatList, HttpStatus.OK);
-    }
-
-    @Operation(summary = "Reserve a seat")
-    @PutMapping("/reserve/{seatName}")
-    public ResponseEntity<SeatDTO> reserveSeat(
-            @Parameter(description = "Name of the seat to be reserved") @PathVariable String seatName,
-            @Parameter(description = "Flight object") @RequestBody Flight flight) {
-        SeatDTO reservedSeat = seatService.reserveSeat(flight, seatName);
-        return reservedSeat != null ? new ResponseEntity<>(reservedSeat, HttpStatus.OK) : ResponseEntity.notFound().build();
+    public ResponseEntity<String> initializeSeats() {
+        seatService.initializeSeatsForAllFlights();
+        return ResponseEntity.ok("Seats initialized for all flights.");
     }
 }
+

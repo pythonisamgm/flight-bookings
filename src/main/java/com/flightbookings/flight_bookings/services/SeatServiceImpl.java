@@ -1,29 +1,42 @@
 package com.flightbookings.flight_bookings.services;
 
-import com.flightbookings.flight_bookings.dtos.DTOSeat.SeatConverter;
-import com.flightbookings.flight_bookings.dtos.DTOSeat.SeatDTO;
 import com.flightbookings.flight_bookings.exceptions.SeatAlreadyBookedException;
 import com.flightbookings.flight_bookings.exceptions.SeatNotFoundException;
 import com.flightbookings.flight_bookings.models.ESeatLetter;
 import com.flightbookings.flight_bookings.models.Flight;
 import com.flightbookings.flight_bookings.models.Seat;
 import com.flightbookings.flight_bookings.repositories.ISeatRepository;
+import com.flightbookings.flight_bookings.services.interfaces.FlightService;
 import com.flightbookings.flight_bookings.services.interfaces.SeatService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Optional;
+/**
+ * Implementation of the SeatService interface for managing seat operations.
+ */
 @Service
 public class SeatServiceImpl implements SeatService {
 
     private final ISeatRepository seatRepository;
-    private final SeatConverter seatConverter;
-
-    public SeatServiceImpl(ISeatRepository seatRepository, SeatConverter seatConverter) {
+    private final FlightService flightService;
+    /**
+     * Constructs a SeatServiceImpl with the required repositories and services.
+     *
+     * @param seatRepository the repository for managing seats.
+     * @param flightService  the service for managing flights.
+     */
+    public SeatServiceImpl(ISeatRepository seatRepository, @Lazy FlightService flightService) {
         this.seatRepository = seatRepository;
-        this.seatConverter = seatConverter;
+        this.flightService = flightService;
+    }
+
+    @Override
+    public Optional<Seat> getSeatById(Long seatId) {
+        return seatRepository.findById(seatId);
     }
 
     @Override
@@ -56,7 +69,19 @@ public class SeatServiceImpl implements SeatService {
 
     @Override
     @Transactional
-    public SeatDTO reserveSeat(Flight flight, String seatName) {
+    public void initializeSeatsForAllFlights() {
+        List<Flight> flights = flightService.getAllFlights();
+
+        for (Flight flight : flights) {
+            initializeSeats(flight, flight.getNumRows());
+        }
+
+        System.out.println("Seats initialized for all flights.");
+    }
+
+    @Override
+    @Transactional
+    public Seat reserveSeat(Flight flight, String seatName) {
         Seat seat = seatRepository.findByFlightAndSeatName(flight, seatName)
                 .orElseThrow(() -> new SeatNotFoundException("Seat not found"));
 
@@ -65,7 +90,8 @@ public class SeatServiceImpl implements SeatService {
         }
 
         seat.setBooked(true);
-        Seat updatedSeat = seatRepository.save(seat);
-        return seatConverter.convertToDto(updatedSeat);
+
+        return seatRepository.save(seat);
     }
+
 }

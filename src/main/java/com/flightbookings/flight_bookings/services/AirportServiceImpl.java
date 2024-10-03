@@ -1,4 +1,4 @@
-/*package com.flightbookings.flight_bookings.services;
+package com.flightbookings.flight_bookings.services;
 
 import com.flightbookings.flight_bookings.models.Airport;
 import com.flightbookings.flight_bookings.repositories.IAirportRepository;
@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class AirportServiceImpl implements AirportService {
@@ -16,21 +17,19 @@ public class AirportServiceImpl implements AirportService {
     public AirportServiceImpl(IAirportRepository airportRepository) {
         this.airportRepository = airportRepository;
     }
+
     public Airport createAirport(Airport airport){
         return airportRepository.save(airport);
     }
-
-    public Airport updateAirport(Airport airport, Long id){
-        airport.setAirportId(id);
-        return airportRepository.save(airport);
+    public List<Airport> createAirports(Set<Airport> airports) {
+        return airportRepository.saveAll(airports);
     }
-
     public List<Airport> getAllAirports(){
         return airportRepository.findAll();
     }
 
-   public Optional<Airport> getAirportById(Long id) {
+    @Override
+    public Optional<Airport> getAirportById(String id) {
         return airportRepository.findById(id);
     }
-}
-*/
+ }

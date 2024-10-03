@@ -62,7 +62,7 @@ public class PassengerControllerTest {
     public void testCreatePassenger() throws Exception {
         when(passengerService.createPassenger(any(Passenger.class))).thenReturn(passenger1);
 
-        mockMvc.perform(post("/api/passengers/create")
+        mockMvc.perform(post("/api/v1/passengers/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(passenger1)))
                 .andExpect(status().isCreated())
@@ -79,7 +79,7 @@ public class PassengerControllerTest {
     public void testGetPassengerById() throws Exception {
         when(passengerService.getPassengerById(1L)).thenReturn(passenger1);
 
-        mockMvc.perform(get("/api/passengers/{id}", 1L))
+        mockMvc.perform(get("/api/v1/passengers/{id}", 1L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.passengerId").value(1L));
 
@@ -90,7 +90,7 @@ public class PassengerControllerTest {
     public void testGetPassengerById_NotFound() throws Exception {
         when(passengerService.getPassengerById(3L)).thenReturn(null);
 
-        mockMvc.perform(get("/api/passengers/{id}", 3L))
+        mockMvc.perform(get("/api/v1/passengers/{id}", 3L))
                 .andExpect(status().isNotFound());
 
         verify(passengerService, times(1)).getPassengerById(3L);
@@ -100,7 +100,7 @@ public class PassengerControllerTest {
     public void testGetAllPassengers() throws Exception {
         when(passengerService.getAllPassengers()).thenReturn(passengerList);
 
-        mockMvc.perform(get("/api/passengers/"))
+        mockMvc.perform(get("/api/v1/passengers/"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].passengerId").value(1L))
                 .andExpect(jsonPath("$[1].passengerId").value(2L));
@@ -112,7 +112,7 @@ public class PassengerControllerTest {
     public void testUpdatePassenger() throws Exception {
         when(passengerService.updatePassenger(eq(1L), any(Passenger.class))).thenReturn(passenger1);
 
-        mockMvc.perform(put("/api/passengers/update/{id}", 1L)
+        mockMvc.perform(put("/api/v1/passengers/update/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(passenger1)))
                 .andExpect(status().isOk())
@@ -125,7 +125,7 @@ public class PassengerControllerTest {
     public void testUpdatePassenger_NotFound() throws Exception {
         when(passengerService.updatePassenger(eq(3L), any(Passenger.class))).thenReturn(null);
 
-        mockMvc.perform(put("/api/passengers/{id}", 3L)
+        mockMvc.perform(put("/api/v1/passengers/update/{id}", 3L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(passenger1)))
                 .andExpect(status().isNotFound());
@@ -137,7 +137,7 @@ public class PassengerControllerTest {
     public void testDeletePassenger() throws Exception {
         when(passengerService.deletePassenger(1L)).thenReturn(true);
 
-        mockMvc.perform(delete("/api/passengers/delete/{id}", 1L))
+        mockMvc.perform(delete("/api/v1/passengers/delete/{id}", 1L))
                 .andExpect(status().isNoContent());
 
         verify(passengerService, times(1)).deletePassenger(1L);
@@ -147,7 +147,7 @@ public class PassengerControllerTest {
     public void testDeletePassenger_NotFound() throws Exception {
         when(passengerService.deletePassenger(4L)).thenReturn(false);
 
-        mockMvc.perform(delete("/api/passengers/delete/{id}", 4L))
+        mockMvc.perform(delete("/api/v1/passengers/delete/{id}", 4L))
                 .andExpect(status().isNotFound());
 
         verify(passengerService, times(1)).deletePassenger(4L);

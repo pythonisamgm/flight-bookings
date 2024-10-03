@@ -1,7 +1,5 @@
 package com.flightbookings.flight_bookings.services;
 
-import com.flightbookings.flight_bookings.dtos.DTOUser.UserConverter;
-import com.flightbookings.flight_bookings.dtos.DTOUser.UserDTO;
 import com.flightbookings.flight_bookings.exceptions.UserNotFoundException;
 import com.flightbookings.flight_bookings.models.User;
 import com.flightbookings.flight_bookings.repositories.IUserRepository;
@@ -9,49 +7,44 @@ import com.flightbookings.flight_bookings.services.interfaces.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
+/**
+ * Implementation of the UserService interface for managing user operations.
+ */
 @Service
 public class UserServiceImpl implements UserService {
 
     private final IUserRepository userRepository;
-    private final UserConverter userConverter;
-
-    public UserServiceImpl(IUserRepository userRepository, UserConverter userConverter) {
+    /**
+     * Constructs a UserServiceImpl with the required user repository.
+     *
+     * @param userRepository the repository for managing users.
+     */
+    public UserServiceImpl(IUserRepository userRepository) {
         this.userRepository = userRepository;
-        this.userConverter = userConverter;
     }
 
     @Override
-    public UserDTO createUser(UserDTO userDTO) {
-        User user = userConverter.convertToEntity(userDTO);
-        User savedUser = userRepository.save(user);
-        return userConverter.convertToDto(savedUser);
+    public User createUser(User user) {
+        return userRepository.save(user);
     }
 
     @Override
-    public UserDTO getUserById(Long id) {
-        return userRepository.findById(id)
-                .map(userConverter::convertToDto)
-                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElse(null);
     }
 
     @Override
-    public List<UserDTO> getAllUsers() {
-        return userRepository.findAll().stream()
-                .map(userConverter::convertToDto)
-                .collect(Collectors.toList());
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
     @Override
-    public UserDTO updateUser(Long id, UserDTO userDTO) {
+    public User updateUser(Long id, User userDetails) {
         if (userRepository.existsById(id)) {
-            User userToUpdate = userConverter.convertToEntity(userDTO);
-            userToUpdate.setUserId(id);
-            User updatedUser = userRepository.save(userToUpdate);
-            return userConverter.convertToDto(updatedUser);
+            userDetails.setUserId(id);
+            return userRepository.save(userDetails);
         }
-        throw new UserNotFoundException("User not found with id: " + id);
+        return null;
     }
 
     @Override
@@ -60,13 +53,12 @@ public class UserServiceImpl implements UserService {
             userRepository.deleteById(id);
             return true;
         }
-        throw new UserNotFoundException("User not found with id: " + id);
+        return false;
     }
 
     @Override
-    public UserDTO findByUsername(String username) {
+    public User findByUsername(String username) {
         return userRepository.findByUsername(username)
-                .map(userConverter::convertToDto)
                 .orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
     }
 }

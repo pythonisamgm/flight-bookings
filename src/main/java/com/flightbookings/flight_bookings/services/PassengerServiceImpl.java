@@ -1,7 +1,5 @@
 package com.flightbookings.flight_bookings.services;
 
-import com.flightbookings.flight_bookings.dtos.DTOPassenger.PassengerConverter;
-import com.flightbookings.flight_bookings.dtos.DTOPassenger.PassengerDTO;
 import com.flightbookings.flight_bookings.models.Passenger;
 import com.flightbookings.flight_bookings.repositories.IPassengerRepository;
 import com.flightbookings.flight_bookings.services.interfaces.PassengerService;
@@ -9,41 +7,40 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
+/**
+ * Implementation of the PassengerService interface for managing passenger operations.
+ */
 @Service
 public class PassengerServiceImpl implements PassengerService {
 
     private final IPassengerRepository passengerRepository;
-    private final PassengerConverter passengerConverter;
-
-    public PassengerServiceImpl(IPassengerRepository passengerRepository, PassengerConverter passengerConverter) {
+    /**
+     * Constructs a PassengerServiceImpl with the required passenger repository.
+     *
+     * @param passengerRepository the repository for managing passengers.
+     */
+    public PassengerServiceImpl(IPassengerRepository passengerRepository) {
         this.passengerRepository = passengerRepository;
-        this.passengerConverter = passengerConverter;
     }
 
     @Override
-    public PassengerDTO createPassenger(PassengerDTO passengerDTO) {
-        Passenger passenger = passengerConverter.convertToEntity(passengerDTO);
-        Passenger savedPassenger = passengerRepository.save(passenger);
-        return passengerConverter.convertToDto(savedPassenger);
+    public Passenger createPassenger(Passenger passenger) {
+        return passengerRepository.save(passenger);
     }
 
     @Override
-    public PassengerDTO getPassengerById(Long id) {
+    public Passenger getPassengerById(Long id) {
         Optional<Passenger> passenger = passengerRepository.findById(id);
-        return passenger.map(passengerConverter::convertToDto).orElse(null);
+        return passenger.orElse(null);
     }
 
     @Override
-    public List<PassengerDTO> getAllPassengers() {
-        return passengerRepository.findAll().stream()
-                .map(passengerConverter::convertToDto)
-                .collect(Collectors.toList());
+    public List<Passenger> getAllPassengers() {
+        return passengerRepository.findAll();
     }
 
     @Override
-    public PassengerDTO updatePassenger(Long id, PassengerDTO passengerDetails) {
+    public Passenger updatePassenger(Long id, Passenger passengerDetails) {
         Optional<Passenger> existingPassenger = passengerRepository.findById(id);
         if (existingPassenger.isPresent()) {
             Passenger passengerToUpdate = existingPassenger.get();
@@ -51,8 +48,7 @@ public class PassengerServiceImpl implements PassengerService {
             passengerToUpdate.setIdentityDoc(passengerDetails.getIdentityDoc());
             passengerToUpdate.setTelephone(passengerDetails.getTelephone());
             passengerToUpdate.setNationality(passengerDetails.getNationality());
-            Passenger updatedPassenger = passengerRepository.save(passengerToUpdate);
-            return passengerConverter.convertToDto(updatedPassenger);
+            return passengerRepository.save(passengerToUpdate);
         }
         return null;
     }
@@ -67,3 +63,4 @@ public class PassengerServiceImpl implements PassengerService {
         return false;
     }
 }
+
