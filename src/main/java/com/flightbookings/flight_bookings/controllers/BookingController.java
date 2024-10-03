@@ -104,13 +104,13 @@ public class BookingController {
     /**
      * Retrieves all bookings for the current user.
      *
-     * @param authentication the authentication object to get the current user.
+     *
      * @return the list of bookings.
      */
     @Operation(summary =  "Get all the bookings for the current user")
     @GetMapping("/")
-    public ResponseEntity<List<Booking>> getAllBookings(@AuthenticationPrincipal Authentication authentication) {
-        User user = userService.findByUsername(authentication.getName());
+    public ResponseEntity<List<Booking>> getAllBookings(Principal principal) {
+        User user = userService.findByUsername(principal.getName());
         List<Booking> bookings = bookingService.getAllBookingsByUser(user);
         return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
