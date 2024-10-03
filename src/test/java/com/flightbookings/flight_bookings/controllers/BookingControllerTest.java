@@ -72,6 +72,7 @@ public class BookingControllerTest {
         when(bookingService.getBookingById(1L, user1)).thenReturn(booking1);
         when(bookingService.getBookingById(3L, user1)).thenReturn(null);
         when(bookingService.getAllBookings()).thenReturn(bookingList);
+        when(bookingService.createBooking(anyLong(), anyLong(), anyString(), anyLong())).thenReturn(booking1);
         when(bookingService.createBooking2(any(Booking.class))).thenReturn(booking1);
         when(bookingService.updateBooking2(eq(1L), any(Booking.class))).thenReturn(booking1);
         when(bookingService.updateBooking2(eq(3L), any(Booking.class))).thenReturn(null);
@@ -104,7 +105,7 @@ public class BookingControllerTest {
         user1.setUsername("testuser");
 
         when(bookingService.getBookingById(1L, user1)).thenReturn(booking1);
-        when(userService.findByUsername(anyString())).thenReturn(user1);
+        when(userService.findByUsername("testuser")).thenReturn(user1);
 
         mockMvc.perform(get("/api/v1/bookings/{id}", 1L)
                         .principal(() -> "testuser"))
@@ -208,17 +209,13 @@ public class BookingControllerTest {
         user1.setUserId(1L);
         user1.setUsername("testuser");
 
-        // Simulamos la autenticación
         Authentication authentication = mock(Authentication.class);
         when(authentication.getName()).thenReturn("testuser");
 
-        // Mockeamos el servicio de usuarios
         when(userService.findByUsername("testuser")).thenReturn(user1);
 
-        // Mockeamos el servicio de reservas
         when(bookingService.createBooking(anyLong(), anyLong(), anyString(), eq(1L))).thenReturn(booking1);
 
-        // JSON que representa la solicitud
         String bookingJson = "{"
                 + "\"flightId\": 1,"
                 + "\"passengerId\": 1,"
@@ -226,11 +223,10 @@ public class BookingControllerTest {
                 + "\"userId\": 1"
                 + "}";
 
-        // Ejecutamos la solicitud con el contenido en formato JSON
         mockMvc.perform(post("/api/v1/bookings/create")
-                        .principal(authentication)  // Simulamos autenticación
-                        .contentType(MediaType.APPLICATION_JSON)  // Indicamos que el contenido es JSON
-                        .content(bookingJson))  // Pasamos el contenido como JSON
+                        .principal(authentication)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bookingJson))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.bookingId").value(1L));
 
