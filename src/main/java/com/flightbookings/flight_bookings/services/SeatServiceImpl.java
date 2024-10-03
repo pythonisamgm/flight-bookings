@@ -15,13 +15,20 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
+/**
+ * Implementation of the SeatService interface for managing seat operations.
+ */
 @Service
 public class SeatServiceImpl implements SeatService {
 
     private final ISeatRepository seatRepository;
     private final FlightService flightService;
-
+    /**
+     * Constructs a SeatServiceImpl with the required repositories and services.
+     *
+     * @param seatRepository the repository for managing seats.
+     * @param flightService  the service for managing flights.
+     */
     public SeatServiceImpl(ISeatRepository seatRepository, @Lazy FlightService flightService) {
         this.seatRepository = seatRepository;
         this.flightService = flightService;

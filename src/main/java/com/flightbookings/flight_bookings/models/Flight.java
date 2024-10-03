@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,13 +29,6 @@ public class Flight {
     private Long flightId;
 
     /**
-     * The number of rows in the airplane for this flight.
-     */
-    @Schema(description = "Number of rows in the airplane")
-    @Column
-    private int numRows;
-
-    /**
      * The flight number.
      */
     @Schema(description = "Flight number")
@@ -42,6 +36,13 @@ public class Flight {
     private int flightNumber;
 
     /**
+     * The number of rows in the airplane for this flight.
+     */
+    @Schema(description = "Number of rows in the airplane")
+    @Column
+    private int numRows;
+
+     /**
      * The time when the flight departs.
      */
     @Schema(description = "Time of departure")
@@ -56,6 +57,10 @@ public class Flight {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     @Column
     private LocalDateTime arrivalTime;
+
+    @Schema(description = "Duration of the flight")
+    @Column
+    private Duration flightDuration;
 
     /**
      * The type of airplane used for this flight.
@@ -101,9 +106,19 @@ public class Flight {
     @Schema(description = "List of bookings associated with this flight.")
     private List<Booking> bookingList;
 
-    /*@ManyToMany(mappedBy = "flight", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonBackReference
-    private Set<Airport> airports;*/
+    /**
+     * List of airport origin associated with this flight.
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "origin_airport_id")
+    private Airport originAirport;
+
+    /**
+     * List of airport destination associated with this flight.
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "destination_airport_id")
+    private Airport destinationAirport;
 
     /**
      * Default constructor for Flight.
@@ -128,7 +143,7 @@ public class Flight {
     public Flight(Long id, int flightNumber, LocalDateTime departureTime, LocalDateTime arrivalTime,
                   EFlightAirplane flightAirplane, int capacityPlane, boolean availability, int numRows,
                   BigDecimal flightPrice, List<Seat> seatList, List<Booking> bookingList) {
-        this.flightId = id;
+        this.flightId = flightId;
         this.flightNumber = flightNumber;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
@@ -137,9 +152,9 @@ public class Flight {
         this.availability = availability;
         this.numRows = numRows;
         this.flightPrice = flightPrice;
-        this.seats = seats;
-        this.bookingList = bookingList;
-        //this.airports = airports;
+        this.flightDuration = flightDuration; // Inicialización de la duración
+        this.originAirport = originAirport;
+        this.destinationAirport = destinationAirport;
     }
 
     /**
@@ -326,6 +341,31 @@ public class Flight {
      */
     public void setBookingList(List<Booking> bookingList) {
         this.bookingList = bookingList;
+    }
+
+
+    public Airport getOriginAirport() {
+        return originAirport;
+    }
+
+    public void setOriginAirport(Airport originAirport) {
+        this.originAirport = originAirport;
+    }
+
+    public Airport getDestinationAirport() {
+        return destinationAirport;
+    }
+
+    public void setDestinationAirport(Airport destinationAirport) {
+        this.destinationAirport = destinationAirport;
+    }
+
+    public Duration getFlightDuration() { // Método getter para flightDuration
+        return flightDuration;
+    }
+
+    public void setFlightDuration(Duration flightDuration) { // Método setter para flightDuration
+        this.flightDuration = flightDuration;
     }
 }
 

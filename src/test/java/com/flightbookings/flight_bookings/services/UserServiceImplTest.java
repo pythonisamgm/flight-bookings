@@ -30,7 +30,7 @@ public class UserServiceImplTest {
         MockitoAnnotations.openMocks(this);
 
         user1 = User.builder()
-                .id(1L)
+                .userId(1L)
                 .username("juanantonio")
                 .password("1234")
                 .email("jantonio@gmail.com")

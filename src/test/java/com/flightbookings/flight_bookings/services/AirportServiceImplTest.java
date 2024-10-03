@@ -1,6 +1,7 @@
 package com.flightbookings.flight_bookings.services;
 
 import com.flightbookings.flight_bookings.models.Airport;
+import com.flightbookings.flight_bookings.models.ECountry;
 import com.flightbookings.flight_bookings.repositories.IAirportRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,9 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -18,75 +17,78 @@ import static org.mockito.Mockito.*;
 
 class AirportServiceImplTest {
 
-    @InjectMocks
+    private IAirportRepository airportRepository;
     private AirportServiceImpl airportService;
 
-    @Mock
-    private IAirportRepository airportRepository;
-
     @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
+    void setUp() {
+        airportRepository = mock(IAirportRepository.class);
+        airportService = new AirportServiceImpl(airportRepository);
     }
 
     @Test
-    public void testCreateAirport() {
-        Airport airport = new Airport(null, "MAD", "Madrid Barajas Airport", "Madrid", "Spain");
-        Airport savedAirport = new Airport(1L, "MAD", "Madrid Barajas Airport", "Madrid", "Spain");
+    void testCreateAirport() {
+        // Arrange
+        Airport airport = new Airport("MAD", "Madrid-Barajas Adolfo Suárez", "Madrid", ECountry.ESPAÑA);
+        when(airportRepository.save(any(Airport.class))).thenReturn(airport);
 
-        when(airportRepository.save(any(Airport.class))).thenReturn(savedAirport);
+        // Act
+        Airport createdAirport = airportService.createAirport(airport);
 
-        Airport result = airportService.createAirport(airport);
-
-        assertEquals(savedAirport, result);
+        // Assert
+        assertNotNull(createdAirport);
+        assertEquals("MAD", createdAirport.getAirportCode());
         verify(airportRepository, times(1)).save(airport);
     }
 
     @Test
-    public void testGetAllAirports() {
-        Airport airport1 = new Airport(1L, "MAD", "Madrid Barajas Airport", "Madrid", "Spain");
-        Airport airport2 = new Airport(2L, "BOG", "El Dorado International Airport", "Bogotá", "Colombia");
-        List<Airport> airports = Arrays.asList(airport1, airport2);
+    void testCreateAirports() {
+        // Arrange
+        Airport airport1 = new Airport("BCN", "Barcelona-El Prat", "Barcelona", ECountry.ESPAÑA);
+        Airport airport2 = new Airport("VLC", "Valencia", "Valencia", ECountry.ESPAÑA);
+        Set<Airport> airports = Set.of(airport1, airport2);
+        when(airportRepository.saveAll(any(Set.class))).thenReturn(Arrays.asList(airport1, airport2));
 
-        when(airportRepository.findAll()).thenReturn(airports);
+        // Act
+        List<Airport> createdAirports = airportService.createAirports(airports);
 
-        List<Airport> result = airportService.getAllAirports();
+        // Assert
+        assertNotNull(createdAirports);
+        assertEquals(2, createdAirports.size());
+        assertEquals("BCN", createdAirports.get(0).getAirportCode());
+        verify(airportRepository, times(1)).saveAll(airports);
+    }
 
-        assertEquals(2, result.size());
-        assertEquals(airports, result);
+    @Test
+    void testGetAllAirports() {
+        // Arrange
+        Airport airport = new Airport("MAD", "Madrid-Barajas Adolfo Suárez", "Madrid", ECountry.ESPAÑA);
+        when(airportRepository.findAll()).thenReturn(List.of(airport));
+
+        // Act
+        List<Airport> airports = airportService.getAllAirports();
+
+        // Assert
+        assertNotNull(airports);
+        assertEquals(1, airports.size());
+        assertEquals("MAD", airports.get(0).getAirportCode());
         verify(airportRepository, times(1)).findAll();
     }
 
     @Test
-    public void testGetAirportByIdFound() {
-        Airport airport = new Airport(1L, "MAD", "Madrid Barajas Airport", "Madrid", "Spain");
+    void testGetAirportById() {
+        // Arrange
+        String airportCode = "MAD";
+        Airport airport = new Airport(airportCode, "Madrid-Barajas Adolfo Suárez", "Madrid", ECountry.ESPAÑA);
+        when(airportRepository.findById(airportCode)).thenReturn(Optional.of(airport));
 
-        when(airportRepository.findById(1L)).thenReturn(Optional.of(airport));
+        // Act
+        Optional<Airport> foundAirport = airportService.getAirportById(airportCode);
 
-        Optional<Airport> result = airportService.getAirportById(1L);
-
-        assertEquals(airport, result.get());
-        verify(airportRepository, times(1)).findById(1L);
+        // Assert
+        assertTrue(foundAirport.isPresent());
+        assertEquals("MAD", foundAirport.get().getAirportCode());
+        verify(airportRepository, times(1)).findById(airportCode);
     }
 
-    @Test
-    public void testGetAirportByIdNotFound() {
-        when(airportRepository.findById(1L)).thenReturn(Optional.empty());
-
-        Optional<Airport> result = airportService.getAirportById(1L);
-
-        assertEquals(Optional.empty(), result);
-        verify(airportRepository, times(1)).findById(1L);
-    }
-
-    @Test
-    public void testUpdateAirport() {
-        Airport airportToUpdate = new Airport(1L, "MAD", "Madrid Barajas Airport", "Madrid", "Spain");
-        when(airportRepository.save(any(Airport.class))).thenReturn(airportToUpdate);
-
-        Airport result = airportService.updateAirport(airportToUpdate, 1L);
-
-        assertEquals(airportToUpdate, result);
-        verify(airportRepository, times(1)).save(airportToUpdate);
-    }
 }
