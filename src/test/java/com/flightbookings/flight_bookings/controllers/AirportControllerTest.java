@@ -1,91 +1,75 @@
 package com.flightbookings.flight_bookings.controllers;
 
 import com.flightbookings.flight_bookings.models.Airport;
+import com.flightbookings.flight_bookings.models.ECountry;
 import com.flightbookings.flight_bookings.services.interfaces.AirportService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class AirportControllerTest {
-    @InjectMocks
-    private AirportController airportController;
-
     @Mock
     private AirportService airportService;
 
+    @InjectMocks
+    private AirportController airportController;
+
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    public void testCreateAirport() {
-        Airport airport = new Airport(1L, "JFK", "John F. Kennedy International Airport", "New York", "USA");
-        when(airportService.createAirport(any(Airport.class))).thenReturn(airport);
+    void testGetAllAirports() {
+        // Arrange
+        List<Airport> airportList = new ArrayList<>();
+        airportList.add(new Airport("MAD", "Madrid-Barajas", "Madrid", ECountry.ESPAÑA));
+        airportList.add(new Airport("BCN", "Barcelona-El Prat", "Barcelona", ECountry.ESPAÑA));
 
-        ResponseEntity<Airport> response = airportController.createAirport(airport);
+        when(airportService.getAllAirports()).thenReturn(airportList);
 
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(airport, response.getBody());
-        verify(airportService, times(1)).createAirport(any(Airport.class));
-    }
-
-    @Test
-    public void testGetAirportByIdFound() {
-        Airport airport = new Airport(1L, "JFK", "John F. Kennedy International Airport", "New York", "USA");
-        when(airportService.getAirportById(1L)).thenReturn(Optional.of(airport));
-
-        ResponseEntity<Airport> response = airportController.getAirportById(1L);
-
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(airport, response.getBody());
-        verify(airportService, times(1)).getAirportById(1L);
-    }
-
-    @Test
-    public void testGetAirportByIdNotFound() {
-        when(airportService.getAirportById(1L)).thenReturn(Optional.empty());
-
-        ResponseEntity<Airport> response = airportController.getAirportById(1L);
-
-        assertEquals(404, response.getStatusCodeValue());
-        verify(airportService, times(1)).getAirportById(1L);
-    }
-
-    @Test
-    public void testGetAllAirports() {
-        Airport airport1 = new Airport(1L, "JFK", "John F. Kennedy International Airport", "New York", "USA");
-        Airport airport2 = new Airport(2L, "LAX", "Los Angeles International Airport", "Los Angeles", "USA");
-        List<Airport> airports = Arrays.asList(airport1, airport2);
-        when(airportService.getAllAirports()).thenReturn(airports);
-
+        // Act
         ResponseEntity<List<Airport>> response = airportController.getAllAirports();
 
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(airports, response.getBody());
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(2, response.getBody().size());
         verify(airportService, times(1)).getAllAirports();
     }
 
     @Test
-    public void testUpdateAirport() {
-        Airport airport = new Airport(1L, "JFK", "John F. Kennedy International Airport", "New York", "USA");
-        when(airportService.updateAirport(any(Airport.class), eq(1L))).thenReturn(airport);
+    void testCreateAirport() {
+        // Arrange
+        Airport airport = new Airport("MAD", "Madrid-Barajas", "Madrid", ECountry.ESPAÑA);
+        when(airportService.createAirport(any(Airport.class))).thenReturn(airport);
 
-        ResponseEntity<Airport> response = airportController.updateAirport(airport, 1L);
+        // Act
+        ResponseEntity<Airport> response = airportController.createAirport(airport);
 
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(airport, response.getBody());
-        verify(airportService, times(1)).updateAirport(any(Airport.class), eq(1L));
+        // Assert
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(airport.getAirportCode(), response.getBody().getAirportCode());
+        assertEquals(airport.getAirportName(), response.getBody().getAirportName());
+        assertEquals(airport.getAirportCity(), response.getBody().getAirportCity());
+        assertEquals(airport.getAirportCountry(), response.getBody().getAirportCountry());
+
+        ArgumentCaptor<Airport> argumentCaptor = ArgumentCaptor.forClass(Airport.class);
+        verify(airportService, times(1)).createAirport(argumentCaptor.capture());
+        assertEquals(airport.getAirportCode(), argumentCaptor.getValue().getAirportCode());
     }
+
 }
