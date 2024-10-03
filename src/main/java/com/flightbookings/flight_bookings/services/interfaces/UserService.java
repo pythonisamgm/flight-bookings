@@ -1,17 +1,21 @@
 package com.flightbookings.flight_bookings.services.interfaces;
 
+import com.flightbookings.flight_bookings.dtos.DTOUser.UserDTO;
 import com.flightbookings.flight_bookings.models.User;
 
 import java.util.List;
 
 public interface UserService {
-    User createUser(User user);
 
-    User getUserById(Long id);
+    UserDTO createUser(UserDTO userDTO);
 
-    List<User> getAllUsers();
+    UserDTO getUserById(Long id);
 
-    User updateUser(Long id, User userDetails);
+    List<UserDTO> getAllUsers();
+
+    UserDTO updateUser(Long id, UserDTO userDTO);
 
     boolean deleteUser(Long id);
+
+    UserDTO findByUsername(String username);
 }

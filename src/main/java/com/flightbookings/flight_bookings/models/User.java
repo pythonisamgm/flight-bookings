@@ -14,7 +14,7 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long userId;
 
     @Column(nullable = false)
     private String username;
@@ -33,8 +33,8 @@ public class User implements UserDetails {
     private List<Booking> bookings;
 
 
-    public User(Long id, String username, String password, String email, ERole role, List<Booking> bookings) {
-        this.id = id;
+    public User(Long userId, String username, String password, String email, ERole role, List<Booking> bookings) {
+        this.userId = userId;
         this.username = username;
         this.password = password;
         this.email = email;
@@ -45,11 +45,11 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public Long getId() {
-        return id;}
+    public Long getUserId() {
+        return userId;}
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     @Override

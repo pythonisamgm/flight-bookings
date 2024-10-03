@@ -46,6 +46,7 @@ public class WebSecurityConfig {
                                 .requestMatchers("/api/v1/flight/").permitAll()
                                 .requestMatchers("/api/v1/flight/update/{id}").permitAll()
                                 .requestMatchers("/api/v1/flight/delete/{id}").permitAll()
+                                .requestMatchers("/api/v1/user/**").permitAll()
 
                                 .anyRequest().authenticated()
                 )
