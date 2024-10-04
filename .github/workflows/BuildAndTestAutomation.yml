@@ -24,8 +24,7 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: rootpass
           MYSQL_DATABASE: flight_bookings_test
-          MYSQL_USER: root
-          MYSQL_PASSWORD: rootpass
+
         options: >-
           --health-cmd="mysqladmin ping --silent"
           --health-interval=10s
