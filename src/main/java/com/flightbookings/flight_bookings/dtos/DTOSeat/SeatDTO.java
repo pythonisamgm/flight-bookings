@@ -1,6 +1,9 @@
 package com.flightbookings.flight_bookings.dtos.DTOSeat;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 @Schema(description = "Data Transfer Object for Seat.")
 public class SeatDTO {
@@ -9,9 +12,13 @@ public class SeatDTO {
     private Long seatId;
 
     @Schema(description = "The row number of the seat")
+    @NotNull(message = "Row number cannot be null")
+    @Min(value = 1, message = "Row number must be at least 1")
     private int row;
 
     @Schema(description = "The letter of the seat in the row")
+    @NotNull(message = "Seat letter cannot be null")
+    @Pattern(regexp = "[A-Z]", message = "Seat letter must be a single uppercase letter")
     private String seatLetter;
 
     @Schema(description = "Booking status of the seat")
@@ -21,7 +28,10 @@ public class SeatDTO {
     private String seatName;
 
     @Schema(description = "The flight associated with this seat")
+    @NotNull(message = "Flight ID cannot be null")
     private Long flightId;
+
+    public SeatDTO() {}
 
     public Long getSeatId() {
         return seatId;

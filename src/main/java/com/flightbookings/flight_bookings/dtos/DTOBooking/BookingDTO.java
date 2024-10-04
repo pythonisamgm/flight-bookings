@@ -1,31 +1,32 @@
 package com.flightbookings.flight_bookings.dtos.DTOBooking;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
-import java.time.LocalDateTime;
-
-@Schema(description = "Data Transfer Object for Booking")
+@Schema(description = "Data Transfer Object for Booking.")
 public class BookingDTO {
 
     @Schema(description = "The database generated booking ID")
+    @Positive(message = "Booking ID must be a positive number")
     private Long bookingId;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
-    @Schema(description = "The date and time when the booking was made")
-    private LocalDateTime dateOfBooking;
-
-    @Schema(description = "The passenger associated with this booking")
-    private Long passengerId;
-
-    @Schema(description = "The flight associated with this booking")
+    @Schema(description = "The ID of the flight associated with this booking")
+    @NotNull(message = "Flight ID cannot be null")
+    @Positive(message = "Flight ID must be a positive number")
     private Long flightId;
 
-    @Schema(description = "The seat reserved in this booking")
-    private Long seatId;
+    @Schema(description = "The ID of the passenger for this booking")
+    @NotNull(message = "Passenger ID cannot be null")
+    @Positive(message = "Passenger ID must be a positive number")
+    private Long passengerId;
 
-    @Schema(description = "The user who made the booking")
-    private Long userId;
+    @Schema(description = "The name of the seat booked")
+    @NotNull(message = "Seat name cannot be null")
+    private String seatName;
+
+
+    public BookingDTO() {}
 
     public Long getBookingId() {
         return bookingId;
@@ -33,22 +34,6 @@ public class BookingDTO {
 
     public void setBookingId(Long bookingId) {
         this.bookingId = bookingId;
-    }
-
-    public LocalDateTime getDateOfBooking() {
-        return dateOfBooking;
-    }
-
-    public void setDateOfBooking(LocalDateTime dateOfBooking) {
-        this.dateOfBooking = dateOfBooking;
-    }
-
-    public Long getPassengerId() {
-        return passengerId;
-    }
-
-    public void setPassengerId(Long passengerId) {
-        this.passengerId = passengerId;
     }
 
     public Long getFlightId() {
@@ -59,19 +44,19 @@ public class BookingDTO {
         this.flightId = flightId;
     }
 
-    public Long getSeatId() {
-        return seatId;
+    public Long getPassengerId() {
+        return passengerId;
     }
 
-    public void setSeatId(Long seatId) {
-        this.seatId = seatId;
+    public void setPassengerId(Long passengerId) {
+        this.passengerId = passengerId;
     }
 
-    public Long getUserId() {
-        return userId;
+    public String getSeatName() {
+        return seatName;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setSeatName(String seatName) {
+        this.seatName = seatName;
     }
 }

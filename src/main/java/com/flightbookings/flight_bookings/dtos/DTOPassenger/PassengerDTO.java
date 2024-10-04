@@ -1,6 +1,8 @@
 package com.flightbookings.flight_bookings.dtos.DTOPassenger;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Schema(description = "Data Transfer Object for Passenger.")
 public class PassengerDTO {
@@ -8,12 +10,15 @@ public class PassengerDTO {
     @Schema(description = "The database generated passenger ID")
     private Long passengerId;
 
+    @NotBlank(message = "Passenger name is mandatory")
     @Schema(description = "The name of the passenger")
     private String passengerName;
 
+    @NotBlank(message = "Identity document number is mandatory")
     @Schema(description = "The identity document number of the passenger")
     private String identityDoc;
 
+    @NotNull(message = "Telephone number is mandatory")
     @Schema(description = "The telephone number of the passenger")
     private Long telephone;
 
@@ -22,6 +27,8 @@ public class PassengerDTO {
 
     @Schema(description = "The booking ID associated with this passenger")
     private Long bookingId;
+
+    public PassengerDTO() {}
 
     public Long getPassengerId() {
         return passengerId;

@@ -1,98 +1,72 @@
 package com.flightbookings.flight_bookings.controllers;
 
+import com.flightbookings.flight_bookings.dtos.DTOPassenger.PassengerDTO;
+import com.flightbookings.flight_bookings.dtos.DTOPassenger.PassengerConverter;
 import com.flightbookings.flight_bookings.models.Passenger;
 import com.flightbookings.flight_bookings.services.interfaces.PassengerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * Controller for managing passenger-related operations such as creating, updating, retrieving, and deleting passengers.
- */
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/api/v1/passengers")
-@Tag(name ="Passenger Management", description = "Operations pertaining to passenger management")
+@Tag(name = "Passenger Management", description = "Operations pertaining to passenger management")
 public class PassengerController {
 
     private final PassengerService passengerService;
+    private final PassengerConverter passengerConverter;
 
-    /**
-     * Constructor to initialize the PassengerController with a PassengerService.
-     *
-     * @param passengerService the passenger service for managing passenger operations.
-     */
-    public PassengerController(PassengerService passengerService) {
+    public PassengerController(PassengerService passengerService, PassengerConverter passengerConverter) {
         this.passengerService = passengerService;
+        this.passengerConverter = passengerConverter;
     }
 
-    /**
-     * Creates a new passenger.
-     *
-     * @param passenger the passenger object to be created.
-     * @return the created passenger.
-     */
     @Operation(summary = "Create a new passenger")
-    @PostMapping(value="/create", consumes = "application/json")
-    public ResponseEntity<Passenger> createPassenger(@RequestBody Passenger passenger) {
+    @PostMapping(value = "/create", consumes = "application/json")
+    public ResponseEntity<PassengerDTO> createPassenger(@Valid @RequestBody PassengerDTO passengerDTO) {
+        Passenger passenger = passengerConverter.dtoToPassenger(passengerDTO);
         Passenger newPassenger = passengerService.createPassenger(passenger);
-        return new ResponseEntity<>(newPassenger, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(passengerConverter.passengerToDto(newPassenger));
     }
 
-    /**
-     * Retrieves a passenger by its ID.
-     *
-     * @param id the ID of the passenger.
-     * @return the passenger if found, otherwise 404.
-     */
     @Operation(summary = "Get a passenger by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<Passenger> getPassengerById(@Parameter(description = "ID of the passenger to be retrieved") @PathVariable Long id) {
+    public ResponseEntity<PassengerDTO> getPassengerById(@Parameter(description = "ID of the passenger to be retrieved") @PathVariable Long id) {
         Passenger passenger = passengerService.getPassengerById(id);
-        return passenger != null ? ResponseEntity.ok(passenger) : ResponseEntity.notFound().build();
+        return passenger != null
+                ? ResponseEntity.ok(passengerConverter.passengerToDto(passenger))
+                : ResponseEntity.notFound().build();
     }
 
-    /**
-     * Retrieves all passengers.
-     *
-     * @return the list of passengers.
-     */
     @Operation(summary = "Get all passengers")
     @GetMapping
-    public ResponseEntity<List<Passenger>> getAllPassengers() {
+    public ResponseEntity<List<PassengerDTO>> getAllPassengers() {
         List<Passenger> passengers = passengerService.getAllPassengers();
-        return ResponseEntity.ok(passengers);
+        List<PassengerDTO> passengerDTOs = passengerConverter.passengersToDtoList(passengers);
+        return ResponseEntity.ok(passengerDTOs);
     }
 
-    /**
-     * Updates a passenger by its ID.
-     *
-     * @param id              the ID of the passenger to be updated.
-     * @param passengerDetails the passenger details to update.
-     * @return the updated passenger.
-     */
     @Operation(summary = "Update a passenger")
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Passenger> updatePassenger(
+    @PutMapping("/{id}")
+    public ResponseEntity<PassengerDTO> updatePassenger(
             @Parameter(description = "ID of the passenger to be updated") @PathVariable Long id,
-            @RequestBody Passenger passengerDetails) {
-        Passenger updatedPassenger = passengerService.updatePassenger(id, passengerDetails);
-        return updatedPassenger != null ? ResponseEntity.ok(updatedPassenger) : ResponseEntity.notFound().build();
+            @Valid @RequestBody PassengerDTO passengerDTO) {
+
+        Passenger updatedPassenger = passengerService.updatePassenger(id, passengerConverter.dtoToPassenger(passengerDTO));
+        return updatedPassenger != null
+                ? ResponseEntity.ok(passengerConverter.passengerToDto(updatedPassenger))
+                : ResponseEntity.notFound().build();
     }
 
-    /**
-     * Deletes a passenger by its ID.
-     *
-     * @param id the ID of the passenger.
-     * @return a 204 response if deleted, otherwise 404.
-     */
     @Operation(summary = "Delete a passenger by ID")
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePassenger(@Parameter(description = "ID of the passenger to be deleted") @PathVariable Long id) {
         boolean isDeleted = passengerService.deletePassenger(id);
         return isDeleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();

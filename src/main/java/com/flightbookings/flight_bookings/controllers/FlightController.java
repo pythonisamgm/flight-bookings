@@ -1,11 +1,14 @@
 package com.flightbookings.flight_bookings.controllers;
 
+import com.flightbookings.flight_bookings.dtos.DTOFlight.FlightDTO;
+import com.flightbookings.flight_bookings.dtos.DTOFlight.FlightConverter;
 import com.flightbookings.flight_bookings.models.Flight;
 import com.flightbookings.flight_bookings.models.EFlightAirplane;
 import com.flightbookings.flight_bookings.services.interfaces.FlightService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * Controller for managing flight-related operations such as creating, updating, retrieving, and deleting flights.
- */
 @CrossOrigin("*")
 @RestController
 @RequestMapping("api/v1/flight")
@@ -23,114 +23,69 @@ import java.util.List;
 public class FlightController {
 
     private final FlightService flightService;
+    private final FlightConverter flightConverter;
 
-    /**
-     * Constructor to initialize the FlightController with a FlightService.
-     *
-     * @param flightService the flight service for managing flight operations.
-     */
-    public FlightController(FlightService flightService) {
+    public FlightController(FlightService flightService, FlightConverter flightConverter) {
         this.flightService = flightService;
+        this.flightConverter = flightConverter;
     }
 
-    /**
-     * Creates a new flight.
-     *
-     * @param flight the flight object to be created.
-     * @return the created flight.
-     */
     @Operation(summary = "Create a new flight")
     @PostMapping(value = "/create", consumes = "application/json")
-    public ResponseEntity<Flight> createFlight(@RequestBody Flight flight) {
+    public ResponseEntity<FlightDTO> createFlight(@Valid @RequestBody FlightDTO flightDTO) {
+        Flight flight = flightConverter.dtoToFlight(flightDTO);
         Flight newFlight = flightService.createFlight(flight);
-        return new ResponseEntity<>(newFlight, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(flightConverter.flightToDto(newFlight));
     }
 
-    /**
-     * Retrieves a flight by its ID.
-     *
-     * @param id the ID of the flight.
-     * @return the flight if found, otherwise 404.
-     */
     @Operation(summary = "Get flight by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<Flight> getFlightById(@Parameter(description = "ID of the flight to be retrieved") @PathVariable Long id) {
+    public ResponseEntity<FlightDTO> getFlightById(@Parameter(description = "ID of the flight to be retrieved") @PathVariable Long id) {
         Flight flight = flightService.getFlightById(id);
-        return flight != null ? new ResponseEntity<>(flight, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return flight != null ? ResponseEntity.ok(flightConverter.flightToDto(flight)) : ResponseEntity.notFound().build();
     }
 
-    /**
-     * Retrieves all flights.
-     *
-     * @return the list of all flights.
-     */
     @Operation(summary = "Get all flights")
     @GetMapping("/")
-    public ResponseEntity<List<Flight>> getAllFlights() {
+    public ResponseEntity<List<FlightDTO>> getAllFlights() {
         List<Flight> flights = flightService.getAllFlights();
-        return new ResponseEntity<>(flights, HttpStatus.OK);
+        List<FlightDTO> flightDTOs = flightConverter.flightsToDtoList(flights);
+        return ResponseEntity.ok(flightDTOs);
     }
 
-    /**
-     * Updates an existing flight by its ID.
-     *
-     * @param id            the ID of the flight.
-     * @param flightDetails the flight details to update.
-     * @return the updated flight.
-     */
     @Operation(summary = "Update an existing flight")
     @PutMapping("/update/{id}")
-    public ResponseEntity<Flight> updateFlight(@Parameter(description = "ID of the flight to be retrieved") @PathVariable Long id, @RequestBody Flight flightDetails) {
-        Flight updatedFlight = flightService.updateFlight(id, flightDetails);
-        return updatedFlight != null ? new ResponseEntity<>(updatedFlight, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<FlightDTO> updateFlight(
+            @Parameter(description = "ID of the flight to be updated") @PathVariable Long id,
+            @Valid @RequestBody FlightDTO flightDTO) {
+
+        Flight flight = flightConverter.dtoToFlight(flightDTO);
+        Flight updatedFlight = flightService.updateFlight(id, flight);
+        return updatedFlight != null ? ResponseEntity.ok(flightConverter.flightToDto(updatedFlight)) : ResponseEntity.notFound().build();
     }
 
-    /**
-     * Deletes a flight by its ID.
-     *
-     * @param id the ID of the flight.
-     * @return a 204 response if deleted, otherwise 404.
-     */
     @Operation(summary = "Delete a flight by ID")
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteFlight(@Parameter(description = "ID of the flight to be retrieved") @PathVariable Long id) {
+    public ResponseEntity<Void> deleteFlight(@Parameter(description = "ID of the flight to be deleted") @PathVariable Long id) {
         boolean isDeleted = flightService.deleteFlight(id);
-        return isDeleted ? new ResponseEntity<>(HttpStatus.NO_CONTENT) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return isDeleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
-    /**
-     * Cancels a flight by its ID.
-     *
-     * @param id the ID of the flight to be canceled.
-     * @return a response indicating whether the cancellation was successful.
-     */
     @Operation(summary = "Cancel a flight by ID")
     @DeleteMapping("/{id}/cancel")
     public ResponseEntity<String> cancelFlight(@Parameter(description = "ID of the flight to be canceled") @PathVariable Long id) {
-        flightService.cancelFlight(id);
-        return ResponseEntity.ok("Flight canceled successfully.");
+        boolean isCancelled = flightService.cancelFlight(id);
+        return isCancelled ? ResponseEntity.ok("Flight canceled successfully.") : ResponseEntity.notFound().build();
     }
 
-    /**
-     * Delays a flight by setting a new departure time.
-     *
-     * @param id              the ID of the flight to be delayed.
-     * @param newDepartureTime the new departure time for the flight in ISO-8601 format.
-     * @return a response indicating whether the delay was successful.
-     */
     @Operation(summary = "Delay a flight")
     @PostMapping("/{id}/delay")
     public ResponseEntity<String> delayFlight(@Parameter(description = "ID of the flight to be delayed") @PathVariable Long id, @RequestParam String newDepartureTime) {
         LocalDateTime departureTime = LocalDateTime.parse(newDepartureTime);
-        flightService.delayFlight(id, departureTime);
-        return ResponseEntity.ok("Flight delayed successfully.");
+        boolean isDelayed = flightService.delayFlight(id, departureTime);
+        return isDelayed ? ResponseEntity.ok("Flight delayed successfully.") : ResponseEntity.notFound().build();
     }
 
-    /**
-     * Updates the availability of all flights based on their current status (e.g., past departure or no available seats).
-     *
-     * @return a response indicating whether the availability was successfully updated.
-     */
     @Operation(summary = "Update availability of all flights")
     @PostMapping("/updateAvailability")
     public ResponseEntity<String> updateAvailability() {
@@ -138,16 +93,11 @@ public class FlightController {
         return ResponseEntity.ok("Flight availability updated successfully.");
     }
 
-    /**
-     * Retrieves a list of flights by airplane type.
-     *
-     * @param airplaneType the type of airplane to filter flights.
-     * @return a list of flights with the specified airplane type.
-     */
     @Operation(summary = "Get flights by airplane type")
     @GetMapping("/byAirplaneType")
-    public ResponseEntity<List<Flight>> getFlightsByAirplaneType(@Parameter(description = "Type of airplane to filter flights") @RequestParam EFlightAirplane airplaneType) {
+    public ResponseEntity<List<FlightDTO>> getFlightsByAirplaneType(@Parameter(description = "Type of airplane to filter flights") @RequestParam EFlightAirplane airplaneType) {
         List<Flight> flights = flightService.getFlightsByAirplaneType(airplaneType);
-        return new ResponseEntity<>(flights, HttpStatus.OK);
+        List<FlightDTO> flightDTOs = flightConverter.flightsToDtoList(flights);
+        return ResponseEntity.ok(flightDTOs);
     }
 }

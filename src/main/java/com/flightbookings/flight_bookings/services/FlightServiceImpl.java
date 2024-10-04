@@ -2,19 +2,13 @@ package com.flightbookings.flight_bookings.services;
 
 import com.flightbookings.flight_bookings.models.Flight;
 import com.flightbookings.flight_bookings.models.EFlightAirplane;
-import com.flightbookings.flight_bookings.repositories.IAirportRepository;
 import com.flightbookings.flight_bookings.repositories.IFlightRepository;
-import com.flightbookings.flight_bookings.repositories.ISeatRepository;
 import com.flightbookings.flight_bookings.services.interfaces.FlightDurationService;
 import com.flightbookings.flight_bookings.services.interfaces.FlightService;
-import com.flightbookings.flight_bookings.services.interfaces.SeatService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class FlightServiceImpl implements FlightService {
@@ -74,18 +68,20 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public void cancelFlight(Long id) {
+    public boolean cancelFlight(Long id) {
         // Implementación de la lógica para cancelar el vuelo
+        return false;
     }
 
     @Override
-    public void delayFlight(Long id, LocalDateTime departureTime) {
+    public boolean delayFlight(Long id, LocalDateTime departureTime) {
         Flight flight = getFlightById(id);
         if (flight != null) {
             flight.setDepartureTime(departureTime);
             flight.setFlightDuration(flightDurationService.calculateFlightDuration(flight));
             flightRepository.save(flight);
         }
+        return false;
     }
 
     @Override

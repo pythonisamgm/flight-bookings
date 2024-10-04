@@ -1,21 +1,24 @@
 package com.flightbookings.flight_bookings.controllers;
 
-import com.flightbookings.flight_bookings.dtos.DTOUser.UserConverter;
 import com.flightbookings.flight_bookings.dtos.DTOUser.UserDTO;
-import com.flightbookings.flight_bookings.models.User;
 import com.flightbookings.flight_bookings.services.interfaces.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import com.flightbookings.flight_bookings.models.User;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Controller for managing user-related operations such as creating, retrieving, updating, and deleting users.
+ */
 @CrossOrigin("*")
 @RestController
 @RequestMapping("api/v1/user")
@@ -23,31 +26,33 @@ import java.util.stream.Collectors;
 public class UserController {
 
     private final UserService userService;
-    private final UserConverter userConverter;
 
-    public UserController(UserService userService, UserConverter userConverter) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.userConverter = userConverter;
     }
 
     @Operation(summary = "Create a new user")
-    @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value="/create", consumes = "application/json")
     public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
-        User user = userConverter.dtoToUser(userDTO, new User());
-        User createdUser = userService.createUser(user);
-        return new ResponseEntity<>(userConverter.userToDto(createdUser), HttpStatus.CREATED);
+        User user = new User();
+        user.setUsername(userDTO.getUsername());
+        user.setEmail(userDTO.getEmail());
+        user.setPassword(userDTO.getPassword());
+
+        User newUser = userService.createUser(user);
+        UserDTO newUserDTO = new UserDTO(newUser.getUserId(), newUser.getUsername(), newUser.getEmail());
+        return new ResponseEntity<>(newUserDTO, HttpStatus.CREATED);
     }
 
     @Operation(summary = "Get a user by ID")
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUserById(@Parameter(description = "ID of the user to be retrieved") @PathVariable Long id) {
-        Optional<User> userOptional = Optional.ofNullable(userService.getUserById(id));
-
-        if (userOptional.isPresent()) {
-            UserDTO userDTO = userConverter.userToDto(userOptional.get());
-            return ResponseEntity.ok(userDTO);
+        User user = userService.getUserById(id);
+        if (user != null) {
+            UserDTO userDTO = new UserDTO(user.getUserId(), user.getUsername(), user.getEmail());
+            return new ResponseEntity<>(userDTO, HttpStatus.OK);
         } else {
-            return ResponseEntity.notFound().build();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -56,23 +61,26 @@ public class UserController {
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         List<User> users = userService.getAllUsers();
         List<UserDTO> userDTOs = users.stream()
-                .map(userConverter::userToDto)
+                .map(user -> new UserDTO(user.getUserId(), user.getUsername(), user.getEmail()))
                 .collect(Collectors.toList());
-        return ResponseEntity.ok(userDTOs);
+        return new ResponseEntity<>(userDTOs, HttpStatus.OK);
     }
 
     @Operation(summary = "Update a user")
     @PutMapping("/update/{id}")
     public ResponseEntity<UserDTO> updateUser(@Parameter(description = "ID of the user to be updated") @PathVariable Long id, @RequestBody UserDTO userDTO) {
-        Optional<User> existingUserOptional = Optional.ofNullable(userService.getUserById(id));
+        User user = new User();
+        user.setUserId(id); // Usa setUserId() en lugar de setId()
+        user.setUsername(userDTO.getUsername());
+        user.setEmail(userDTO.getEmail());
+        user.setPassword(userDTO.getPassword()); // Asegúrate de establecer la contraseña
 
-        if (existingUserOptional.isPresent()) {
-            User existingUser = existingUserOptional.get();
-            User user = userConverter.dtoToUser(userDTO, existingUser);
-            User updatedUser = userService.updateUser(id, user);
-            return ResponseEntity.ok(userConverter.userToDto(updatedUser));
+        User updatedUser = userService.updateUser(id, user);
+        if (updatedUser != null) {
+            UserDTO updatedUserDTO = new UserDTO(updatedUser.getUserId(), updatedUser.getUsername(), updatedUser.getEmail());
+            return new ResponseEntity<>(updatedUserDTO, HttpStatus.OK);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -80,6 +88,6 @@ public class UserController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteUser(@Parameter(description = "ID of the user to be deleted") @PathVariable Long id) {
         boolean isDeleted = userService.deleteUser(id);
-        return isDeleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+        return isDeleted ? new ResponseEntity<>(HttpStatus.NO_CONTENT) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

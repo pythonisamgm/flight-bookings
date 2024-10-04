@@ -1,22 +1,22 @@
 package com.flightbookings.flight_bookings.dtos.DTOSeat;
 
 import com.flightbookings.flight_bookings.models.Seat;
-import com.flightbookings.flight_bookings.services.interfaces.BookingService;
+import com.flightbookings.flight_bookings.services.interfaces.SeatService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class SeatConverter {
 
     private final ModelMapper modelMapper;
-    private final BookingService bookingService;
+    private final SeatService seatService;
 
-    public SeatConverter(ModelMapper modelMapper, BookingService bookingService) {
+    public SeatConverter(ModelMapper modelMapper, SeatService seatService) {
         this.modelMapper = modelMapper;
-        this.bookingService = bookingService;
+        this.seatService = seatService;
     }
 
     public Seat dtoToSeat(SeatDTO seatDTO) {
@@ -28,18 +28,14 @@ public class SeatConverter {
     }
 
     public List<SeatDTO> seatsToDtoList(List<Seat> seats) {
-        List<SeatDTO> seatDTOs = new ArrayList<>();
-        for (Seat seat : seats) {
-            seatDTOs.add(seatToDto(seat));
-        }
-        return seatDTOs;
+        return seats.stream()
+                .map(this::seatToDto)
+                .collect(Collectors.toList());
     }
 
     public List<Seat> dtoListToSeats(List<SeatDTO> seatDTOs) {
-        List<Seat> seats = new ArrayList<>();
-        for (SeatDTO seatDTO : seatDTOs) {
-            seats.add(dtoToSeat(seatDTO));
-        }
-        return seats;
+        return seatDTOs.stream()
+                .map(this::dtoToSeat)
+                .collect(Collectors.toList());
     }
 }

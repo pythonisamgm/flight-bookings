@@ -4,8 +4,9 @@ import com.flightbookings.flight_bookings.models.Flight;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class FlightConverter {
@@ -17,26 +18,30 @@ public class FlightConverter {
     }
 
     public Flight dtoToFlight(FlightDTO flightDTO) {
-        return modelMapper.map(flightDTO, Flight.class);
+        return Optional.ofNullable(flightDTO)
+                .map(dto -> modelMapper.map(dto, Flight.class))
+                .orElse(null);
     }
 
     public FlightDTO flightToDto(Flight flight) {
-        return modelMapper.map(flight, FlightDTO.class);
+        return Optional.ofNullable(flight)
+                .map(flt -> modelMapper.map(flt, FlightDTO.class))
+                .orElse(null);
     }
 
     public List<FlightDTO> flightsToDtoList(List<Flight> flights) {
-        List<FlightDTO> flightDTOs = new ArrayList<>();
-        for (Flight flight : flights) {
-            flightDTOs.add(flightToDto(flight));
-        }
-        return flightDTOs;
+        return Optional.ofNullable(flights)
+                .map(fltList -> fltList.stream()
+                        .map(this::flightToDto)
+                        .collect(Collectors.toList()))
+                .orElseGet(List::of);
     }
 
     public List<Flight> dtoListToFlights(List<FlightDTO> flightDTOs) {
-        List<Flight> flights = new ArrayList<>();
-        for (FlightDTO flightDTO : flightDTOs) {
-            flights.add(dtoToFlight(flightDTO));
-        }
-        return flights;
+        return Optional.ofNullable(flightDTOs)
+                .map(dtoList -> dtoList.stream()
+                        .map(this::dtoToFlight)
+                        .collect(Collectors.toList()))
+                .orElseGet(List::of);
     }
 }

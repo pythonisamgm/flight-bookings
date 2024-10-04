@@ -1,5 +1,7 @@
 package com.flightbookings.flight_bookings.controllers;
 
+import com.flightbookings.flight_bookings.dtos.DTOBooking.BookingConverter;
+import com.flightbookings.flight_bookings.dtos.DTOBooking.BookingDTO;
 import com.flightbookings.flight_bookings.models.Booking;
 import com.flightbookings.flight_bookings.models.User;
 import com.flightbookings.flight_bookings.services.interfaces.BookingService;
@@ -26,83 +28,81 @@ import java.util.List;
 public class BookingController {
     private final BookingService bookingService;
     private final UserService userService;
+    private final BookingConverter bookingConverter;
 
     /**
-     * Constructor to initialize the BookingController with BookingService and UserService.
+     * Constructor to initialize the BookingController with BookingService, UserService, and BookingConverter.
      *
      * @param bookingService the service for booking management.
      * @param userService    the service for user management.
+     * @param bookingConverter the converter for Booking and BookingDTO.
      */
-    public BookingController(BookingService bookingService, UserService userService) {
+    public BookingController(BookingService bookingService, UserService userService, BookingConverter bookingConverter) {
         this.bookingService = bookingService;
         this.userService = userService;
+        this.bookingConverter = bookingConverter;
     }
 
     /**
      * Creates a new booking.
      *
-     * @param flightId    the ID of the flight.
-     * @param passengerId the ID of the passenger.
-     * @param seatName    the name of the seat.
-     * @param userId      the ID of the user.
+     * @param bookingDTO    the BookingDTO containing booking details.
      * @param authentication the authentication object to retrieve the current user.
      * @return the created booking.
      */
     @Operation(summary = "Create a new booking")
-    @PostMapping(value = "/create/{flightId}/{passengerId}/{seatName}/{userId}")
-    public ResponseEntity<Booking> createBooking(@PathVariable Long flightId,
-                                                 @PathVariable Long passengerId,
-                                                 @PathVariable String seatName,
-                                                 @PathVariable Long userId,
-                                                 @AuthenticationPrincipal Authentication authentication) {
+    @PostMapping(value = "/create")
+    public ResponseEntity<BookingDTO> createBooking(@RequestBody BookingDTO bookingDTO,
+                                                    @AuthenticationPrincipal Authentication authentication) {
         User user = userService.findByUsername(authentication.getName());
-        Booking booking = bookingService.createBooking(flightId, passengerId, seatName, userId);
-        return new ResponseEntity<>(booking, HttpStatus.CREATED);
+        Booking booking = bookingConverter.dtoToBooking(bookingDTO);
+        booking.setUser(user);
+
+        Booking newBooking = bookingService.createBooking(booking);
+        BookingDTO newBookingDTO = bookingConverter.bookingToDto(newBooking);
+
+        return new ResponseEntity<>(newBookingDTO, HttpStatus.CREATED);
     }
 
     /**
      * Updates an existing booking.
      *
      * @param id             the ID of the booking to be updated.
-     * @param updatedBooking the booking object with updated details.
+     * @param updatedBookingDTO the BookingDTO with updated details.
      * @return the updated booking.
      */
     @Operation(summary = "Update existing booking")
     @PutMapping("/{id}")
-    public ResponseEntity<Booking> updateBooking(@Parameter(description = "ID of the booking to be updated") @PathVariable Long id, @RequestBody Booking updatedBooking) {
+    public ResponseEntity<BookingDTO> updateBooking(@Parameter(description = "ID of the booking to be updated")
+                                                    @PathVariable Long id,
+                                                    @RequestBody BookingDTO updatedBookingDTO) {
+        Booking updatedBooking = bookingConverter.dtoToBooking(updatedBookingDTO);
         updatedBooking.setBookingId(id);
-        Booking booking = bookingService.updateBooking(updatedBooking);
-        return new ResponseEntity<>(booking, HttpStatus.OK);
-    }
 
-    /**
-     * Alternative method to create a new booking with a booking object.
-     *
-     * @param booking the booking object to be created.
-     * @return the created booking.
-     */
-    @Operation(summary = "Create a new booking. Version 1")
-    @PostMapping(value = "/create2", consumes = "application/json")
-    public ResponseEntity<Booking> createBooking2(@RequestBody Booking booking) {
-        Booking newBooking = bookingService.createBooking2(booking);
-        return new ResponseEntity<>(newBooking, HttpStatus.CREATED);
+        Booking booking = bookingService.updateBooking(updatedBooking);
+        BookingDTO bookingDTO = bookingConverter.bookingToDto(booking);
+
+        return new ResponseEntity<>(bookingDTO, HttpStatus.OK);
     }
 
     /**
      * Retrieves a booking by its ID.
      *
-     * @param id        the ID of the booking.
+     * @param id       the ID of the booking.
      * @param principal the principal object to get the current user.
      * @return the booking if found, otherwise a 404 response.
      */
     @Operation(summary = "Get booking by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<Booking> getBookingById(@Parameter(description = "ID of the booking to be retrieved") @PathVariable Long id, Principal principal) {
+    public ResponseEntity<BookingDTO> getBookingById(@Parameter(description = "ID of the booking to be retrieved")
+                                                     @PathVariable Long id,
+                                                     Principal principal) {
         User user = userService.findByUsername(principal.getName());
         Booking booking = bookingService.getBookingById(id, user);
 
         if (booking != null) {
-            return new ResponseEntity<>(booking, HttpStatus.OK);
+            BookingDTO bookingDTO = bookingConverter.bookingToDto(booking);
+            return new ResponseEntity<>(bookingDTO, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -113,42 +113,14 @@ public class BookingController {
      *
      * @return the list of bookings.
      */
-    @Operation(summary = "Get all bookings for the current user")
+    @Operation(summary = "Get all the bookings for the current user")
     @GetMapping("/")
-    public ResponseEntity<List<Booking>> getAllBookings(Principal principal) {
+    public ResponseEntity<List<BookingDTO>> getAllBookings(Principal principal) {
         User user = userService.findByUsername(principal.getName());
         List<Booking> bookings = bookingService.getAllBookingsByUser(user);
-        return new ResponseEntity<>(bookings, HttpStatus.OK);
-    }
 
-    /**
-     * Retrieves all bookings.
-     *
-     * @return the list of bookings.
-     */
-    @Operation(summary = "Get all bookings")
-    @GetMapping("/all")
-    public ResponseEntity<List<Booking>> getAllBookings() {
-        List<Booking> bookings = bookingService.getAllBookings();
-        return new ResponseEntity<>(bookings, HttpStatus.OK);
-    }
-
-    /**
-     * Alternative method to update an existing booking.
-     *
-     * @param id            the ID of the booking to be updated.
-     * @param bookingDetails the booking details to update.
-     * @return the updated booking if successful, otherwise 404.
-     */
-    @Operation(summary = "Update an existing booking. Version 1")
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Booking> updateBooking2(@Parameter(description = "ID of the booking to be updated") @PathVariable Long id, @RequestBody Booking bookingDetails) {
-        Booking updatedBooking = bookingService.updateBooking2(id, bookingDetails);
-        if (updatedBooking != null) {
-            return new ResponseEntity<>(updatedBooking, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        List<BookingDTO> bookingDTOs = bookingConverter.bookingsToDtoList(bookings);
+        return new ResponseEntity<>(bookingDTOs, HttpStatus.OK);
     }
 
     /**

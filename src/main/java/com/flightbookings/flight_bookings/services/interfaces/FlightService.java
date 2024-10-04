@@ -57,16 +57,18 @@ public interface FlightService {
      * Cancels a flight.
      *
      * @param id the ID of the flight to cancel.
+     * @return
      */
-    void cancelFlight(Long id);
+    boolean cancelFlight(Long id);
 
     /**
      * Delays a flight by updating its departure time.
      *
      * @param id            the ID of the flight to delay.
      * @param departureTime the new departure time for the flight.
+     * @return
      */
-    void delayFlight(Long id, LocalDateTime departureTime);
+    boolean delayFlight(Long id, LocalDateTime departureTime);
 
     /**
      * Updates the availability status of all flights.

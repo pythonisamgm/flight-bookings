@@ -1,6 +1,9 @@
 package com.flightbookings.flight_bookings.dtos.DTOUser;
 
+import com.flightbookings.flight_bookings.dtos.DTOBooking.BookingDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.List;
 
@@ -10,9 +13,12 @@ public class UserDTO {
     @Schema(description = "The database generated user ID")
     private Long userId;
 
+    @NotBlank(message = "Username cannot be empty")
     @Schema(description = "The username of the user")
     private String username;
 
+    @NotBlank(message = "Email cannot be empty")
+    @Email(message = "Email should be valid")
     @Schema(description = "The email of the user")
     private String email;
 
@@ -20,7 +26,9 @@ public class UserDTO {
     private String role;
 
     @Schema(description = "The list of bookings made by the user")
-    private List<Long> bookingIds;
+    private List<BookingDTO> bookings;
+
+    public UserDTO() {}
 
     public Long getUserId() {
         return userId;
@@ -54,11 +62,11 @@ public class UserDTO {
         this.role = role;
     }
 
-    public List<Long> getBookingIds() {
-        return bookingIds;
+    public List<BookingDTO> getBookings() {
+        return bookings;
     }
 
-    public void setBookingIds(List<Long> bookingIds) {
-        this.bookingIds = bookingIds;
+    public void setBookings(List<BookingDTO> bookings) {
+        this.bookings = bookings;
     }
 }

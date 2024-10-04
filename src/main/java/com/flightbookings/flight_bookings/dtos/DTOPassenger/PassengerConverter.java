@@ -4,8 +4,8 @@ import com.flightbookings.flight_bookings.models.Passenger;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class PassengerConverter {
@@ -25,18 +25,14 @@ public class PassengerConverter {
     }
 
     public List<PassengerDTO> passengersToDtoList(List<Passenger> passengers) {
-        List<PassengerDTO> passengerDTOs = new ArrayList<>();
-        for (Passenger passenger : passengers) {
-            passengerDTOs.add(passengerToDto(passenger));
-        }
-        return passengerDTOs;
+        return passengers.stream()
+                .map(this::passengerToDto)
+                .collect(Collectors.toList());
     }
 
     public List<Passenger> dtoListToPassengers(List<PassengerDTO> passengerDTOs) {
-        List<Passenger> passengers = new ArrayList<>();
-        for (PassengerDTO passengerDTO : passengerDTOs) {
-            passengers.add(dtoToPassenger(passengerDTO));
-        }
-        return passengers;
+        return passengerDTOs.stream()
+                .map(this::dtoToPassenger)
+                .collect(Collectors.toList());
     }
 }
