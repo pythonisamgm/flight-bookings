@@ -9,6 +9,19 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+          MYSQL_DATABASE: db_flight-bookings
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
 
     steps:
       - name: Checkout repository
@@ -30,9 +43,15 @@ jobs:
         run: pwd
       - name: Check MySQL connection
         run: |
-          until mysql -h 127.0.0.1 -P 3306 -uroot -prootpass -e "SHOW DATABASES"; do
-            echo "Waiting for MySQL...";
-            sleep 5;
+          attempt=0
+          until mysql -h 127.0.0.1 -P 3306 -uroot -e "SHOW DATABASES"; do
+            attempt=$((attempt+1))
+            if [ $attempt -ge 10 ]; then
+              echo "MySQL failed to start after 10 attempts, exiting..."
+              exit 1
+            fi
+            echo "Waiting for MySQL... attempt $attempt"
+            sleep 5
           done
       # Compilar el proyecto y generar el archivo JAR
       - name: Build JAR with Maven
