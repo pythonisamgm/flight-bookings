@@ -50,12 +50,12 @@ public class BookingController {
      * @param authentication the authentication object to retrieve the current user.
      * @return the created booking.
      */
-    @Operation(summary =  "Create a new booking")
-    @PostMapping(value="/create",consumes = "application/json")
-    public ResponseEntity<Booking> createBooking(@RequestParam("flightId") Long flightId,
-                                                 @RequestParam("passengerId") Long passengerId,
-                                                 @RequestParam("seatName") String seatName,
-                                                 @RequestParam("userId") Long userId,
+    @Operation(summary = "Create a new booking")
+    @PostMapping(value = "/create/{flightId}/{passengerId}/{seatName}/{userId}")
+    public ResponseEntity<Booking> createBooking(@PathVariable("flightId") Long flightId,
+                                                 @PathVariable("passengerId") Long passengerId,
+                                                 @PathVariable("seatName") String seatName,
+                                                 @PathVariable("userId") Long userId,
                                                  @AuthenticationPrincipal Authentication authentication) {
         User user = userService.findByUsername(authentication.getName());
         Booking booking = bookingService.createBooking(flightId, passengerId, seatName, userId);
@@ -104,13 +104,13 @@ public class BookingController {
     /**
      * Retrieves all bookings for the current user.
      *
-     * @param authentication the authentication object to get the current user.
+     *
      * @return the list of bookings.
      */
     @Operation(summary =  "Get all the bookings for the current user")
     @GetMapping("/")
-    public ResponseEntity<List<Booking>> getAllBookings(@AuthenticationPrincipal Authentication authentication) {
-        User user = userService.findByUsername(authentication.getName());
+    public ResponseEntity<List<Booking>> getAllBookings(Principal principal) {
+        User user = userService.findByUsername(principal.getName());
         List<Booking> bookings = bookingService.getAllBookingsByUser(user);
         return new ResponseEntity<>(bookings, HttpStatus.OK);
     }

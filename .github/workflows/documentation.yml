@@ -29,11 +29,11 @@ jobs:
       - name: Move Javadoc to docs folder and disable Jekyll
         run: |
           mkdir -p docs
-          cp -r ./target/site/apidocs/* ./docs/
+          cp -r ./target/site/apidocs/* ./
           touch docs/.nojekyll
 
-      - name: List docs folder content after moving and adding .nojekyll
-        run: ls -R ./docs
+      - name: List docs folder content
+        run: ls -R ./
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4

@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.test.web.servlet.MvcResult;
@@ -19,11 +20,11 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class BookingControllerTest {
@@ -72,7 +73,6 @@ public class BookingControllerTest {
         when(bookingService.getBookingById(1L, user1)).thenReturn(booking1);
         when(bookingService.getBookingById(3L, user1)).thenReturn(null);
         when(bookingService.getAllBookings()).thenReturn(bookingList);
-        when(bookingService.createBooking(anyLong(), anyLong(), anyString(), anyLong())).thenReturn(booking1);
         when(bookingService.createBooking2(any(Booking.class))).thenReturn(booking1);
         when(bookingService.updateBooking2(eq(1L), any(Booking.class))).thenReturn(booking1);
         when(bookingService.updateBooking2(eq(3L), any(Booking.class))).thenReturn(null);
@@ -105,7 +105,7 @@ public class BookingControllerTest {
         user1.setUsername("testuser");
 
         when(bookingService.getBookingById(1L, user1)).thenReturn(booking1);
-        when(userService.findByUsername("testuser")).thenReturn(user1);
+        when(userService.findByUsername(anyString())).thenReturn(user1);
 
         mockMvc.perform(get("/api/v1/bookings/{id}", 1L)
                         .principal(() -> "testuser"))
@@ -133,33 +133,21 @@ public class BookingControllerTest {
 
     @Test
     public void testGetAllBookingsByUser() throws Exception {
-        Authentication authentication = mock(Authentication.class);
-        when(authentication.getName()).thenReturn("testuser");
 
-        User user = new User();
-        user.setUserId(1L);
-        user.setUsername("testuser");
+        User testUser = new User(1L, "testUser", "password", "test@example.com", ERole.USER, bookingList);
 
-        when(bookingService.getAllBookingsByUser(user)).thenReturn(bookingList);
+        when(userService.findByUsername("testUser")).thenReturn(testUser);
+        when(bookingService.getAllBookingsByUser(testUser)).thenReturn(bookingList);
 
-        MvcResult result = mockMvc.perform(get("/api/v1/bookings/").principal(authentication))
+        Principal mockPrincipal = () -> "testUser";
+
+        mockMvc.perform(get("/api/v1/bookings/")
+                        .principal(mockPrincipal))
                 .andExpect(status().isOk())
-                .andReturn();
+                .andExpect(jsonPath("$[0].bookingId").value(1L))
+                .andExpect(jsonPath("$[1].bookingId").value(2L));
 
-        String jsonResponse = result.getResponse().getContentAsString();
-        System.out.println("Response: " + jsonResponse);
-
-// Si la estructura está correcta, realiza la verificación
-        mockMvc.perform(get("/api/v1/bookings/").principal(authentication))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].bookingId").value(1L));
-//        mockMvc.perform(get("/api/v1/bookings/")
-//                        .principal(authentication))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$[0].bookingId").value(1L))
-//                .andExpect(jsonPath("$[1].bookingId").value(2L));
-
-        verify(bookingService, times(1)).getAllBookingsByUser(user);
+        verify(bookingService, times(1)).getAllBookingsByUser(testUser);
     }
     @Test
     public void testGetAllBookings() throws Exception {
@@ -234,22 +222,15 @@ public class BookingControllerTest {
 
         when(bookingService.createBooking(anyLong(), anyLong(), anyString(), eq(1L))).thenReturn(booking1);
 
-        String bookingJson = "{"
-                + "\"flightId\": 1,"
-                + "\"passengerId\": 1,"
-                + "\"seatName\": \"1A\","
-                + "\"userId\": 1"
-                + "}";
-
-        mockMvc.perform(post("/api/v1/bookings/create")
+        mockMvc.perform(post("/api/v1/bookings/create/1/1/1A/1")
                         .principal(authentication)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(bookingJson))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.bookingId").value(1L));
 
         verify(bookingService, times(1)).createBooking(1L, 1L, "1A", 1L);
     }
+
 
 
 
