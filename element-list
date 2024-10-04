@@ -2,6 +2,12 @@ com.flightbookings.flight_bookings
 com.flightbookings.flight_bookings.config
 com.flightbookings.flight_bookings.controllers
 com.flightbookings.flight_bookings.data
+com.flightbookings.flight_bookings.dtos.DTOAirport
+com.flightbookings.flight_bookings.dtos.DTOBooking
+com.flightbookings.flight_bookings.dtos.DTOFlight
+com.flightbookings.flight_bookings.dtos.DTOPassenger
+com.flightbookings.flight_bookings.dtos.DTOSeat
+com.flightbookings.flight_bookings.dtos.DTOUser
 com.flightbookings.flight_bookings.dtos.request
 com.flightbookings.flight_bookings.dtos.response
 com.flightbookings.flight_bookings.exceptions
