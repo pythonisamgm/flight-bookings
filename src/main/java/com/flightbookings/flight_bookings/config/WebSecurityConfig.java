@@ -53,6 +53,7 @@ public class WebSecurityConfig {
 
                                 .requestMatchers("/api/v1/bookings/create").hasAuthority("USER")
                                 .requestMatchers(HttpMethod.PUT,"/api/v1/bookings/{id}").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.PUT,"/api/v1/bookings/all").hasAuthority("ADMIN")
                                 //.requestMatchers("/api/v1/bookings/create2").permitAll()
                                 .requestMatchers(HttpMethod.GET,"/api/v1/bookings/{id}").hasAnyAuthority("ADMIN", "USER")
                                 .requestMatchers("/api/v1/bookings/").hasAnyAuthority("ADMIN", "USER")
@@ -81,10 +82,7 @@ public class WebSecurityConfig {
                                 .requestMatchers("api/v1/user/update/{id}").hasAuthority("ADMIN")
                                 .requestMatchers("api/v1/user/delete/{id}").hasAuthority("ADMIN")
 
-                                .requestMatchers(HttpMethod.POST,"api/v1/airport").hasAuthority("ADMIN")
-                                .requestMatchers(HttpMethod.GET,"api/v1/airport").hasAuthority("ADMIN")
-                                .requestMatchers(HttpMethod.GET,"api/v1/airport/{id}").hasAuthority("ADMIN")
-                                .requestMatchers(HttpMethod.PUT,"api/v1/airport/{id}").hasAuthority("ADMIN")
+                                .requestMatchers("api/airports").hasAuthority("ADMIN")
 
                                 .anyRequest().authenticated()
                 )
