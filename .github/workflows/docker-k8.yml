@@ -17,6 +17,16 @@ jobs:
       - name: Log in to Docker Hub
         run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
+      # Verificar si el JAR existe
+      - name: Verify JAR file existence
+        run: |
+          if [ ! -f target/flight-bookings-0.0.1-SNAPSHOT.jar ]; then
+            echo "JAR file not found! Ensure 'mvn clean install' has run successfully."
+            exit 1
+          else
+            echo "JAR file found. Proceeding with Docker build."
+          fi
+
       - name: Build Docker image
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/flight-bookings:latest .
 
