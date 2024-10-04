@@ -49,7 +49,14 @@ public class SwaggerConfig {
     public GroupedOpenApi publicApi() {
         return GroupedOpenApi.builder()
                 .group("public")
-                .pathsToMatch("/api/**")
+                .pathsToMatch(
+                        "/api/v1/auth/**",
+                        "/api/v1/auth/register",
+                        "/api/v1/auth/login",
+                        "/api/v1/bookings/create2",
+                        "api/v1/flight/{id}",
+                        "api/v1/flight/"
+                )
                 .build();
     }
 
@@ -62,7 +69,53 @@ public class SwaggerConfig {
     public GroupedOpenApi adminApi() {
         return GroupedOpenApi.builder()
                 .group("admin")
-                .pathsToMatch("/admin/**")
+                .pathsToMatch(
+                        "/api/v1/bookings/{id}",
+                        "/api/v1/bookings/",
+                        "/api/v1/bookings/update/{id}",
+                        "/api/v1/bookings/delete/{id}",
+                        "api/v1/flight/create",
+                        "api/v1/flight/update/{id}",
+                        "api/v1/flight/delete/{id}",
+                        "api/v1/flight/{id}/cancel",
+                        "api/v1/flight/{id}/delay",
+                        "api/v1/flight/updateAvailability",
+                        "api/v1/flight/byAirplaneType",
+                        "/api/v1/passengers/create",
+                        "/api/v1/passengers/{id}",
+                        "/api/v1/passengers",
+                        "/api/v1/passengers/update/{id}",
+                        "/api/v1/passengers/delete/{id}",
+                        "api/v1/user/create",
+                        "api/v1/user/{id}",
+                        "api/v1/user/",
+                        "api/v1/user/update/{id}",
+                        "api/v1/user/delete/{id}",
+                        "api/v1/airport",
+                        "api/v1/airport/{id}"
+                )
+                .build();
+    }
+
+    /**
+     * Configures API documentation for admin endpoints.
+     *
+     * @return a GroupedOpenApi instance for admin endpoints.
+     */
+    @Bean
+    public GroupedOpenApi userApi() {
+        return GroupedOpenApi.builder()
+                .group("user")
+                .pathsToMatch(
+                        "/api/v1/bookings/create",
+                        "/api/v1/bookings/{id}",
+                        "/api/v1/bookings/",
+                        "/api/v1/passengers/create",
+                        "/api/v1/passengers/{id}",
+                        "/api/v1/passengers",
+                        "/api/v1/passengers/update/{id}",
+                        "/api/v1/passengers/delete/{id}"
+                )
                 .build();
     }
 }
