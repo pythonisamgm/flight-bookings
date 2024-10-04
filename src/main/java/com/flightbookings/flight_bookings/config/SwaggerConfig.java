@@ -119,7 +119,7 @@ public class SwaggerConfig {
         return GroupedOpenApi.builder()
                 .group("user")
                 .pathsToMatch(
-                        "/api/v1/bookings/create",
+                        "/api/v1/bookings/create/{flightId}/{passengerId}/{seatName}/{userId}",
                         "/api/v1/bookings/{id}",
                         "/api/v1/bookings/",
 
@@ -129,7 +129,7 @@ public class SwaggerConfig {
                         "/api/v1/passengers/update/{id}",
                         "/api/v1/passengers/delete/{id}"
                 )
-                .pathsToExclude("/api/v1/bookings/create2")
+                .pathsToExclude("/api/v1/bookings/create2", "/api/v1/bookings/all")
                 .build();
     }
 }
