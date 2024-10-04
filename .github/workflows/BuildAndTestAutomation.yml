@@ -47,7 +47,7 @@ jobs:
           echo "spring.datasource.username=root" >> src/main/resources/application-test.properties
           echo "spring.datasource.password=" >> src/main/resources/application-test.properties
           echo "spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver" >> src/main/resources/application-test.properties
-          echo "spring.jpa.hibernate.ddl-auto=create-drop" >> src/main/resources/application-test.properties
+          echo "spring.jpa.hibernate.ddl-auto=update" >> src/main/resources/application-test.properties
           echo "spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect" >> src/main/resources/application-test.properties
           echo "spring.sql.init.mode=always" >> src/main/resources/application-test.properties
 
