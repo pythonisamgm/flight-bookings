@@ -1,4 +1,4 @@
-name: Build and Automated Testing
+name: Docker
 
 on:
   push:
@@ -78,7 +78,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run Database Migrations
-        uses: guibranco/github-mysql-migration-action@latest
+        uses: guibranco/github-mysql-migration-action@v1.0
         env:
           MYSQL_PWD: ${{ secrets.MYSQL_PASSWORD }}
         with:
