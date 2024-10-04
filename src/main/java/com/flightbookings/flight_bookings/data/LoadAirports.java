@@ -13,6 +13,9 @@ import java.util.Set;
 public class LoadAirports implements CommandLineRunner {
     private final AirportService airportService;
 
+    // Cambiar esta variable a false para inhabilitar la carga
+    private static final boolean ENABLE_DATA_LOADING = false;
+
     public LoadAirports(AirportService airportService) {
         this.airportService = airportService;
     }
