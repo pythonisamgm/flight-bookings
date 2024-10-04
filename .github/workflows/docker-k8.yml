@@ -28,6 +28,12 @@ jobs:
     # Imprimir el directorio de trabajo para depurar
       - name: Print working directory
         run: pwd
+      - name: Check MySQL connection
+        run: |
+          until mysql -h 127.0.0.1 -P 3306 -uroot -prootpass -e "SHOW DATABASES"; do
+            echo "Waiting for MySQL...";
+            sleep 5;
+          done
       # Compilar el proyecto y generar el archivo JAR
       - name: Build JAR with Maven
         run: mvn clean install
