@@ -1,4 +1,9 @@
-
+CREATE TABLE IF NOT EXISTS Airport (
+    airport_code VARCHAR(3) PRIMARY KEY,
+    airport_name VARCHAR(100),
+    city VARCHAR(50),
+    country VARCHAR(50)
+);
 INSERT INTO Airport (airport_code, airport_name, city, country) VALUES
 ('MAD', 'Madrid-Barajas Adolfo Suárez', 'Madrid', 'España'),
 ('BCN', 'Barcelona-El Prat', 'Barcelona', 'España'),
