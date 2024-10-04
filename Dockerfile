@@ -8,7 +8,7 @@ EXPOSE 8080
 WORKDIR /root
 
 #Copiar el código fuente (*.jar) dentro del directorio raiz que creamos para el contenedor
-COPY target/demo-0.0.1-SNAPSHOT.jar /src/app.jar
+COPY target/flight-bookings-0.0.1-SNAPSHOT.jar /src/app.jar
 
 #Levantar nuestra aplicación cuando el contenedor inicie
 ENTRYPOINT ["java","-jar","/src/app.jar"]
