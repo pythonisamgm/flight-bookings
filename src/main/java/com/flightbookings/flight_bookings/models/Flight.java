@@ -110,14 +110,13 @@ public class Flight {
      * List of airport origin associated with this flight.
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "origin_airport_id")
+    @JoinColumn(name = "origin_airport_code", referencedColumnName = "airport_code", nullable = false)
     private Airport originAirport;
-
     /**
      * List of airport destination associated with this flight.
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "destination_airport_id")
+    @JoinColumn(name = "destination_airport_code", referencedColumnName = "airport_code", nullable = false)
     private Airport destinationAirport;
 
     /**
@@ -137,13 +136,16 @@ public class Flight {
      * @param availability  The availability status.
      * @param numRows       The number of rows.
      * @param flightPrice   The price of the flight.
-     * @param seatList      The list of seats.
+     * @param seats         The list of seats.
      * @param bookingList   The list of bookings.
+     * @param originAirport The origin airport.
+     * @param destinationAirport The destination airport.
      */
     public Flight(Long id, int flightNumber, LocalDateTime departureTime, LocalDateTime arrivalTime,
                   EFlightAirplane flightAirplane, int capacityPlane, boolean availability, int numRows,
-                  BigDecimal flightPrice, List<Seat> seatList, List<Booking> bookingList) {
-        this.flightId = flightId;
+                  BigDecimal flightPrice, List<Seat> seats, List<Booking> bookingList,
+                  Airport originAirport, Airport destinationAirport) {
+        this.flightId = id;
         this.flightNumber = flightNumber;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
@@ -152,9 +154,11 @@ public class Flight {
         this.availability = availability;
         this.numRows = numRows;
         this.flightPrice = flightPrice;
-        this.flightDuration = flightDuration; // Inicialización de la duración
-        this.originAirport = originAirport;
-        this.destinationAirport = destinationAirport;
+        this.seats = seats; // Asignación correcta de seats
+        this.bookingList = bookingList;
+        this.flightDuration = Duration.between(departureTime, arrivalTime); // Cálculo de flightDuration
+        this.originAirport = originAirport; // Asignación del aeropuerto de origen
+        this.destinationAirport = destinationAirport; // Asignación del aeropuerto de destino
     }
 
     /**
