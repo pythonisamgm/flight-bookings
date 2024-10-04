@@ -6,6 +6,7 @@ import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
+import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -130,6 +131,22 @@ public class SwaggerConfig {
                         "/api/v1/passengers/delete/{id}"
                 )
                 .pathsToExclude("/api/v1/bookings/create2", "/api/v1/bookings/all")
+                .addOpenApiCustomizer(userCustomizer())
                 .build();
+    }
+
+    /**
+     * Customizes the OpenAPI documentation for user endpoints.
+     * This method removes the PUT method for the path "/api/v1/bookings/{id}" in the user group.
+     *
+     * @return OpenApiCustomiser instance to customize the OpenAPI spec.
+     */
+    @Bean
+    public OpenApiCustomizer userCustomizer() {
+        return openApi -> openApi.getPaths().forEach((path, pathItem) -> {
+            if ("/api/v1/bookings/{id}".equals(path)) {
+                pathItem.setPut(null);
+            }
+        });
     }
 }
