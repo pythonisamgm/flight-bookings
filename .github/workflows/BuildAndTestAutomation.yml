@@ -17,12 +17,12 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      mysql:
+      db:
         image: mysql:8.0
         ports:
           - 3306:3306
         env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+          MYSQL_ROOT_PASSWORD: rootpassword
           MYSQL_DATABASE: flight_bookings_test
 
         options: >-
@@ -44,11 +44,28 @@ jobs:
       - name: Create application-test.properties
         run: |
           echo "spring.datasource.url=jdbc:mysql://localhost:3306/flight_bookings_test" > src/main/resources/application-test.properties
-          echo "spring.datasource.username=testuser" >> src/main/resources/application-test.properties
-          echo "spring.datasource.password=testpass" >> src/main/resources/application-test.properties
+          echo "spring.datasource.username=root" >> src/main/resources/application-test.properties
+          echo "spring.datasource.password=rootpassword" >> src/main/resources/application-test.properties
           echo "spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver" >> src/main/resources/application-test.properties
           echo "spring.jpa.hibernate.ddl-auto=create-drop" >> src/main/resources/application-test.properties
           echo "spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect" >> src/main/resources/application-test.properties
+
+      - name: Wait for MySQL to be ready
+        run: |
+          echo "Esperando a que MySQL esté listo..."
+          max_retries=10
+          for i in $(seq 1 $max_retries); do
+            if mysqladmin ping -h 127.0.0.1 --silent; then
+              echo "MySQL está listo"
+              break
+            fi
+            echo "Esperando MySQL... Intento $i/$max_retries"
+            if [ $i -eq $max_retries ]; then
+              echo "MySQL no se pudo conectar después de $max_retries intentos. Abortando."
+              exit 1
+            fi
+            sleep 5
+          done
 
       - name: Build API
         run: mvn clean install
