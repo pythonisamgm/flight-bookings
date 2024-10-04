@@ -64,14 +64,12 @@ public class UserController {
     @Operation(summary = "Update a user")
     @PutMapping("/update/{id}")
     public ResponseEntity<UserDTO> updateUser(@Parameter(description = "ID of the user to be updated") @PathVariable Long id, @RequestBody UserDTO userDTO) {
-        // Primero, obtenemos el usuario existente
         Optional<User> existingUserOptional = Optional.ofNullable(userService.getUserById(id));
 
         if (existingUserOptional.isPresent()) {
             User existingUser = existingUserOptional.get();
-            // Mapeamos el DTO al usuario existente
             User user = userConverter.dtoToUser(userDTO, existingUser);
-            User updatedUser = userService.updateUser(id, user); // Asegúrate de que este método acepte id y user
+            User updatedUser = userService.updateUser(id, user);
             return ResponseEntity.ok(userConverter.userToDto(updatedUser));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
