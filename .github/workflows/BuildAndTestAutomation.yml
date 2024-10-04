@@ -17,13 +17,13 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      db:
+      mysql_service:
         image: mysql:8.0
         ports:
           - 3306:3306
         env:
-          MYSQL_ROOT_PASSWORD: rootpassword
-          MYSQL_DATABASE: flight_bookings_test
+          MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+          MYSQL_DATABASE: db_flight-bookings
 
         options: >-
           --health-cmd="mysqladmin ping --silent"
@@ -43,12 +43,13 @@ jobs:
 
       - name: Create application-test.properties
         run: |
-          echo "spring.datasource.url=jdbc:mysql://localhost:3306/flight_bookings_test" > src/main/resources/application-test.properties
+          echo "spring.datasource.url=jdbc:mysql://mysql_service:3306/db_flight-bookings" > src/main/resources/application-test.properties
           echo "spring.datasource.username=root" >> src/main/resources/application-test.properties
-          echo "spring.datasource.password=rootpassword" >> src/main/resources/application-test.properties
+          echo "spring.datasource.password=" >> src/main/resources/application-test.properties
           echo "spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver" >> src/main/resources/application-test.properties
           echo "spring.jpa.hibernate.ddl-auto=create-drop" >> src/main/resources/application-test.properties
           echo "spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect" >> src/main/resources/application-test.properties
+          echo "spring.sql.init.mode=always" >> src/main/resources/application-test.properties
 
       - name: Wait for MySQL to be ready
         run: |
