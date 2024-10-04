@@ -98,9 +98,9 @@ public class SwaggerConfig {
     }
 
     /**
-     * Configures API documentation for admin endpoints.
+     * Configures API documentation for user endpoints.
      *
-     * @return a GroupedOpenApi instance for admin endpoints.
+     * @return a GroupedOpenApi instance for user endpoints.
      */
     @Bean
     public GroupedOpenApi userApi() {
