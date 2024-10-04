@@ -2,7 +2,6 @@ package com.flightbookings.flight_bookings.controllers;
 
 import com.flightbookings.flight_bookings.models.Booking;
 import com.flightbookings.flight_bookings.models.User;
-import com.flightbookings.flight_bookings.services.UserServiceImpl;
 import com.flightbookings.flight_bookings.services.interfaces.BookingService;
 import com.flightbookings.flight_bookings.services.interfaces.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,12 +13,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import java.security.Principal;
 import java.util.List;
+
 /**
  * Controller for managing bookings, including creating, updating, retrieving, and deleting bookings.
  */
@@ -30,6 +26,7 @@ import java.util.List;
 public class BookingController {
     private final BookingService bookingService;
     private final UserService userService;
+
     /**
      * Constructor to initialize the BookingController with BookingService and UserService.
      *
@@ -40,6 +37,7 @@ public class BookingController {
         this.bookingService = bookingService;
         this.userService = userService;
     }
+
     /**
      * Creates a new booking.
      *
@@ -52,15 +50,16 @@ public class BookingController {
      */
     @Operation(summary = "Create a new booking")
     @PostMapping(value = "/create/{flightId}/{passengerId}/{seatName}/{userId}")
-    public ResponseEntity<Booking> createBooking(@PathVariable("flightId") Long flightId,
-                                                 @PathVariable("passengerId") Long passengerId,
-                                                 @PathVariable("seatName") String seatName,
-                                                 @PathVariable("userId") Long userId,
+    public ResponseEntity<Booking> createBooking(@PathVariable Long flightId,
+                                                 @PathVariable Long passengerId,
+                                                 @PathVariable String seatName,
+                                                 @PathVariable Long userId,
                                                  @AuthenticationPrincipal Authentication authentication) {
         User user = userService.findByUsername(authentication.getName());
         Booking booking = bookingService.createBooking(flightId, passengerId, seatName, userId);
         return new ResponseEntity<>(booking, HttpStatus.CREATED);
     }
+
     /**
      * Updates an existing booking.
      *
@@ -68,30 +67,37 @@ public class BookingController {
      * @param updatedBooking the booking object with updated details.
      * @return the updated booking.
      */
-    @Operation(summary =  "Update existing booking")
+    @Operation(summary = "Update existing booking")
     @PutMapping("/{id}")
-    public ResponseEntity<Booking> updateBooking(@Parameter(description = "ID of the booking  to be retrieved") @PathVariable Long id, @RequestBody Booking updatedBooking) {
+    public ResponseEntity<Booking> updateBooking(@Parameter(description = "ID of the booking to be updated") @PathVariable Long id, @RequestBody Booking updatedBooking) {
         updatedBooking.setBookingId(id);
         Booking booking = bookingService.updateBooking(updatedBooking);
         return new ResponseEntity<>(booking, HttpStatus.OK);
     }
 
-    @Operation(summary =  "Create a new booking. Version 1")
-    @PostMapping(value="/create2",consumes = "application/json")
+    /**
+     * Alternative method to create a new booking with a booking object.
+     *
+     * @param booking the booking object to be created.
+     * @return the created booking.
+     */
+    @Operation(summary = "Create a new booking. Version 1")
+    @PostMapping(value = "/create2", consumes = "application/json")
     public ResponseEntity<Booking> createBooking2(@RequestBody Booking booking) {
         Booking newBooking = bookingService.createBooking2(booking);
         return new ResponseEntity<>(newBooking, HttpStatus.CREATED);
     }
+
     /**
      * Retrieves a booking by its ID.
      *
-     * @param id       the ID of the booking.
+     * @param id        the ID of the booking.
      * @param principal the principal object to get the current user.
      * @return the booking if found, otherwise a 404 response.
      */
-    @Operation(summary =  "Get booking by ID")
+    @Operation(summary = "Get booking by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<Booking> getBookingById(@Parameter(description = "ID of the booking  to be retrieved")@PathVariable Long id, Principal principal) {
+    public ResponseEntity<Booking> getBookingById(@Parameter(description = "ID of the booking to be retrieved") @PathVariable Long id, Principal principal) {
         User user = userService.findByUsername(principal.getName());
         Booking booking = bookingService.getBookingById(id, user);
 
@@ -101,19 +107,20 @@ public class BookingController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
     /**
      * Retrieves all bookings for the current user.
      *
-     *
      * @return the list of bookings.
      */
-    @Operation(summary =  "Get all the bookings for the current user")
+    @Operation(summary = "Get all bookings for the current user")
     @GetMapping("/")
     public ResponseEntity<List<Booking>> getAllBookings(Principal principal) {
         User user = userService.findByUsername(principal.getName());
         List<Booking> bookings = bookingService.getAllBookingsByUser(user);
         return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
+
     /**
      * Retrieves all bookings.
      *
@@ -126,9 +133,16 @@ public class BookingController {
         return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
 
-    @Operation(summary =  "Update an existing booking-Version 1")
+    /**
+     * Alternative method to update an existing booking.
+     *
+     * @param id            the ID of the booking to be updated.
+     * @param bookingDetails the booking details to update.
+     * @return the updated booking if successful, otherwise 404.
+     */
+    @Operation(summary = "Update an existing booking. Version 1")
     @PutMapping("/update/{id}")
-    public ResponseEntity<Booking> updateBooking2(@Parameter(description = "ID of the booking  to be retrieved")@PathVariable Long id, @RequestBody Booking bookingDetails) {
+    public ResponseEntity<Booking> updateBooking2(@Parameter(description = "ID of the booking to be updated") @PathVariable Long id, @RequestBody Booking bookingDetails) {
         Booking updatedBooking = bookingService.updateBooking2(id, bookingDetails);
         if (updatedBooking != null) {
             return new ResponseEntity<>(updatedBooking, HttpStatus.OK);
@@ -136,15 +150,16 @@ public class BookingController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
     /**
      * Deletes an existing booking by ID.
      *
      * @param id the ID of the booking to be deleted.
      * @return a 204 response if deleted, otherwise 404.
      */
-    @Operation(summary =  "Delete existing booking by ID")
+    @Operation(summary = "Delete existing booking by ID")
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteBooking(@Parameter(description = "ID of the booking  to be retrieved") @PathVariable Long id) {
+    public ResponseEntity<Void> deleteBooking(@Parameter(description = "ID of the booking to be deleted") @PathVariable Long id) {
         boolean isDeleted = bookingService.deleteBooking(id);
         if (isDeleted) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 /**
  * Controller for managing seat-related operations such as seat initialization.
  */
@@ -17,6 +18,7 @@ public class SeatController {
 
     private final SeatService seatService;
     private final FlightService flightService;
+
     /**
      * Constructor to initialize the SeatController with SeatService and FlightService.
      *
@@ -27,6 +29,7 @@ public class SeatController {
         this.seatService = seatService;
         this.flightService = flightService;
     }
+
     /**
      * Initializes seats for all flights.
      *
@@ -38,4 +41,3 @@ public class SeatController {
         return ResponseEntity.ok("Seats initialized for all flights.");
     }
 }
-
