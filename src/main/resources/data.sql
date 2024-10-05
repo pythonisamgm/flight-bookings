@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS Airport (
     city VARCHAR(50),
     country VARCHAR(50)
 );
-INSERT INTO Airport (airport_code, airport_name, city, country) VALUES
+INSERT IGNORE INTO Airport (airport_code, airport_name, city, country) VALUES
 ('MAD', 'Madrid-Barajas Adolfo Suárez', 'Madrid', 'España'),
 ('BCN', 'Barcelona-El Prat', 'Barcelona', 'España'),
 ('VLC', 'Valencia', 'Valencia', 'España'),
