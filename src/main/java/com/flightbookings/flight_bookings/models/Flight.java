@@ -360,13 +360,12 @@ public class Flight {
  //    this.destinationAirport = destinationAirport;
  //}
 
- //public Duration getFlightDuration() { // Método getter para flightDuration
- //    return flightDuration;
- //}
-
- //public void setFlightDuration(Duration flightDuration) { // Método setter para flightDuration
- //    this.flightDuration = flightDuration;
- //}
+ public Duration getFlightDuration() { // Método getter para flightDuration
+     return flightDuration;
+ }
+public void setFlightDuration(Duration flightDuration) { // Método setter para flightDuration
+     this.flightDuration = flightDuration;
+ }
 }
 
 //    public Set<Airport> getAirports() {
