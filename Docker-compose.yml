@@ -6,7 +6,7 @@ services:
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
       MYSQL_DATABASE: db_flight-bookings
     ports:
-      - "3307:3306"
+      - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
@@ -19,7 +19,7 @@ services:
     build: .
     container_name: flight-bookings
     ports:
-      - "8081:8080"
+      - "8080:8080"
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://host.docker.internal:3306/db_flight_bookings
       SPRING_DATASOURCE_USERNAME: root
