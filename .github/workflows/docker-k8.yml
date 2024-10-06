@@ -21,18 +21,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Set up MySQL in Docker using mirromutth/mysql-action
-      - name: Set up MySQL with Docker
+      # 2. Set up MySQL in Docker using mirromutth/mysql-action without password
+      - name: Set up MySQL with Docker (No Password)
         uses: mirromutth/mysql-action@v1.1
         with:
           host port: 3306
           container port: 3306
           mysql database: 'db_flight-bookings'
-          mysql root password: ''
-          mysql user: 'root'
-          mysql password: ''
+          mysql root password: ''  # Configura root sin contraseña
+          mysql user: 'root'       # Usuario root
+          mysql password: ''       # Sin contraseña
+          character set server: utf8mb4
+          collation server: utf8mb4_general_ci
+          mysql version: latest
 
-      # 3. Wait for MySQL to be ready
+      # 3. Wait for MySQL to be ready (No Password)
       - name: Wait for MySQL to be ready
         run: |
           max_attempts=5
@@ -59,7 +62,7 @@ jobs:
       - name: Create application-test.properties
         run: |
           echo "spring.datasource.url=jdbc:mysql://localhost:3306/flight_bookings_test" > src/main/resources/application-test.properties
-          echo "spring.datasource.username=testuser" >> src/main/resources/application-test.properties
+          echo "spring.datasource.username=root" >> src/main/resources/application-test.properties
           echo "spring.datasource.password=" >> src/main/resources/application-test.properties
           echo "spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver" >> src/main/resources/application-test.properties
           echo "spring.jpa.hibernate.ddl-auto=create-drop" >> src/main/resources/application-test.properties
