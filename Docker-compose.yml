@@ -3,7 +3,7 @@ services:
     image: mysql:8.0
     container_name: mysql_flight-bookings
     environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_ROOT_PASSWORD: 123456
       MYSQL_DATABASE: db_flight-bookings
     ports:
       - "3307:3306"
@@ -18,7 +18,7 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql_service:3306/db_flight-bookings
       SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD:
+      SPRING_DATASOURCE_PASSWORD: 123456
       SPRING_JPA_HIBERNATE_DDL_AUTO: create-drop
     depends_on:
       - mysql_service
