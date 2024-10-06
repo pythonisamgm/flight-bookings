@@ -16,7 +16,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,7 +51,7 @@ class FlightControllerTest {
         flight1.setFlightNumber(101);
         flight1.setDepartureTime(LocalDateTime.of(2024, 10, 19, 20, 10, 20));
         flight1.setArrivalTime(LocalDateTime.of(2024, 10, 19, 21, 10, 20));
-        flight1.setFlightAirplane(EFlightAirplane.Boeing_747);
+        flight1.setFlightAirplane(EFlightAirplane.BOEING_747);
         flight1.setCapacityPlane(200);
         flight1.setAvailability(true);
         flight1.setFlightPrice(BigDecimal.valueOf(150.00));
@@ -62,7 +61,7 @@ class FlightControllerTest {
         flight2.setFlightNumber(102);
         flight2.setDepartureTime(LocalDateTime.of(2024, 10, 19, 20, 10, 20));
         flight2.setArrivalTime(LocalDateTime.of(2024, 10, 19, 21, 10, 20));
-        flight2.setFlightAirplane(EFlightAirplane.Boeing_777);
+        flight2.setFlightAirplane(EFlightAirplane.BOEING_777);
         flight2.setCapacityPlane(250);
         flight2.setAvailability(true);
         flight2.setFlightPrice(BigDecimal.valueOf(175.00));
@@ -183,10 +182,10 @@ class FlightControllerTest {
     void test_Get_Flights_By_Airplane_Type() throws Exception {
         List<Flight> flightList = new ArrayList<>();
         flightList.add(flight1);
-        when(flightService.getFlightsByAirplaneType(EFlightAirplane.Boeing_747)).thenReturn(flightList);
+        when(flightService.getFlightsByAirplaneType(EFlightAirplane.BOEING_747)).thenReturn(flightList);
 
         mockMvc.perform(get("/api/v1/flight/byAirplaneType")
-                        .param("airplaneType", EFlightAirplane.Boeing_747.toString())
+                        .param("airplaneType", EFlightAirplane.BOEING_747.toString())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
