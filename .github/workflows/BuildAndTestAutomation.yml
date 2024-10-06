@@ -33,7 +33,6 @@ jobs:
           mysql user: 'root'             # Usuario root
           mysql password: '123456'       # Contraseña del usuario root
 
-      # 3. Esperar que MySQL esté listo
       - name: Wait for MySQL to be ready
         run: |
           max_attempts=5
