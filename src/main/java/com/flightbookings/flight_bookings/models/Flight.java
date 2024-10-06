@@ -10,7 +10,13 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.Set;import jakarta.persistence.*;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Represents a flight entity in the system.
  * Contains details such as the flight number, departure and arrival times, airplane type, and associated seats and bookings.
@@ -29,26 +35,24 @@ public class Flight {
     private Long flightId;
 
     /**
+     * The number of rows in the airplane for this flight.
+     */
+    @Schema(description = "Number of rows in the airplane")
+    @Column
+    private int numRows;
+    /**
      * The flight number.
      */
     @Schema(description = "Flight number")
     @Column
     private int flightNumber;
 
-    /**
-     * The number of rows in the airplane for this flight.
-     */
-    @Schema(description = "Number of rows in the airplane")
-    @Column
-    private int numRows;
-
-     /**
-     * The time when the flight departs.
-     */
-    @Schema(description = "Time of departure")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
-    @Column
-    private LocalDateTime departureTime;
+/*** The time when the flight departs.
+ */
+@Schema(description = "Time of departure")
+@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
+@Column
+private LocalDateTime departureTime;
 
     /**
      * The time when the flight arrives.
@@ -57,10 +61,6 @@ public class Flight {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     @Column
     private LocalDateTime arrivalTime;
-
-    @Schema(description = "Duration of the flight")
-    @Column
-    private Duration flightDuration;
 
     /**
      * The type of airplane used for this flight.
@@ -75,7 +75,6 @@ public class Flight {
     @Schema(description = "Capacity of the airplane")
     @Column
     private int capacityPlane;
-
     /**
      * The availability status of the flight.
      */
@@ -97,7 +96,6 @@ public class Flight {
     @JsonManagedReference(value = "flight-seat")
     @Schema(description = "List of seats associated with this flight.")
     private List<Seat> seats = new ArrayList<>();
-
     /**
      * List of bookings associated with this flight.
      */
@@ -106,20 +104,9 @@ public class Flight {
     @Schema(description = "List of bookings associated with this flight.")
     private List<Booking> bookingList;
 
-//    /**
-//     * List of airport origin associated with this flight.
-//     */
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "origin_airport_id")
-//    private Airport originAirport;
-//
-//    /**
-//     * List of airport destination associated with this flight.
-//     */
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "destination_airport_id")
-//    private Airport destinationAirport;
-
+    /*@ManyToMany(mappedBy = "flight", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonBackReference
+    private Set<Airport> airports;*/
     /**
      * Default constructor for Flight.
      */
@@ -142,8 +129,7 @@ public class Flight {
      */
     public Flight(Long id, int flightNumber, LocalDateTime departureTime, LocalDateTime arrivalTime,
                   EFlightAirplane flightAirplane, int capacityPlane, boolean availability, int numRows,
-                  BigDecimal flightPrice, List<Seat> seatList, List<Booking> bookingList) {
-        this.flightId = flightId;
+                  BigDecimal flightPrice, List<Seat> seatList, List<Booking> bookingList) { this.flightId = id;
         this.flightNumber = flightNumber;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
@@ -152,9 +138,9 @@ public class Flight {
         this.availability = availability;
         this.numRows = numRows;
         this.flightPrice = flightPrice;
-        this.flightDuration = flightDuration; // Inicialización de la duración
-        //this.originAirport = originAirport;
-        //this.destinationAirport = destinationAirport;
+        this.seats = seats;
+        this.bookingList = bookingList;
+        //this.airports = airports;
     }
 
     /**
@@ -183,7 +169,6 @@ public class Flight {
     public int getFlightNumber() {
         return flightNumber;
     }
-
     /**
      * Sets the flight number.
      *
@@ -210,14 +195,14 @@ public class Flight {
     public void setDepartureTime(LocalDateTime departureTime) {
         this.departureTime = departureTime;
     }
-    /**
-     * Gets the arrival time.
-     *
-     * @return The arrival time.
-     */
-    public LocalDateTime getArrivalTime() {
-        return arrivalTime;
-    }
+/**
+ * Gets the arrival time.
+ *
+ * @return The arrival time.
+ */
+public LocalDateTime getArrivalTime() {
+    return arrivalTime;
+}
 
     /**
      * Sets the arrival time.
@@ -244,7 +229,6 @@ public class Flight {
     public void setFlightAirplane(EFlightAirplane flightAirplane) {
         this.flightAirplane = flightAirplane;
     }
-
     /**
      * Gets the seating capacity of the airplane.
      *
@@ -271,7 +255,6 @@ public class Flight {
     public boolean isAvailability() {
         return availability;
     }
-
     /**
      * Sets the availability status of the flight.
      *
@@ -342,36 +325,4 @@ public class Flight {
     public void setBookingList(List<Booking> bookingList) {
         this.bookingList = bookingList;
     }
-
-
- //public Airport getOriginAirport() {
- //    return originAirport;
- //}
-
- //public void setOriginAirport(Airport originAirport) {
- //    this.originAirport = originAirport;
- //}
-
- //public Airport getDestinationAirport() {
- //    return destinationAirport;
- //}
-
- //public void setDestinationAirport(Airport destinationAirport) {
- //    this.destinationAirport = destinationAirport;
- //}
-
- public Duration getFlightDuration() { // Método getter para flightDuration
-     return flightDuration;
- }
-public void setFlightDuration(Duration flightDuration) { // Método setter para flightDuration
-     this.flightDuration = flightDuration;
- }
 }
-
-//    public Set<Airport> getAirports() {
-//        return airports;
-//    }
-//
-//    public void setAirports(Set<Airport> airports) {
-//        this.airports = airports;
-//    }

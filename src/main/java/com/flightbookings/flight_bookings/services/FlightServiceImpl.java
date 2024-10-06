@@ -5,7 +5,6 @@ import com.flightbookings.flight_bookings.models.EFlightAirplane;
 //import com.flightbookings.flight_bookings.repositories.IAirportRepository;
 import com.flightbookings.flight_bookings.repositories.IFlightRepository;
 import com.flightbookings.flight_bookings.repositories.ISeatRepository;
-import com.flightbookings.flight_bookings.services.interfaces.FlightDurationService;
 import com.flightbookings.flight_bookings.services.interfaces.FlightService;
 import com.flightbookings.flight_bookings.services.interfaces.SeatService;
 import org.springframework.stereotype.Service;
@@ -16,22 +15,43 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * Implementation of the FlightService interface for managing flight operations.
+ */
 @Service
 public class FlightServiceImpl implements FlightService {
 
     private final IFlightRepository flightRepository;
-    private final FlightDurationService flightDurationService;
+    private final ISeatRepository seatRepository;
+    private final SeatService seatService;
+//private final IAirportRepository airportRepository;
+/**
+ * Constructs a FlightServiceImpl with the required repositories and services.
+ *
+ * @param flightRepository the repository for managing flights.
+ * @param seatRepository   the repository for managing seats.
+ * @param seatService      the service for managing seat operations.
+ */
+public FlightServiceImpl(IFlightRepository flightRepository, ISeatRepository seatRepository, SeatService seatService) {
+    this.flightRepository = flightRepository;
+    this.seatRepository = seatRepository;
+    //this.airportRepository = airportRepository;
+    this.seatService = seatService;
 
-    public FlightServiceImpl(IFlightRepository flightRepository, FlightDurationService flightDurationService) {
-        this.flightRepository = flightRepository;
-        this.flightDurationService = flightDurationService;
-    }
+}
 
     @Override
+    @Transactional
     public Flight createFlight(Flight flight) {
-        // Calcula la duración antes de guardar el vuelo
-        flight.setFlightDuration(flightDurationService.calculateFlightDuration(flight));
-        return flightRepository.save(flight);
+        flight.setSeats(new ArrayList<>());
+        Flight savedFlight = flightRepository.save(flight);
+        List<String> seatIdentifiers = seatService.initializeSeats(savedFlight, flight.getNumRows());
+        savedFlight.setSeats(seatRepository.findByFlight(savedFlight));
+        return savedFlight;
     }
 
     @Override
@@ -46,55 +66,20 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     public Flight updateFlight(Long id, Flight flightDetails) {
-        Flight existingFlight = getFlightById(id);
-        if (existingFlight != null) {
-            existingFlight.setFlightNumber(flightDetails.getFlightNumber());
-            existingFlight.setDepartureTime(flightDetails.getDepartureTime());
-            existingFlight.setArrivalTime(flightDetails.getArrivalTime());
-            existingFlight.setFlightAirplane(flightDetails.getFlightAirplane());
-            existingFlight.setCapacityPlane(flightDetails.getCapacityPlane());
-            existingFlight.setAvailability(flightDetails.isAvailability());
-            existingFlight.setNumRows(flightDetails.getNumRows());
-            existingFlight.setFlightPrice(flightDetails.getFlightPrice());
-
-            existingFlight.setFlightDuration(flightDurationService.calculateFlightDuration(existingFlight));
-            return flightRepository.save(existingFlight);
+        if (flightRepository.existsById(id)) {
+            flightDetails.setFlightId(id);
+            return flightRepository.save(flightDetails);
         }
         return null;
     }
 
     @Override
     public boolean deleteFlight(Long id) {
-        Flight flight = getFlightById(id);
-        if (flight != null) {
-            flightRepository.delete(flight);
+        if (flightRepository.existsById(id)) {
+            flightRepository.deleteById(id);
             return true;
         }
         return false;
-    }
-
-    @Override
-    public void cancelFlight(Long id) {
-        // Implementación de la lógica para cancelar el vuelo
-    }
-
-    @Override
-    public void delayFlight(Long id, LocalDateTime departureTime) {
-        Flight flight = getFlightById(id);
-        if (flight != null) {
-            flight.setDepartureTime(departureTime);
-            flight.setFlightDuration(flightDurationService.calculateFlightDuration(flight));
-            flightRepository.save(flight);
-        }
-    }
-
-    @Override
-    public void updateFlightAvailability() {
-    }
-
-    @Override
-    public List<Flight> getFlightsByAirplaneType(EFlightAirplane airplaneType) {
-        return null;
     }
 
 //    public List<Flight> searchFlightsByCity(String city) {
@@ -103,6 +88,37 @@ public class FlightServiceImpl implements FlightService {
 //                .filter(flight -> flight.getAirports().stream().anyMatch(airport -> airport.getCity().equalsIgnoreCase(city)))
 //                .collect(Collectors.toList());
 //    }
-
-
+@Override
+public void cancelFlight(Long id) {
+    Flight flight = getFlightById(id);
+    if (flight != null) {
+        flight.setAvailability(false);
+        flightRepository.save(flight);
+    }
+}
+    @Override
+    public void delayFlight(Long id, LocalDateTime newDepartureTime) {
+        Flight flight = getFlightById(id);
+        if (flight != null) {
+            flight.setDepartureTime(newDepartureTime);
+            flightRepository.save(flight);
+        }
+    }
+    @Override
+    public List<Flight> getFlightsByAirplaneType(EFlightAirplane airplaneType) {
+        return flightRepository.findAll()
+                .stream()
+                .filter(flight -> flight.getFlightAirplane() == airplaneType)
+                .collect(Collectors.toList());
+    } @Override
+    public void updateFlightAvailability() {
+        LocalDateTime now = LocalDateTime.now();
+        List<Flight> flights = flightRepository.findAll();
+        for (Flight flight : flights) {
+            if (flight.getArrivalTime().isBefore(now) || flight.getSeats().isEmpty()) {
+                flight.setAvailability(false);
+                flightRepository.save(flight);
+            }
+        }
+    }
 }
