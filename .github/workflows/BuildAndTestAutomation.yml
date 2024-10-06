@@ -77,8 +77,8 @@ jobs:
 
       # 8. Run unit tests
       - name: Run Unit Tests
-        run: mvn test
+        run: mvn test -Dspring.profiles.active=test
 
       # 9. Run integration tests
       - name: Run Integration Tests
-        run: mvn verify
+        run: mvn verify -Dspring.profiles.active=test
