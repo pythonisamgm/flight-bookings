@@ -73,7 +73,7 @@ jobs:
 
       # 7. Build API with Maven
       - name: Build API
-        run: mvn clean install
+        run: mvn clean install -DskipTests
 
       # 8. Run unit tests
       - name: Run Unit Tests
