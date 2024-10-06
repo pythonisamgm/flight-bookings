@@ -106,19 +106,19 @@ public class Flight {
     @Schema(description = "List of bookings associated with this flight.")
     private List<Booking> bookingList;
 
-    /**
-     * List of airport origin associated with this flight.
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "origin_airport_id")
-    private Airport originAirport;
-
-    /**
-     * List of airport destination associated with this flight.
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "destination_airport_id")
-    private Airport destinationAirport;
+//    /**
+//     * List of airport origin associated with this flight.
+//     */
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "origin_airport_id")
+//    private Airport originAirport;
+//
+//    /**
+//     * List of airport destination associated with this flight.
+//     */
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "destination_airport_id")
+//    private Airport destinationAirport;
 
     /**
      * Default constructor for Flight.
@@ -153,8 +153,8 @@ public class Flight {
         this.numRows = numRows;
         this.flightPrice = flightPrice;
         this.flightDuration = flightDuration; // Inicialización de la duración
-        this.originAirport = originAirport;
-        this.destinationAirport = destinationAirport;
+        //this.originAirport = originAirport;
+        //this.destinationAirport = destinationAirport;
     }
 
     /**
@@ -344,29 +344,29 @@ public class Flight {
     }
 
 
-    public Airport getOriginAirport() {
-        return originAirport;
-    }
+ //public Airport getOriginAirport() {
+ //    return originAirport;
+ //}
 
-    public void setOriginAirport(Airport originAirport) {
-        this.originAirport = originAirport;
-    }
+ //public void setOriginAirport(Airport originAirport) {
+ //    this.originAirport = originAirport;
+ //}
 
-    public Airport getDestinationAirport() {
-        return destinationAirport;
-    }
+ //public Airport getDestinationAirport() {
+ //    return destinationAirport;
+ //}
 
-    public void setDestinationAirport(Airport destinationAirport) {
-        this.destinationAirport = destinationAirport;
-    }
+ //public void setDestinationAirport(Airport destinationAirport) {
+ //    this.destinationAirport = destinationAirport;
+ //}
 
-    public Duration getFlightDuration() { // Método getter para flightDuration
-        return flightDuration;
-    }
+ //public Duration getFlightDuration() { // Método getter para flightDuration
+ //    return flightDuration;
+ //}
 
-    public void setFlightDuration(Duration flightDuration) { // Método setter para flightDuration
-        this.flightDuration = flightDuration;
-    }
+ //public void setFlightDuration(Duration flightDuration) { // Método setter para flightDuration
+ //    this.flightDuration = flightDuration;
+ //}
 }
 
 //    public Set<Airport> getAirports() {
