@@ -35,10 +35,10 @@
 --('VIE', 'Vienna International Airport', 'Viena', 'AUSTRIA'),
 --('LIS', 'Lisbon Portela Airport', 'Lisboa', 'PORTUGAL'),
 --('BRU', 'Brussels Airport', 'Bruselas', 'BELGICA');
-INSERT INTO flight (availability, capacity_plane, flight_airplane, flight_number, flight_price, num_rows, arrival_time, departure_time, flight_duration)
+INSERT INTO flight (availability, capacity_plane, flight_airplane, flight_number, flight_price, num_rows, arrival_time, departure_time)
 VALUES
-(b'1', '400', '3', '1001', '250.50', '5', '2024-09-04 11:47:46.000000', '2024-09-05 11:47:46.000000', '240'),
-(b'1', '180', '8', '1002', '300.00', '3', '2024-09-06 12:00:00.000000', '2024-09-06 10:00:00.000000', '120');
+(b'1', '400', '3', '1001', '250.50', '5', '2024-09-04 11:47:46.000000', '2024-09-05 11:47:46.000000'),
+(b'1', '180', '8', '1002', '300.00', '3', '2024-09-06 12:00:00.000000', '2024-09-06 10:00:00.000000');
 --(b'1', '550', '1', '1003', '400.75', '70', '2024-09-07 14:30:00.000000', '2024-09-07 12:30:00.000000', '3'),
 --(b'1', '280', '9', '1004', '280.25', '35', '2024-09-08 15:15:00.000000', '2024-09-08 13:15:00.000000', '4'),
 --(b'1', '360', '5', '1005', '320.00', '45', '2024-09-09 16:45:00.000000', '2024-09-09 14:45:00.000000', '5'),
