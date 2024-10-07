@@ -27,6 +27,7 @@ public interface FlightService {
      * @param id the ID of the flight to retrieve.
      * @return the Flight object if found, null otherwise.
      */
+
     Flight getFlightById(Long id);
 
     /**
@@ -34,6 +35,7 @@ public interface FlightService {
      *
      * @return a list of all Flight objects.
      */
+
     List<Flight> getAllFlights();
 
     /**
@@ -43,6 +45,7 @@ public interface FlightService {
      * @param flightDetails the updated Flight object.
      * @return the updated Flight object.
      */
+
     Flight updateFlight(Long id, Flight flightDetails);
 
     /**
@@ -51,7 +54,11 @@ public interface FlightService {
      * @param id the ID of the flight to delete.
      * @return true if the flight was successfully deleted, false otherwise.
      */
+
     boolean deleteFlight(Long id);
+
+
+    List<Flight> searchFlightsByCity(String city);
 
     /**
      * Cancels a flight.
@@ -59,21 +66,24 @@ public interface FlightService {
      * @param id the ID of the flight to cancel.
      * @return
      */
-    boolean cancelFlight(Long id);
+
+    void cancelFlight(Long id);
 
     /**
      * Delays a flight by updating its departure time.
      *
      * @param id            the ID of the flight to delay.
-     * @param departureTime the new departure time for the flight.
+     * @param newDepartureTime the new departure time for the flight.
      * @return
      */
-    boolean delayFlight(Long id, LocalDateTime departureTime);
+
+    void delayFlight(Long id, LocalDateTime newDepartureTime);
 
     /**
      * Updates the availability status of all flights.
      */
-    void updateFlightAvailability();
+
+    List<Flight> getFlightsByAirplaneType(EFlightAirplane airplaneType);
 
     /**
      * Retrieves flights by the type of airplane.
@@ -81,6 +91,6 @@ public interface FlightService {
      * @param airplaneType the type of airplane for the flights to retrieve.
      * @return a list of Flight objects that match the airplane type.
      */
-    List<Flight> getFlightsByAirplaneType(EFlightAirplane airplaneType);
 
+    void updateFlightAvailability();
 }
