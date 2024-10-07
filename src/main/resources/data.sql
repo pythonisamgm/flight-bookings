@@ -1,4 +1,4 @@
-
+DROP TABLE IF EXISTS flight;
 DROP TABLE IF EXISTS airport;
 
 CREATE TABLE airport (
@@ -19,17 +19,17 @@ INSERT INTO airport (airport_code, airport_name, city, country) VALUES
 ('PMI', 'Palma de Mallorca', 'Palma de Mallorca', 'ESPAÑA'),
 ('LPA', 'Gran Canaria', 'Las Palmas', 'ESPAÑA'),
 ('TFS', 'Tenerife Sur', 'Tenerife', 'ESPAÑA'),
-('LAX', 'Los Angeles International Airport', 'Los Ángeles', 'EE_UU'),
-('JFK', 'John F. Kennedy International Airport', 'Nueva York', 'EE_UU'),
-('ATL', 'Hartsfield-Jackson Atlanta International Airport', 'Atlanta', 'EE_UU'),
-('DFW', 'Dallas/Fort Worth International Airport', 'Dallas', 'EE_UU'),
+('LAX', 'Los Angeles International Airport', 'Los Ángeles', 'EE.UU.'),
+('JFK', 'John F. Kennedy International Airport', 'Nueva York', 'EE.UU.'),
+('ATL', 'Hartsfield-Jackson Atlanta International Airport', 'Atlanta', 'EE.UU.'),
+('DFW', 'Dallas/Fort Worth International Airport', 'Dallas', 'EE.UU.'),
 ('YYZ', 'Toronto Pearson International Airport', 'Toronto', 'CANADA'),
 ('GRU', 'São Paulo/Guarulhos International Airport', 'São Paulo', 'BRASIL'),
-('MEX', 'Mexico City International Airport', 'Ciudad de México', 'MEXICO'),
+('MEX', 'Mexico City International Airport', 'Ciudad de México', 'MÉXICO'),
 ('BOG', 'Bogotá El Dorado International Airport', 'Bogotá', 'COLOMBIA'),
-('CUN', 'Cancún International Airport', 'Cancún', 'MEXICO'),
-('LHR', 'London Heathrow Airport', 'Londres', 'REINO_UNIDO'),
-('AMS', 'Amsterdam Airport Schiphol', 'Ámsterdam', 'PAISES_BAJOS'),
+('CUN', 'Cancún International Airport', 'Cancún', 'MÉXICO'),
+('LHR', 'London Heathrow Airport', 'Londres', 'REINO UNIDO'),
+('AMS', 'Amsterdam Airport Schiphol', 'Ámsterdam', 'PAÍSES BAJOS'),
 ('CDG', 'Charles de Gaulle Airport', 'París', 'FRANCIA'),
 ('FRA', 'Frankfurt Airport', 'Fráncfort', 'ALEMANIA'),
 ('MUC', 'Munich Airport', 'Múnich', 'ALEMANIA'),
@@ -37,30 +37,26 @@ INSERT INTO airport (airport_code, airport_name, city, country) VALUES
 ('CPH', 'Copenhagen Airport', 'Copenhague', 'DINAMARCA'),
 ('VIE', 'Vienna International Airport', 'Viena', 'AUSTRIA'),
 ('LIS', 'Lisbon Portela Airport', 'Lisboa', 'PORTUGAL'),
-('BRU', 'Brussels Airport', 'Bruselas', 'BELGICA')
-ON CONFLICT (airport_code) DO NOTHING;
-
-DROP TABLE IF EXISTS flight;
+('BRU', 'Brussels Airport', 'Bruselas', 'BÉLGICA');
 
 CREATE TABLE flight (
-    flight_id SERIAL PRIMARY KEY,
-       flight_number INT NOT NULL,
-       num_rows INT NOT NULL,
-       departure_time TIMESTAMP NOT NULL,
-       arrival_time TIMESTAMP NOT NULL,
-       flight_duration INTERVAL, --que hago con esto?
-       airplane_type VARCHAR(50) NOT NULL,
-       capacity INT NOT NULL,
-       availability BOOLEAN NOT NULL,
-       price DECIMAL(10, 2) NOT NULL,
-       origin_airport_code VARCHAR(3) REFERENCES airport(airport_code),
-       destination_airport_code VARCHAR(3) REFERENCES airport(airport_code)
+    flight_id INT AUTO_INCREMENT PRIMARY KEY,
+    flight_number INT NOT NULL,
+    num_rows INT NOT NULL,
+    departure_time DATETIME NOT NULL,
+    arrival_time DATETIME NOT NULL,
+    flight_duration INT, -- En MySQL no hay un tipo INTERVAL, así que usaremos INT para duración en minutos.
+    airplane_type VARCHAR(50) NOT NULL,
+    capacity INT NOT NULL,
+    availability BOOLEAN NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    origin_airport_code VARCHAR(3),
+    destination_airport_code VARCHAR(3),
+    FOREIGN KEY (origin_airport_code) REFERENCES airport(airport_code),
+    FOREIGN KEY (destination_airport_code) REFERENCES airport(airport_code)
 );
 
-
-INSERT INTO flight
-(availability, capacity_plane, flight_airplane, flight_number, flight_price, num_rows, departure_time, arrival_time, flight_duration, origin_airport_id, destination_airport_id)
+INSERT INTO flight (availability, capacity, airplane_type, flight_number, price, num_rows, departure_time, arrival_time, flight_duration, origin_airport_code, destination_airport_code)
 VALUES
-('1001', '2024-10-12 08:00:00', '2024-10-12 12:00:00', 'Airbus A320', 180, 300.50, TRUE, 'MAD', 'LAX'),
-('1002', '2024-10-12 14:30:00', '2024-10-12 19:00:00', 'Boeing 737', 200, 450.75, FALSE, 'BCN', 'JFK')
-ON CONFLICT (flight_number) DO NOTHING;
+(TRUE, 180, 'Airbus A320', 1001, 300.50, 300, '2024-10-12 08:00:00', '2024-10-12 12:00:00', 240, 'MAD', 'LAX'),
+(FALSE, 200, 'Boeing 737', 1002, 450.75, 300, '2024-10-12 14:30:00', '2024-10-12 19:00:00', 210, 'BCN', 'JFK');
