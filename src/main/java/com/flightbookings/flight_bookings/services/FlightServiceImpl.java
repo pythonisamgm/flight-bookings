@@ -5,6 +5,7 @@ import com.flightbookings.flight_bookings.models.EFlightAirplane;
 //import com.flightbookings.flight_bookings.repositories.IAirportRepository;
 import com.flightbookings.flight_bookings.repositories.IFlightRepository;
 import com.flightbookings.flight_bookings.repositories.ISeatRepository;
+import com.flightbookings.flight_bookings.services.interfaces.FlightDurationService;
 import com.flightbookings.flight_bookings.services.interfaces.FlightService;
 import com.flightbookings.flight_bookings.services.interfaces.SeatService;
 import org.springframework.stereotype.Service;
@@ -22,12 +23,13 @@ public class FlightServiceImpl implements FlightService {
     private final ISeatRepository seatRepository;
     private final SeatService seatService;
     //private final IAirportRepository airportRepository;
+    private final FlightDurationService flightDurationService;
 
-    public FlightServiceImpl(IFlightRepository flightRepository, ISeatRepository seatRepository, SeatService seatService) {
+    public FlightServiceImpl(IFlightRepository flightRepository, ISeatRepository seatRepository, SeatService seatService, FlightDurationService flightDurationService) {
         this.flightRepository = flightRepository;
         this.seatRepository = seatRepository;
-        //this.airportRepository = airportRepository;
         this.seatService = seatService;
+        this.flightDurationService = flightDurationService;
     }
 
     @Override
@@ -35,6 +37,8 @@ public class FlightServiceImpl implements FlightService {
     public Flight createFlight(Flight flight) {
         flight.setSeats(new ArrayList<>());
         Flight savedFlight = flightRepository.save(flight);
+        int durationMinutes = flightDurationService.calculateFlightDuration(flight);
+        flight.setFlightDuration(durationMinutes);
         List<String> seatIdentifiers = seatService.initializeSeats(savedFlight, flight.getNumRows());
         savedFlight.setSeats(seatRepository.findByFlight(savedFlight));
         return savedFlight;
@@ -54,10 +58,15 @@ public class FlightServiceImpl implements FlightService {
     public Flight updateFlight(Long id, Flight flightDetails) {
         if (flightRepository.existsById(id)) {
             flightDetails.setFlightId(id);
+
+            int durationMinutes = flightDurationService.calculateFlightDuration(flightDetails);
+            flightDetails.setFlightDuration(durationMinutes);
+
             return flightRepository.save(flightDetails);
         }
         return null;
     }
+
 
     @Override
     public boolean deleteFlight(Long id) {

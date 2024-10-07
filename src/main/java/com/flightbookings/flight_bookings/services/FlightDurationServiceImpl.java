@@ -5,14 +5,20 @@ import com.flightbookings.flight_bookings.services.interfaces.FlightDurationServ
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 
 @Service
 public class FlightDurationServiceImpl implements FlightDurationService {
     @Override
-    public Duration calculateFlightDuration(Flight flight) {
-        if (flight.getDepartureTime() != null && flight.getArrivalTime() != null) {
-            return Duration.between(flight.getDepartureTime(), flight.getArrivalTime());
+    public int calculateFlightDuration(Flight flight) {
+        LocalDateTime departureTime = flight.getDepartureTime();
+        LocalDateTime arrivalTime = flight.getArrivalTime();
+
+        if (departureTime != null && arrivalTime != null) {
+            Duration duration = Duration.between(departureTime, arrivalTime);
+            return (int) duration.toMinutes();
         }
-        return null;
+
+        return 0;
     }
 }
