@@ -60,7 +60,7 @@ public class Flight {
 
     @Schema(description = "Duration of the flight")
     @Column
-    private Duration flightDuration;
+    private int flightDuration;
 
     /**
      * The type of airplane used for this flight.
@@ -360,11 +360,11 @@ public class Flight {
         this.destinationAirport = destinationAirport;
     }
 
-    public Duration getFlightDuration() { // Método getter para flightDuration
+    public int getFlightDuration() { // Método getter para flightDuration
         return flightDuration;
     }
 
-    public void setFlightDuration(Duration flightDuration) { // Método setter para flightDuration
+    public void setFlightDuration(int flightDuration) { // Método setter para flightDuration
         this.flightDuration = flightDuration;
     }
 }
