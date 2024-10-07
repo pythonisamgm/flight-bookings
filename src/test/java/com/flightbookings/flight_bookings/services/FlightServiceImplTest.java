@@ -2,6 +2,7 @@ package com.flightbookings.flight_bookings.services;
 
 import com.flightbookings.flight_bookings.models.Flight;
 import com.flightbookings.flight_bookings.models.EFlightAirplane;
+import com.flightbookings.flight_bookings.models.Seat;
 import com.flightbookings.flight_bookings.repositories.IFlightRepository;
 import com.flightbookings.flight_bookings.services.interfaces.FlightDurationService;
 import org.junit.jupiter.api.BeforeEach;
@@ -132,6 +133,37 @@ class FlightServiceImplTest {
 
         assertEquals(newDepartureTime, flight.getDepartureTime());
         verify(flightRepository).save(flight);
+    }
+
+    @Test
+    void testUpdateFlightAvailability() {
+        Flight flight1 = new Flight();
+        flight1.setFlightId(1L);
+        flight1.setDepartureTime(LocalDateTime.now().plusHours(1));
+        flight1.setAvailability(true);
+
+        Seat seat1 = new Seat();
+        seat1.setBooked(true);
+        Seat seat2 = new Seat();
+        seat2.setBooked(false);
+
+        flight1.setSeats(List.of(seat1, seat2));
+
+        Flight flight2 = new Flight();
+        flight2.setFlightId(2L);
+        flight2.setDepartureTime(LocalDateTime.now().minusHours(1));
+        flight2.setAvailability(true);
+        flight2.setSeats(List.of(seat1, seat2));
+
+        when(flightRepository.findAll()).thenReturn(List.of(flight1, flight2));
+
+        flightService.updateFlightAvailability();
+
+        assertTrue(flight1.isAvailability());
+        assertFalse(flight2.isAvailability());
+
+        verify(flightRepository).save(flight1);
+        verify(flightRepository).save(flight2);
     }
 
 }

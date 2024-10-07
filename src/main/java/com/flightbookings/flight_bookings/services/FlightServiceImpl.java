@@ -5,6 +5,7 @@ import com.flightbookings.flight_bookings.models.EFlightAirplane;
 import com.flightbookings.flight_bookings.repositories.IAirportRepository;
 import com.flightbookings.flight_bookings.repositories.IFlightRepository;
 import com.flightbookings.flight_bookings.repositories.ISeatRepository;
+import com.flightbookings.flight_bookings.models.Seat;
 
 import com.flightbookings.flight_bookings.services.interfaces.FlightService;
 import org.springframework.stereotype.Service;
@@ -96,8 +97,11 @@ public class FlightServiceImpl implements FlightService {
     public void updateFlightAvailability() {
         LocalDateTime now = LocalDateTime.now();
         List<Flight> flights = flightRepository.findAll();
+
         for (Flight flight : flights) {
-            if (flight.getArrivalTime().isBefore(now) || flight.getSeats().isEmpty()) {
+            boolean allSeatsBooked = flight.getSeats().stream().allMatch(Seat::isBooked);
+
+            if (flight.getDepartureTime().isAfter(now) || allSeatsBooked) {
                 flight.setAvailability(false);
                 flightRepository.save(flight);
             }

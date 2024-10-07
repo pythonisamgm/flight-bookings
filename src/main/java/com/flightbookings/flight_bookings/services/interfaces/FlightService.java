@@ -58,7 +58,7 @@ public interface FlightService {
     boolean deleteFlight(Long id);
 
 
-    List<Flight> searchFlightsByCity(String city);
+
 
     /**
      * Cancels a flight.

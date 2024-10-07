@@ -1,5 +1,7 @@
 package com.flightbookings.flight_bookings.controllers;
 
+import com.flightbookings.flight_bookings.dtos.DTOAirport.AirportConverter;
+import com.flightbookings.flight_bookings.dtos.DTOAirport.AirportDTO;
 import com.flightbookings.flight_bookings.models.Airport;
 import com.flightbookings.flight_bookings.services.interfaces.AirportService;
 import org.springframework.http.HttpStatus;
@@ -12,20 +14,25 @@ import java.util.List;
 @RequestMapping("/api/airports")
 public class AirportController {
     private final AirportService airportService;
+    private final AirportConverter airportConverter;
 
-    public AirportController(AirportService airportService) {
+    public AirportController(AirportService airportService, AirportConverter airportConverter) {
         this.airportService = airportService;
+        this.airportConverter = airportConverter;
     }
 
     @GetMapping
-    public ResponseEntity<List<Airport>> getAllAirports() {
+    public ResponseEntity<List<AirportDTO>> getAllAirports() {
         List<Airport> airports = airportService.getAllAirports();
-        return new ResponseEntity<>(airports, HttpStatus.OK);
+        List<AirportDTO> airportDTOs = airportConverter.airportsToDtoList(airports);
+        return new ResponseEntity<>(airportDTOs, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<Airport> createAirport(@RequestBody Airport airport) {
+    public ResponseEntity<AirportDTO> createAirport(@RequestBody AirportDTO airportDTO) {
+        Airport airport = airportConverter.dtoToAirport(airportDTO);
         Airport createdAirport = airportService.createAirport(airport);
-        return new ResponseEntity<>(createdAirport, HttpStatus.CREATED);
+        AirportDTO createdAirportDTO = airportConverter.airportToDto(createdAirport);
+        return new ResponseEntity<>(createdAirportDTO, HttpStatus.CREATED);
     }
 }
