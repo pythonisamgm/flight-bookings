@@ -45,5 +45,5 @@ public interface SeatService {
      * @return the reserved Seat object.
      */
     @Transactional
-    SeatDTO reserveSeat(Flight flight, String seatName);
+    Seat reserveSeat(Flight flight, String seatName);
 }
