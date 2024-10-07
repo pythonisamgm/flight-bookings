@@ -11,6 +11,7 @@ import com.flightbookings.flight_bookings.services.interfaces.SeatService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,17 +22,37 @@ public class FlightServiceImpl implements FlightService {
 
     private final IFlightRepository flightRepository;
     private final FlightDurationService flightDurationService;
+    private final SeatService seatService;
+    private final ISeatRepository seatRepository;
 
-    public FlightServiceImpl(IFlightRepository flightRepository, FlightDurationService flightDurationService) {
+
+    public FlightServiceImpl(IFlightRepository flightRepository, FlightDurationService flightDurationService, SeatService seatService, ISeatRepository seatRepository) {
         this.flightRepository = flightRepository;
         this.flightDurationService = flightDurationService;
+        this.seatService = seatService;
+        this.seatRepository = seatRepository;
     }
+
+   /* @Override
+    public Flight createFlight(Flight flight) {
+        flight.setFlightDuration(flightDurationService.calculateFlightDuration(flight));
+        return flightRepository.save(flight);
+    }*/
 
     @Override
     public Flight createFlight(Flight flight) {
-        // Calcula la duración antes de guardar el vuelo
-        flight.setFlightDuration(flightDurationService.calculateFlightDuration(flight));
-        return flightRepository.save(flight);
+
+       flight.setFlightDuration(flightDurationService.calculateFlightDuration(flight));
+
+       flight.setSeats(new ArrayList<>());
+
+       Flight savedFlight = flightRepository.save(flight);
+
+       List<String> seatIdentifiers = seatService.initializeSeats(savedFlight, flight.getNumRows());
+
+        savedFlight.setSeats(seatRepository.findByFlight(savedFlight));
+
+        return savedFlight;
     }
 
     @Override
@@ -75,7 +96,11 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     public void cancelFlight(Long id) {
-        // Implementación de la lógica para cancelar el vuelo
+        Flight flight = getFlightById(id);
+        if (flight != null) {
+            flight.setAvailability(false);
+            flightRepository.save(flight);
+        }
     }
 
     @Override
@@ -90,6 +115,14 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     public void updateFlightAvailability() {
+        LocalDateTime now = LocalDateTime.now();
+        List<Flight> flights = flightRepository.findAll();
+        for (Flight flight : flights) {
+            if (flight.getArrivalTime().isBefore(now) || flight.getSeats().isEmpty()) {
+                flight.setAvailability(false);
+                flightRepository.save(flight);
+            }
+        }
     }
 
     @Override
