@@ -1,15 +1,15 @@
 package com.flightbookings.flight_bookings.models;
 
 public enum EFlightAirplane {
-    BOEING_747,
-    BOEING_777,
-    BOEING_787,
-    AIRBUS_A330,
-    AIRBUS_A340,
-    AIRBUS_A350,
-    AIRBUS_A380,
-    BOEING_737,
-    BOEING_757,
-    AIRBUS_A320,
-    AIRBUS_A321,
+    Boeing_747,
+    Boeing_777,
+    Boeing_787,
+    Airbus_A330,
+    Airbus_A340,
+    Airbus_A350,
+    Airbus_A380,
+    Boeing_737,
+    Boeing_757,
+    Airbus_A320,
+    Airbus_A321,
 }
