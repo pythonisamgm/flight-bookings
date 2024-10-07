@@ -1,5 +1,6 @@
 package com.flightbookings.flight_bookings.services;
 
+import com.flightbookings.flight_bookings.models.BookingStatus;
 import com.flightbookings.flight_bookings.models.Flight;
 import com.flightbookings.flight_bookings.models.EFlightAirplane;
 import com.flightbookings.flight_bookings.repositories.IFlightRepository;
@@ -23,7 +24,6 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     public Flight createFlight(Flight flight) {
-        // Calcula la duración antes de guardar el vuelo
         flight.setFlightDuration(flightDurationService.calculateFlightDuration(flight));
         return flightRepository.save(flight);
     }
@@ -50,7 +50,6 @@ public class FlightServiceImpl implements FlightService {
             existingFlight.setAvailability(flightDetails.isAvailability());
             existingFlight.setNumRows(flightDetails.getNumRows());
             existingFlight.setFlightPrice(flightDetails.getFlightPrice());
-
             existingFlight.setFlightDuration(flightDurationService.calculateFlightDuration(existingFlight));
             return flightRepository.save(existingFlight);
         }
@@ -69,7 +68,15 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     public boolean cancelFlight(Long id) {
-        // Implementación de la lógica para cancelar el vuelo
+        Flight flight = getFlightById(id);
+        if (flight != null) {
+            flight.setAvailability(false);
+            if (flight.getBookingList() != null && !flight.getBookingList().isEmpty()) {
+                flight.getBookingList().forEach(booking -> booking.setStatus(BookingStatus.CANCELED));
+            }
+            flightRepository.save(flight);
+            return true;
+        }
         return false;
     }
 
@@ -80,25 +87,27 @@ public class FlightServiceImpl implements FlightService {
             flight.setDepartureTime(departureTime);
             flight.setFlightDuration(flightDurationService.calculateFlightDuration(flight));
             flightRepository.save(flight);
+            return true;
         }
         return false;
     }
 
     @Override
     public void updateFlightAvailability() {
+        List<Flight> flights = getAllFlights();
+        LocalDateTime now = LocalDateTime.now();
+
+        flights.forEach(flight -> {
+            if (flight.getDepartureTime().isBefore(now)) {
+                flight.setAvailability(false);
+                flightRepository.save(flight);
+            }
+        });
     }
 
     @Override
     public List<Flight> getFlightsByAirplaneType(EFlightAirplane airplaneType) {
+        // Método aún no implementado
         return null;
     }
-
-//    public List<Flight> searchFlightsByCity(String city) {
-//        return flightRepository.findAll()
-//                .stream()
-//                .filter(flight -> flight.getAirports().stream().anyMatch(airport -> airport.getCity().equalsIgnoreCase(city)))
-//                .collect(Collectors.toList());
-//    }
-
-
 }
