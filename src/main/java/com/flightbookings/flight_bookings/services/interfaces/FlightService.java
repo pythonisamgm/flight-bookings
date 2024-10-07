@@ -12,14 +12,14 @@ import java.util.List;
  */
 public interface FlightService {
 
-    /**
-     * Creates a new flight.
-     *
-     * @param flight the Flight object to be created.
-     * @return the created Flight object.
-     */
-    @Transactional
-    Flight createFlight(Flight flight);
+   /**
+    * Creates a new flight.
+    *
+    * @param flight the Flight object to be created.
+    * @return the created Flight object.
+    */
+   @Transactional
+   Flight createFlight(Flight flight);
 
     /**
      * Retrieves a flight by its ID.
