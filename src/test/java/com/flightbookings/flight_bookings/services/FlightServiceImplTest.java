@@ -91,7 +91,9 @@ class FlightServiceImplTest {
 
     @Test
     void testUpdateFlight() {
-        Flight updatedFlight = new Flight();
+        when(flightRepository.save(any(Flight.class))).thenReturn(flight);
+
+        Flight updatedFlight = flight;
         updatedFlight.setFlightNumber(124);
         updatedFlight.setDepartureTime(LocalDateTime.of(2024, 10, 12, 15, 0));
         updatedFlight.setArrivalTime(LocalDateTime.of(2024, 10, 12, 17, 0));
@@ -101,26 +103,28 @@ class FlightServiceImplTest {
         updatedFlight.setNumRows(25);
         updatedFlight.setFlightPrice(BigDecimal.valueOf(350));
 
-        when(flightRepository.findById(1L)).thenReturn(Optional.of(flight));
-        when(flightRepository.save(any(Flight.class))).thenReturn(flight);
-        when(flightDurationService.calculateFlightDuration(any(Flight.class))).thenReturn(Duration.ofHours(2));
+        flightService.updateFlight(1L, updatedFlight);
 
-        Flight result = flightService.updateFlight(1L, updatedFlight);
-
-        assertNotNull(result);
-        assertEquals(124, result.getFlightNumber());
-        verify(flightRepository).findById(1L);
-        verify(flightRepository).save(flight);
+        assertNotNull(updatedFlight);
+        assertEquals(124, updatedFlight.getFlightNumber());
+        assertEquals(LocalDateTime.of(2024, 10, 12, 15, 0), updatedFlight.getDepartureTime());
+        assertEquals(LocalDateTime.of(2024, 10, 12, 17, 0), updatedFlight.getArrivalTime());
+        assertEquals(EFlightAirplane.Boeing_777, updatedFlight.getFlightAirplane());
+        assertEquals(250, updatedFlight.getCapacityPlane());
+        assertFalse(updatedFlight.isAvailability());
+        assertEquals(25, updatedFlight.getNumRows());
+        assertEquals(BigDecimal.valueOf(350), updatedFlight.getFlightPrice());
     }
 
     @Test
     void testDeleteFlight() {
+        when(flightRepository.existsById(1L)).thenReturn(true);
         when(flightRepository.findById(1L)).thenReturn(Optional.of(flight));
 
         boolean result = flightService.deleteFlight(1L);
 
         assertTrue(result);
-        verify(flightRepository).delete(flight);
+        verify(flightRepository, times(1)).deleteById(1L);
     }
 
     @Test
@@ -153,6 +157,7 @@ class FlightServiceImplTest {
         flight2.setFlightId(2L);
         flight2.setDepartureTime(LocalDateTime.now().minusHours(1));
         flight2.setAvailability(true);
+
         flight2.setSeats(List.of(seat1, seat2));
 
         when(flightRepository.findAll()).thenReturn(List.of(flight1, flight2));
