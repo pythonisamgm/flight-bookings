@@ -1,5 +1,5 @@
 
-INSERT INTO Airport (airport_code, airport_name, city, country) VALUES
+INSERT IGNORE INTO airport (airport_code, airport_name, city, country) VALUES
 ('MAD', 'Madrid-Barajas Adolfo Suárez', 'Madrid', 'ESPAÑA'),
 ('BCN', 'Barcelona-El Prat', 'Barcelona', 'ESPAÑA'),
 ('VLC', 'Valencia', 'Valencia', 'ESPAÑA'),
@@ -32,11 +32,11 @@ INSERT INTO Airport (airport_code, airport_name, city, country) VALUES
 ('BRU', 'Brussels Airport', 'Bruselas', 'BELGICA');
 
 
-INSERT INTO flight
+INSERT IGNORE INTO flight
 (availability, capacity_plane, flight_airplane, flight_number, flight_price, num_rows, departure_time, arrival_time, flight_duration, origin_airport_id, destination_airport_id)
 VALUES
 (1, 180, 1, 1001, 300.50, 3, '2024-10-12 08:00:00', '2024-10-12 12:00:00', 4, 'MAD', 'LAX'),
-(1, 200, 2, 1002, 450.75, 4, '2024-10-12 14:30:00', '2024-10-12 19:00:00', 4.5, 'BCN', 'JFK')
+(1, 200, 2, 1002, 450.75, 4, '2024-10-12 14:30:00', '2024-10-12 19:00:00', 4.5, 'BCN', 'JFK');
 --(1, 150, 3, 1003, 200.00, 30, '2024-10-12 09:00:00', '2024-10-12 11:30:00', 2.5, 'AGP', 'LHR'),
 --(1, 220, 1, 1004, 350.25, 44, '2024-10-13 10:45:00', '2024-10-13 13:45:00', 3, 'BIO', 'AMS'),
 --(1, 250, 2, 1005, 320.00, 50, '2024-10-13 18:00:00', '2024-10-13 21:30:00', 3.5, 'PMI', 'CDG'),

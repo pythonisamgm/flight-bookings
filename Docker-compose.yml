@@ -1,14 +1,16 @@
 services:
-  mysql_service:
-    image: mysql:8.0
-    container_name: mysql_flight-bookings
+  postgres_service:
+    image: postgres:15
+    container_name: postgres_flight_bookings
     environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-      MYSQL_DATABASE: db_flight-bookings
+      POSTGRES_DB: db_flight_bookings
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD:
+      POSTGRES_HOST_AUTH_METHOD: trust
     ports:
-      - "3306:3306"
+      - "5432:5432"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - postgres_data:/var/lib/postgresql/data
 
   springboot_app:
     build: .
@@ -16,12 +18,12 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/db_flight-bookings
-      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_service:5432/db_flight_bookings
+      SPRING_DATASOURCE_USERNAME: admin
       SPRING_DATASOURCE_PASSWORD:
-      SPRING_JPA_HIBERNATE_DDL_AUTO: create-drop
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
     depends_on:
-      - mysql_service
+      - postgres_service
 
 volumes:
-  mysql_data:
+  postgres_data:
