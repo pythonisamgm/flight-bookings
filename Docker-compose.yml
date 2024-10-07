@@ -19,7 +19,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql_service:3306/db_flight_bookings
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD:
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_HIBERNATE_DDL_AUTO: create-drop
     depends_on:
       - mysql_service
 
