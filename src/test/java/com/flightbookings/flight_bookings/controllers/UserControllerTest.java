@@ -66,7 +66,7 @@ public class UserControllerTest {
     public void testCreateUser() throws Exception {
         when(userService.createUser(any(User.class))).thenReturn(user1);
 
-        mockMvc.perform(post("/api/v1/user/create")
+        mockMvc.perform(post("/api/v1/appuser/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(user1)))
                 .andExpect(status().isCreated())
@@ -82,7 +82,7 @@ public class UserControllerTest {
     public void testGetUserById() throws Exception {
         when(userService.getUserById(1L)).thenReturn(user1);
 
-        mockMvc.perform(get("/api/v1/user/{id}", 1L))
+        mockMvc.perform(get("/api/v1/appuser/{id}", 1L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userId").value(1L));
 
@@ -93,7 +93,7 @@ public class UserControllerTest {
     public void testGetAllUsers() throws Exception {
         when(userService.getAllUsers()).thenReturn(userList);
 
-        mockMvc.perform(get("/api/v1/user/"))
+        mockMvc.perform(get("/api/v1/appuser/"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].userId").value(1L))
                 .andExpect(jsonPath("$[1].userId").value(2L));
@@ -106,7 +106,7 @@ public class UserControllerTest {
 
         when(userService.updateUser(eq(1L), any(User.class))).thenReturn(user1);
 
-        mockMvc.perform(put("/api/v1/user/update/{id}", 1L)
+        mockMvc.perform(put("/api/v1/appuser/update/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(user1)))
                 .andExpect(status().isOk())
@@ -119,7 +119,7 @@ public class UserControllerTest {
     public void testDeleteUser() throws Exception {
         when(userService.deleteUser(1L)).thenReturn(true);
 
-        mockMvc.perform(delete("/api/v1/user/delete/{id}", 1L))
+        mockMvc.perform(delete("/api/v1/appuser/delete/{id}", 1L))
                 .andExpect(status().isNoContent());
 
         verify(userService, times(1)).deleteUser(1L);
