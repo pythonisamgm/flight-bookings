@@ -93,7 +93,7 @@ public class Flight {
     /**
      * List of seats associated with this flight.
      */
-    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL)
     @JsonManagedReference(value = "flight-seat")
     @Schema(description = "List of seats associated with this flight.")
     private List<Seat> seats = new ArrayList<>();
