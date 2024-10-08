@@ -18,19 +18,27 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-
+/**
+ * Test class for {@link AirportController}.
+ * Verifies the behavior of Airport-related endpoints.
+ */
 class AirportControllerTest {
     @Mock
     private AirportService airportService;
 
     @InjectMocks
     private AirportController airportController;
-
+    /**
+     * Initializes mocks before each test.
+     */
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
-
+    /**
+     * Tests the retrieval of all airports.
+     * Verifies that the correct status and number of airports are returned.
+     */
     @Test
     void testGetAllAirports() {
         // Arrange
@@ -49,7 +57,10 @@ class AirportControllerTest {
         assertEquals(2, response.getBody().size());
         verify(airportService, times(1)).getAllAirports();
     }
-
+    /**
+     * Tests the creation of a new airport.
+     * Verifies that the created airport has the expected properties.
+     */
     @Test
     void testCreateAirport() {
         // Arrange
