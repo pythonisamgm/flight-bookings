@@ -1,5 +1,6 @@
 package com.flightbookings.flight_bookings.services;
 
+import com.flightbookings.flight_bookings.exceptions.MissingFlightTimeException;
 import com.flightbookings.flight_bookings.models.Flight;
 import com.flightbookings.flight_bookings.services.interfaces.FlightDurationService;
 import org.springframework.stereotype.Service;
@@ -14,11 +15,11 @@ public class FlightDurationServiceImpl implements FlightDurationService {
         LocalDateTime departureTime = flight.getDepartureTime();
         LocalDateTime arrivalTime = flight.getArrivalTime();
 
-        if (departureTime != null && arrivalTime != null) {
-            Duration duration = Duration.between(departureTime, arrivalTime);
-            return (int) duration.toMinutes();
+        if (departureTime == null || arrivalTime == null) {
+            throw new MissingFlightTimeException("Departure time or arrival time is null.");
         }
 
-        return 0;
+        Duration duration = Duration.between(departureTime, arrivalTime);
+        return (int) duration.toMinutes();
     }
 }

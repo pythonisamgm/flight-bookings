@@ -1,5 +1,6 @@
 package com.flightbookings.flight_bookings.services;
 
+import com.flightbookings.flight_bookings.exceptions.FlightNotFoundException;
 import com.flightbookings.flight_bookings.models.Flight;
 import com.flightbookings.flight_bookings.models.EFlightAirplane;
 //import com.flightbookings.flight_bookings.repositories.IAirportRepository;
@@ -69,13 +70,15 @@ public class FlightServiceImpl implements FlightService {
 
 
     @Override
-    public boolean deleteFlight(Long id) {
-        if (flightRepository.existsById(id)) {
-            flightRepository.deleteById(id);
-            return true;
+    public String deleteFlight(Long id) {
+        if (!flightRepository.existsById(id)) {
+            throw new FlightNotFoundException("Flight with ID " + id + " not found.");
         }
-        return false;
+
+        flightRepository.deleteById(id);
+        return "Flight successfully deleted";
     }
+
 
     //    public List<Flight> searchFlightsByCity(String city) {
 //        return flightRepository.findAll()

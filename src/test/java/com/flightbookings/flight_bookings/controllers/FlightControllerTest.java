@@ -1,6 +1,7 @@
 package com.flightbookings.flight_bookings.controllers;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.flightbookings.flight_bookings.exceptions.FlightNotFoundException;
 import com.flightbookings.flight_bookings.models.Flight;
 import com.flightbookings.flight_bookings.models.EFlightAirplane;
 import com.flightbookings.flight_bookings.services.interfaces.FlightService;
@@ -139,12 +140,24 @@ class FlightControllerTest {
     }
 
     @Test
-    void test_Delete_Flight() throws Exception {
-        when(flightService.deleteFlight(1L)).thenReturn(true);
+    void test_DeleteFlight_Success() throws Exception {
+        Long flightId = 1L;
 
-        mockMvc.perform(delete("/api/v1/flight/delete/1")
+        when(flightService.deleteFlight(flightId)).thenReturn("Flight successfully deleted");
+
+        mockMvc.perform(delete("/api/v1/flight/delete/{id}", flightId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void test_DeleteFlight_NotFound() throws Exception {
+        Long flightId = 1L;
+        doThrow(new FlightNotFoundException("Flight with ID " + flightId + " not found.")).when(flightService).deleteFlight(flightId);
+
+        mockMvc.perform(delete("/api/v1/flight/delete/{id}", flightId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
     @Test

@@ -51,7 +51,7 @@ public interface FlightService {
      * @param id the ID of the flight to delete.
      * @return true if the flight was successfully deleted, false otherwise.
      */
-    boolean deleteFlight(Long id);
+    String deleteFlight(Long id);
 
     /**
      * Cancels a flight.
