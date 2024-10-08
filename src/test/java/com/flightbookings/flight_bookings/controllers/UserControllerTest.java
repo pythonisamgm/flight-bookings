@@ -16,6 +16,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -72,7 +74,6 @@ public class UserControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.userId").value(1L))
                 .andExpect(jsonPath("$.username").value("juanantonio"))
-                .andExpect(jsonPath("$.password").value("1234"))
                 .andExpect(jsonPath("$.email").value("jantonio@gmail.com"));
 
         verify(userService, times(1)).createUser(any(User.class));
@@ -84,7 +85,8 @@ public class UserControllerTest {
 
         mockMvc.perform(get("/api/v1/user/{id}", 1L))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.userId").value(1L));
+                .andExpect(jsonPath("$.userId").value(1L))
+                .andExpect(jsonPath("$.username").value("juanantonio"));
 
         verify(userService, times(1)).getUserById(1L);
     }
@@ -103,14 +105,14 @@ public class UserControllerTest {
 
     @Test
     public void testUpdateUser() throws Exception {
-
         when(userService.updateUser(eq(1L), any(User.class))).thenReturn(user1);
 
         mockMvc.perform(put("/api/v1/user/update/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(user1)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.userId").value(1L));
+                .andExpect(jsonPath("$.userId").value(1L))
+                .andExpect(jsonPath("$.username").value("juanantonio"));
 
         verify(userService, times(1)).updateUser(eq(1L), any(User.class));
     }

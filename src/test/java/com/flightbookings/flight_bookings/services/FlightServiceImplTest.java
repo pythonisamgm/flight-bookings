@@ -43,7 +43,7 @@ class FlightServiceImplTest {
         flight.setFlightNumber(123);
         flight.setDepartureTime(LocalDateTime.of(2024, 10, 12, 14, 0));
         flight.setArrivalTime(LocalDateTime.of(2024, 10, 12, 16, 0));
-        flight.setFlightAirplane(EFlightAirplane.Boeing_747);
+        flight.setFlightAirplane(EFlightAirplane.BOEING_747);
         flight.setCapacityPlane(200);
         flight.setAvailability(true);
         flight.setNumRows(20);
@@ -97,7 +97,7 @@ class FlightServiceImplTest {
         updatedFlight.setFlightNumber(124);
         updatedFlight.setDepartureTime(LocalDateTime.of(2024, 10, 12, 15, 0));
         updatedFlight.setArrivalTime(LocalDateTime.of(2024, 10, 12, 17, 0));
-        updatedFlight.setFlightAirplane(EFlightAirplane.Boeing_777);
+        updatedFlight.setFlightAirplane(EFlightAirplane.BOEING_777);
         updatedFlight.setCapacityPlane(250);
         updatedFlight.setAvailability(false);
         updatedFlight.setNumRows(25);
@@ -109,7 +109,7 @@ class FlightServiceImplTest {
         assertEquals(124, updatedFlight.getFlightNumber());
         assertEquals(LocalDateTime.of(2024, 10, 12, 15, 0), updatedFlight.getDepartureTime());
         assertEquals(LocalDateTime.of(2024, 10, 12, 17, 0), updatedFlight.getArrivalTime());
-        assertEquals(EFlightAirplane.Boeing_777, updatedFlight.getFlightAirplane());
+        assertEquals(EFlightAirplane.BOEING_777, updatedFlight.getFlightAirplane());
         assertEquals(250, updatedFlight.getCapacityPlane());
         assertFalse(updatedFlight.isAvailability());
         assertEquals(25, updatedFlight.getNumRows());

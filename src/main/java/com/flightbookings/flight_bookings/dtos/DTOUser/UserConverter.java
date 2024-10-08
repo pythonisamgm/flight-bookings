@@ -21,18 +21,34 @@ public class UserConverter {
         this.bookingService = bookingService;
     }
 
+    /**
+     * Converts a UserDTO to a User entity, mapping associated bookings if present.
+     *
+     * @param userDTO the UserDTO to convert
+     * @param user    the existing User entity to update (can be null for new users)
+     * @return the converted User entity with mapped bookings
+     */
     public User dtoToUser(UserDTO userDTO, User user) {
-        User mappedUser = modelMapper.map(userDTO, User.class);
+        User mappedUser = user != null ? user : new User();
+        modelMapper.map(userDTO, mappedUser);
+
         if (userDTO.getBookings() != null) {
             List<Booking> bookings = userDTO.getBookings().stream()
-                    .map(bookingDTO -> bookingService.getBookingById(bookingDTO.getBookingId(), user))
+                    .map(bookingDTO -> bookingService.getBookingById(bookingDTO.getBookingId(), mappedUser))
                     .filter(booking -> booking != null)
                     .collect(Collectors.toList());
             mappedUser.setBookings(bookings);
         }
+
         return mappedUser;
     }
 
+    /**
+     * Converts a User entity to a UserDTO, mapping associated bookings if present.
+     *
+     * @param user the User entity to convert
+     * @return the converted UserDTO with mapped bookings
+     */
     public UserDTO userToDto(User user) {
         UserDTO userDTO = modelMapper.map(user, UserDTO.class);
         if (user.getBookings() != null) {
