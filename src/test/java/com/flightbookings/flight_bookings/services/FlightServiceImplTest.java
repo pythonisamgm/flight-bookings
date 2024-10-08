@@ -2,6 +2,7 @@ package com.flightbookings.flight_bookings.services;
 
 import com.flightbookings.flight_bookings.models.Flight;
 import com.flightbookings.flight_bookings.models.EFlightAirplane;
+import com.flightbookings.flight_bookings.models.Seat;
 import com.flightbookings.flight_bookings.repositories.IFlightRepository;
 import com.flightbookings.flight_bookings.repositories.ISeatRepository;
 import com.flightbookings.flight_bookings.services.interfaces.FlightDurationService;
@@ -109,14 +110,11 @@ class FlightServiceImplTest {
         updatedFlight.setNumRows(25);
         updatedFlight.setFlightPrice(BigDecimal.valueOf(350));
 
-        // Configuración del mock
         when(flightRepository.existsById(1L)).thenReturn(true);
         when(flightRepository.save(any(Flight.class))).thenReturn(updatedFlight);
 
-        // Ejecuta el método
         Flight result = flightService.updateFlight(1L, updatedFlight);
 
-        // Verificaciones
         assertNotNull(result, "The updated flight should not be null");
         assertEquals(124, result.getFlightNumber(), "The flight number does not match");
         verify(flightRepository, times(1)).existsById(1L);
@@ -144,5 +142,73 @@ class FlightServiceImplTest {
         assertEquals(newDepartureTime, flight.getDepartureTime());
         verify(flightRepository).save(flight);
     }
+
+    @Test
+    void testUpdateFlightAvailability_AllSeatsBooked_FutureDeparture() {
+        LocalDateTime now = LocalDateTime.now();
+        Flight flight = new Flight();
+        flight.setFlightId(1L);
+        flight.setDepartureTime(now.plusHours(2));
+        flight.setAvailability(true);
+
+        Seat seat1 = new Seat();
+        seat1.setBooked(true);
+        Seat seat2 = new Seat();
+        seat2.setBooked(true);
+        flight.setSeats(List.of(seat1, seat2));
+
+        when(flightRepository.findAll()).thenReturn(List.of(flight));
+
+        flightService.updateFlightAvailability();
+
+        assertFalse(flight.isAvailability(), "Future flight with all seats booked should be set to unavailable");
+        verify(flightRepository, times(1)).save(flight);
+        verify(flightRepository, times(1)).findAll();
+    }
+    @Test
+    void testUpdateFlightAvailability_AllSeatsBooked_PastDeparture() {
+        LocalDateTime now = LocalDateTime.now();
+        Flight flight = new Flight();
+        flight.setFlightId(2L);
+        flight.setDepartureTime(now.minusHours(2));
+        flight.setAvailability(true);
+
+        Seat seat1 = new Seat();
+        seat1.setBooked(true);
+        Seat seat2 = new Seat();
+        seat2.setBooked(true);
+        flight.setSeats(List.of(seat1, seat2));
+
+        when(flightRepository.findAll()).thenReturn(List.of(flight));
+
+        flightService.updateFlightAvailability();
+
+        assertFalse(flight.isAvailability(), "Past flight with all seats booked should be set to unavailable");
+        verify(flightRepository, times(1)).save(flight);
+        verify(flightRepository, times(1)).findAll();
+    }
+    @Test
+    void testUpdateFlightAvailability_SomeSeatsUnbooked_FutureDeparture() {
+        LocalDateTime now = LocalDateTime.now();
+        Flight flight = new Flight();
+        flight.setFlightId(3L);
+        flight.setDepartureTime(now.plusHours(5)); // En el futuro
+        flight.setAvailability(true);
+
+        Seat seat1 = new Seat();
+        seat1.setBooked(false);
+        Seat seat2 = new Seat();
+        seat2.setBooked(true);
+        flight.setSeats(List.of(seat1, seat2));
+
+        when(flightRepository.findAll()).thenReturn(List.of(flight));
+
+        flightService.updateFlightAvailability();
+
+        assertTrue(flight.isAvailability(), "Future flight with some seats unbooked should remain available");
+        verify(flightRepository, never()).save(flight);
+        verify(flightRepository, times(1)).findAll();
+    }
+
 
 }

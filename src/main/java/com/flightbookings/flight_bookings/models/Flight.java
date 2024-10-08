@@ -148,7 +148,7 @@ public class Flight {
         this.flightDuration = flightDuration;
         this.flightAirplane = flightAirplane;
         this.capacityPlane = capacityPlane;
-        this.availability = availability;
+        this.availability = true;
         this.flightPrice = flightPrice;
         this.seats = seats;
         this.bookingList = bookingList;
