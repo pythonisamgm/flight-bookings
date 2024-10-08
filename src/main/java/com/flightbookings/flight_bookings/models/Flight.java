@@ -6,11 +6,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 /**
  * Represents a flight entity in the system.
  * Contains details such as the flight number, departure and arrival times, airplane type, and associated seats and bookings.
