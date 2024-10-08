@@ -1,5 +1,6 @@
 package com.flightbookings.flight_bookings.controllers;
 
+import com.flightbookings.flight_bookings.exceptions.FlightNotFoundException;
 import com.flightbookings.flight_bookings.models.Flight;
 import com.flightbookings.flight_bookings.models.EFlightAirplane;
 import com.flightbookings.flight_bookings.services.interfaces.FlightService;
@@ -84,11 +85,15 @@ public class FlightController {
      * @param id the ID of the flight.
      * @return a 204 response if deleted, otherwise 404.
      */
-    @Operation(summary =  "Delete a flight by ID")
+    @Operation(summary = "Delete a flight by ID")
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteFlight(@Parameter(description = "ID of the flight to be retrieved") @PathVariable Long id) {
-        boolean isDeleted = flightService.deleteFlight(id);
-        return isDeleted ? new ResponseEntity<>(HttpStatus.NO_CONTENT) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<Void> deleteFlight(@Parameter(description = "ID of the flight to be deleted") @PathVariable Long id) {
+        try {
+            flightService.deleteFlight(id);
+            return ResponseEntity.noContent().build();
+        } catch (FlightNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 //    @GetMapping("/search")

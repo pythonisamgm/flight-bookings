@@ -1,5 +1,6 @@
 package com.flightbookings.flight_bookings.services;
 
+import com.flightbookings.flight_bookings.exceptions.FlightNotFoundException;
 import com.flightbookings.flight_bookings.models.Flight;
 import com.flightbookings.flight_bookings.models.EFlightAirplane;
 import com.flightbookings.flight_bookings.models.Seat;
@@ -133,13 +134,26 @@ class FlightServiceImplTest {
     }
 
     @Test
-    void testDeleteFlight() {
-        when(flightRepository.findById(1L)).thenReturn(Optional.of(flight));
+    void test_DeleteFlight_Success() {
+        Long flightId = 1L;
 
-        boolean result = flightService.deleteFlight(1L);
+        when(flightRepository.existsById(flightId)).thenReturn(true);
+        doNothing().when(flightRepository).deleteById(flightId);
 
-        assertTrue(result);
-        verify(flightRepository).delete(flight);
+        String result = flightService.deleteFlight(flightId);
+
+        assertEquals("Flight successfully deleted", result);
+        verify(flightRepository, times(1)).deleteById(flightId);
+    }
+
+    @Test
+    void test_DeleteFlight_NotFound() {
+        Long flightId = 1L;
+
+        when(flightRepository.existsById(flightId)).thenReturn(false);
+
+        assertThrows(FlightNotFoundException.class, () -> flightService.deleteFlight(flightId));
+        verify(flightRepository, never()).deleteById(flightId);
     }
 
     @Test

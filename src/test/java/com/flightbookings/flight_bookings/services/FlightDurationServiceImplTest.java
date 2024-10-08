@@ -1,5 +1,6 @@
 package com.flightbookings.flight_bookings.services;
 
+import com.flightbookings.flight_bookings.exceptions.MissingFlightTimeException;
 import com.flightbookings.flight_bookings.models.Flight;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,14 +17,23 @@ public class FlightDurationServiceImplTest {
     }
 
     @Test
-    void testCalculateFlightDuration_NullDepartureTime() {
+    void testCalculateFlightDuration_ValidTimes() {
         Flight flight = new Flight();
-        flight.setDepartureTime(null);
-        flight.setArrivalTime(LocalDateTime.of(2024, 10, 12, 16, 0));
+        flight.setDepartureTime(LocalDateTime.of(2024, 10, 12, 14, 0));
+        flight.setArrivalTime(LocalDateTime.of(2024, 10, 12, 16, 30)); // 2 horas y 30 minutos
 
-        Integer durationInMinutes = flightDurationService.calculateFlightDuration(flight);
+        int durationInMinutes = flightDurationService.calculateFlightDuration(flight);
 
-        assertNull(durationInMinutes);
+        assertEquals(150, durationInMinutes); // 2 horas y 30 minutos son 150 minutos
+    }
+    @Test
+    void testCalculateFlightDuration_NullDepartureOrArrivalTime() {
+        Flight flight = new Flight();
+        flight.setDepartureTime(null); // O setArrivalTime(null);
+
+        assertThrows(MissingFlightTimeException.class, () -> {
+            flightDurationService.calculateFlightDuration(flight);
+        });
     }
 
     @Test
@@ -32,9 +42,9 @@ public class FlightDurationServiceImplTest {
         flight.setDepartureTime(LocalDateTime.of(2024, 10, 12, 14, 0));
         flight.setArrivalTime(null);
 
-        Integer durationInMinutes = flightDurationService.calculateFlightDuration(flight);
-
-        assertNull(durationInMinutes);
+        assertThrows(MissingFlightTimeException.class, () -> {
+            flightDurationService.calculateFlightDuration(flight);
+        });
     }
 
     @Test
@@ -43,8 +53,8 @@ public class FlightDurationServiceImplTest {
         flight.setDepartureTime(null);
         flight.setArrivalTime(null);
 
-        Integer durationInMinutes = flightDurationService.calculateFlightDuration(flight);
-
-        assertNull(durationInMinutes);
+        assertThrows(MissingFlightTimeException.class, () -> {
+            flightDurationService.calculateFlightDuration(flight);
+        });
     }
 }
