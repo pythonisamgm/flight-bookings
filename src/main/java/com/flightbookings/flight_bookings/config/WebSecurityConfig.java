@@ -77,7 +77,7 @@ public class WebSecurityConfig {
                                 .requestMatchers("api/v1/user/").hasAuthority("ADMIN")
                                 .requestMatchers("api/v1/user/update/{id}").hasAuthority("ADMIN")
                                 .requestMatchers("api/v1/user/delete/{id}").hasAuthority("ADMIN")
-                                .requestMatchers("api/airports").hasAuthority("ADMIN")
+                                .requestMatchers("api/v1/airports/").hasAuthority("ADMIN")
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManager ->
