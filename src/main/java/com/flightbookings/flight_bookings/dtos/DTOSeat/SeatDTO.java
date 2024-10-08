@@ -1,25 +1,39 @@
 package com.flightbookings.flight_bookings.dtos.DTOSeat;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-
+/**
+ * Data Transfer Object for Seat.
+ */
 @Schema(description = "Data Transfer Object for Seat.")
 public class SeatDTO {
-
+    /**
+     * The unique identifier of the seat.
+     */
     @Schema(description = "The database generated seat ID")
     private Long seatId;
-
+    /**
+     * The row number of the seat.
+     */
     @Schema(description = "The row number of the seat")
     private int row;
-
+    /**
+     * The letter of the seat in the row.
+     */
     @Schema(description = "The letter of the seat in the row")
     private String seatLetter;
-
+    /**
+     * The booking status of the seat.
+     */
     @Schema(description = "Booking status of the seat")
     private boolean booked;
-
+    /**
+     * The unique identifier for the seat (row + letter).
+     */
     @Schema(description = "The unique identifier for the seat (row + letter)")
     private String seatName;
-
+    /**
+     * The flight ID associated with this seat.
+     */
     @Schema(description = "The flight associated with this seat")
     private Long flightId;
 

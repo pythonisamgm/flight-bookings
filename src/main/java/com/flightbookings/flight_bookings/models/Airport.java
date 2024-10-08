@@ -9,7 +9,7 @@ import java.util.Set;
  * Contains details about the airport's code, name, location, and associated flights.
  */
 @Entity
-@Table(name = "airport")
+@Table(name = "Airport")
 @Schema(description = "All details about the Airport entity.")
 public class Airport {
 

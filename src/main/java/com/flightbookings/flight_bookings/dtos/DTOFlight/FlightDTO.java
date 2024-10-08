@@ -6,42 +6,66 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-
+/**
+        * Data Transfer Object for Flight.
+ */
 @Schema(description = "Data Transfer Object for Flight.")
 public class FlightDTO {
-
+    /**
+     * The unique identifier of the flight.
+     */
     @Schema(description = "The database generated flight ID")
     private Long flightId;
-
+    /**
+     * The number of rows in the airplane.
+     */
     @Schema(description = "Number of rows in the airplane")
     private int numRows;
-
+    /**
+     * The flight number.
+     */
     @Schema(description = "Flight number")
     private int flightNumber;
-
+    /**
+     * The time of departure.
+     */
     @Schema(description = "Time of departure")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime departureTime;
-
+    /**
+     * The time of arrival.
+     */
     @Schema(description = "Time of arrival")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime arrivalTime;
-
+    /**
+     * The type of airplane used for the flight.
+     */
     @Schema(description = "Type of airplane used for the flight")
     private String flightAirplane;
-
+    /**
+     * The capacity of the airplane.
+     */
     @Schema(description = "Capacity of the airplane")
     private int capacityPlane;
-
+    /**
+     * The availability status of the flight.
+     */
     @Schema(description = "Availability status of the flight")
     private boolean availability;
-
+    /**
+     * The price of the flight.
+     */
     @Schema(description = "Price of the flight")
     private BigDecimal flightPrice;
-
+    /**
+     * List of seat IDs associated with this flight.
+     */
     @Schema(description = "List of seats associated with this flight.")
     private List<Long> seatIds;
-
+    /**
+     * List of booking IDs associated with this flight.
+     */
     @Schema(description = "List of bookings associated with this flight.")
     private List<Long> bookingIds;
 
