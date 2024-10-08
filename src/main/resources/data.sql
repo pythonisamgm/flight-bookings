@@ -48,7 +48,7 @@ CREATE TABLE flight (
        num_rows INT NOT NULL,
        departure_time TIMESTAMP NOT NULL,
        arrival_time TIMESTAMP NOT NULL,
-       flight_duration INTERVAL, --que hago con esto?
+       flight_duration INTERVAL, --que hago con esto? (marta:lo he cambiado a integer pq duration no existia en postgres)
        airplane_type VARCHAR(50) NOT NULL,
        capacity INT NOT NULL,
        availability BOOLEAN NOT NULL,
