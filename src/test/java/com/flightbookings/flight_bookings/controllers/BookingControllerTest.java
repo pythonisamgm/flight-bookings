@@ -26,7 +26,10 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
+/**
+ * Test class for {@link BookingController}.
+ * Verifies the behavior of Booking-related endpoints.
+ */
 public class BookingControllerTest {
 
     @Mock
@@ -47,7 +50,9 @@ public class BookingControllerTest {
     private Passenger passenger1;
     private Flight flight1;
     private Seat seat1;
-
+    /**
+     * Initializes mocks and test data before each test.
+     */
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -80,7 +85,10 @@ public class BookingControllerTest {
         when(bookingService.deleteBooking(4L)).thenReturn(false);
         when(userService.findByUsername("testuser")).thenReturn(user1);
     }
-
+    /**
+     * Tests the creation of a booking.
+     * Verifies that a booking is created and returned with the expected properties.
+     */
     @Test
     public void testCreateBooking2() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -97,7 +105,10 @@ public class BookingControllerTest {
 
         verify(bookingService, times(1)).createBooking2(any(Booking.class));
     }
-
+    /**
+     * Tests the retrieval of a booking by ID.
+     * Verifies that the correct booking is returned with a 200 OK status.
+     */
     @Test
     public void testGetBookingById() throws Exception {
         User user1 = new User();
@@ -115,7 +126,10 @@ public class BookingControllerTest {
 
         verify(bookingService, times(1)).getBookingById(1L,user1 );
     }
-
+    /**
+     * Tests the retrieval of all bookings for a specific user.
+     * Verifies that the correct number of bookings is returned.
+     */
     @Test
     public void testGetBookingById_NotFound() throws Exception {
         User user1 = new User();
@@ -125,12 +139,15 @@ public class BookingControllerTest {
         when(bookingService.getBookingById(1L, user1)).thenReturn(booking1);
         when(userService.findByUsername(anyString())).thenReturn(user1);
         mockMvc.perform(get("/api/v1/bookings/{id}", 3L)
-                        .principal(() -> "testuser"))  // Simular autenticación del usuario
+                        .principal(() -> "testuser"))
                 .andExpect(status().isNotFound());
 
         verify(bookingService, times(1)).getBookingById(3L, user1);
     }
-
+    /**
+     * Tests the deletion of a booking.
+     * Verifies that the correct response status is returned based on the booking's existence.
+     */
     @Test
     public void testGetAllBookingsByUser() throws Exception {
 
