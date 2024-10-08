@@ -51,14 +51,17 @@ public class BookingController {
      * @return the created booking.
      */
     @Operation(summary = "Create a new booking")
-    @PostMapping(value = "/create/{flightId}/{passengerId}/{seatName}/{userId}")
+    @PostMapping(value = "/create/{flightId}/{passengerId}/{seatName}")
     public ResponseEntity<Booking> createBooking(@PathVariable("flightId") Long flightId,
                                                  @PathVariable("passengerId") Long passengerId,
                                                  @PathVariable("seatName") String seatName,
-                                                 @PathVariable("userId") Long userId,
-                                                 @AuthenticationPrincipal Authentication authentication) {
-        User user = userService.findByUsername(authentication.getName());
-        Booking booking = bookingService.createBooking(flightId, passengerId, seatName, userId);
+                                                 Principal principal) {
+        if (principal == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        User user = userService.findByUsername(principal.getName());
+        Booking booking = bookingService.createBooking(flightId, passengerId, seatName, user.getUserId());
         return new ResponseEntity<>(booking, HttpStatus.CREATED);
     }
     /**
