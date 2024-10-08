@@ -3,7 +3,9 @@ package com.flightbookings.flight_bookings.services;
 import com.flightbookings.flight_bookings.models.Flight;
 import com.flightbookings.flight_bookings.models.EFlightAirplane;
 import com.flightbookings.flight_bookings.repositories.IFlightRepository;
+import com.flightbookings.flight_bookings.repositories.ISeatRepository;
 import com.flightbookings.flight_bookings.services.interfaces.FlightDurationService;
+import com.flightbookings.flight_bookings.services.interfaces.SeatService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -30,6 +32,12 @@ class FlightServiceImplTest {
     private IFlightRepository flightRepository;
 
     @Mock
+    private SeatService seatService;
+
+    @Mock
+    private ISeatRepository seatRepository;
+
+    @Mock
     private FlightDurationService flightDurationService;
 
     private Flight flight;
@@ -52,15 +60,16 @@ class FlightServiceImplTest {
 
     @Test
     void testCreateFlight() {
-        when(flightDurationService.calculateFlightDuration(any(Flight.class))).thenReturn(Duration.ofHours(2));
-        when(flightRepository.save(any(Flight.class))).thenReturn(flight);
+        when(flightRepository.save(any(Flight.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(seatService.initializeSeats(any(Flight.class), anyInt())).thenReturn(List.of("1A", "1B", "1C"));
+        when(seatRepository.findByFlight(any(Flight.class))).thenReturn(new ArrayList<>());
 
         Flight createdFlight = flightService.createFlight(flight);
 
-        assertNotNull(createdFlight);
-        assertEquals(flight.getFlightId(), createdFlight.getFlightId());
-        assertEquals(flight.getFlightNumber(), createdFlight.getFlightNumber());
-        verify(flightRepository).save(flight);
+        assertNotNull(createdFlight, "The created flight should not be null");
+        verify(flightRepository, times(1)).save(flight);
+        verify(seatService, times(1)).initializeSeats(createdFlight, flight.getNumRows());
+        verify(seatRepository, times(1)).findByFlight(createdFlight);
     }
 
     @Test
@@ -100,26 +109,28 @@ class FlightServiceImplTest {
         updatedFlight.setNumRows(25);
         updatedFlight.setFlightPrice(BigDecimal.valueOf(350));
 
-        when(flightRepository.findById(1L)).thenReturn(Optional.of(flight));
-        when(flightRepository.save(any(Flight.class))).thenReturn(flight);
-        when(flightDurationService.calculateFlightDuration(any(Flight.class))).thenReturn(Duration.ofHours(2));
+        // Configuración del mock
+        when(flightRepository.existsById(1L)).thenReturn(true);
+        when(flightRepository.save(any(Flight.class))).thenReturn(updatedFlight);
 
+        // Ejecuta el método
         Flight result = flightService.updateFlight(1L, updatedFlight);
 
-        assertNotNull(result);
-        assertEquals(124, result.getFlightNumber());
-        verify(flightRepository).findById(1L);
-        verify(flightRepository).save(flight);
+        // Verificaciones
+        assertNotNull(result, "The updated flight should not be null");
+        assertEquals(124, result.getFlightNumber(), "The flight number does not match");
+        verify(flightRepository, times(1)).existsById(1L);
+        verify(flightRepository, times(1)).save(updatedFlight);
     }
 
     @Test
     void testDeleteFlight() {
-        when(flightRepository.findById(1L)).thenReturn(Optional.of(flight));
+        when(flightRepository.existsById(1L)).thenReturn(true);
 
         boolean result = flightService.deleteFlight(1L);
 
-        assertTrue(result);
-        verify(flightRepository).delete(flight);
+        assertTrue(result, "The flight deletion should return true");
+        verify(flightRepository, times(1)).deleteById(1L);
     }
 
     @Test
