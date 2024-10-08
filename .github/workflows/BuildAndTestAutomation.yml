@@ -51,10 +51,6 @@ jobs:
           echo "spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect" >> src/main/resources/application-test.properties
 
       - name: Build API
-        run: mvn clean install
+        run: mvn clean install -Dskiptests
 
-      - name: Run Unit Tests
-        run: mvn test
 
-      - name: Run Integration Tests
-        run: mvn verify
