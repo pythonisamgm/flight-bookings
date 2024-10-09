@@ -109,7 +109,7 @@ public class BookingController {
      */
     @Operation(summary =  "Get all the bookings for the current user")
     @GetMapping("/")
-    public ResponseEntity<List<Booking>> getAllBookings(Principal principal) {
+    public ResponseEntity<List<Booking>> getAllBookingsByUser(Principal principal) {
         User user = userService.findByUsername(principal.getName());
         List<Booking> bookings = bookingService.getAllBookingsByUser(user);
         return new ResponseEntity<>(bookings, HttpStatus.OK);
@@ -121,7 +121,7 @@ public class BookingController {
      */
     @Operation(summary = "Get all bookings")
     @GetMapping("/all")
-    public ResponseEntity<List<Booking>> getAllBookings() {
+    public ResponseEntity<List<Booking>> getAllBookingsByUser() {
         List<Booking> bookings = bookingService.getAllBookings();
         return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
