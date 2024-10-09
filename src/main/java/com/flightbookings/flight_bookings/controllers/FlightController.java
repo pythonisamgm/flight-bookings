@@ -163,7 +163,7 @@ public class FlightController {
             @Parameter(description = "New departure time in ISO-8601 format") @RequestParam String newDepartureTime) {
         LocalDateTime departureTime = LocalDateTime.parse(newDepartureTime);
         flightService.delayFlight(id, departureTime);
-        return ResponseEntity.ok("Flight delayed successfully.");
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body("Flight delayed successfully."); // Cambiado a 202 Accepted
     }
 
     /**

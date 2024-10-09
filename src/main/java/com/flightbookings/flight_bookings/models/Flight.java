@@ -126,7 +126,7 @@ public class Flight {
     /**
      * Constructs a new Flight with the specified details.
      *
-     * @param flightId            The flight ID.
+     * @param flightId          The flight ID.
      * @param flightNumber  The flight number.
      * @param departureTime The departure time.
      * @param arrivalTime   The arrival time.

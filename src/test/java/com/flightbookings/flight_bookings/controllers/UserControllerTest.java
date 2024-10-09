@@ -1,9 +1,11 @@
 package com.flightbookings.flight_bookings.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.flightbookings.flight_bookings.dtos.DTOUser.UserDTO;
+import com.flightbookings.flight_bookings.dtos.DTOUser.UserConverter;
 import com.flightbookings.flight_bookings.models.ERole;
 import com.flightbookings.flight_bookings.models.User;
-import com.flightbookings.flight_bookings.services.UserServiceImpl;
+import com.flightbookings.flight_bookings.services.interfaces.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -16,8 +18,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -26,62 +26,70 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class UserControllerTest {
 
     @Mock
-    private UserServiceImpl userService;
+    private UserService userService;
+
+    @Mock
+    private UserConverter userConverter;
 
     @InjectMocks
     private UserController userController;
 
     private MockMvc mockMvc;
-    private User user1;
-    private User user2;
-    private List<User> userList;
+    private User user;
+    private UserDTO userDTO;
+    private UserDTO userDTO2;
+    private List<UserDTO> userDTOList;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
 
-        user1 = User.builder()
-                .userId(1L)
-                .username("juanantonio")
-                .password("1234")
-                .email("jantonio@gmail.com")
-                .role(ERole.ADMIN)
-                .bookings(new ArrayList<>())
-                .build();
+        user = new User();
+        user.setUserId(1L);
+        user.setUsername("juanantonio");
+        user.setEmail("jantonio@gmail.com");
+        user.setRole(ERole.ADMIN);
 
-        user2 = User.builder()
-                .userId(2L)
-                .username("miguelangel")
-                .password("12345")
-                .email("mangel@gmail.com")
-                .role(ERole.USER)
-                .bookings(new ArrayList<>())
-                .build();
+        userDTO = new UserDTO();
+        userDTO.setUserId(1L);
+        userDTO.setUsername("juanantonio");
+        userDTO.setEmail("jantonio@gmail.com");
+        userDTO.setRole("ADMIN");
 
-        userList = new ArrayList<>();
-        userList.add(user1);
-        userList.add(user2);
+        userDTO2 = new UserDTO();
+        userDTO2.setUserId(2L);
+        userDTO2.setUsername("miguelangel");
+        userDTO2.setEmail("mangel@gmail.com");
+        userDTO2.setRole("USER");
+
+        userDTOList = new ArrayList<>();
+        userDTOList.add(userDTO);
+        userDTOList.add(userDTO2);
     }
 
     @Test
     public void testCreateUser() throws Exception {
-        when(userService.createUser(any(User.class))).thenReturn(user1);
+        when(userConverter.dtoToUser(any(UserDTO.class), eq(null))).thenReturn(user);
+        when(userService.createUser(any(User.class))).thenReturn(user);
+        when(userConverter.userToDto(any(User.class))).thenReturn(userDTO);
 
         mockMvc.perform(post("/api/v1/user/create")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(user1)))
+                        .content(new ObjectMapper().writeValueAsString(userDTO)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.userId").value(1L))
                 .andExpect(jsonPath("$.username").value("juanantonio"))
-                .andExpect(jsonPath("$.email").value("jantonio@gmail.com"));
+                .andExpect(jsonPath("$.email").value("jantonio@gmail.com"))
+                .andExpect(jsonPath("$.role").value("ADMIN"));
 
         verify(userService, times(1)).createUser(any(User.class));
     }
 
     @Test
     public void testGetUserById() throws Exception {
-        when(userService.getUserById(1L)).thenReturn(user1);
+        when(userService.getUserById(1L)).thenReturn(user);
+        when(userConverter.userToDto(user)).thenReturn(userDTO);
 
         mockMvc.perform(get("/api/v1/user/{id}", 1L))
                 .andExpect(status().isOk())
@@ -93,23 +101,29 @@ public class UserControllerTest {
 
     @Test
     public void testGetAllUsers() throws Exception {
-        when(userService.getAllUsers()).thenReturn(userList);
+        List<User> users = List.of(user);
+        when(userService.getAllUsers()).thenReturn(users);
+        when(userConverter.userToDto(user)).thenReturn(userDTO);
+        when(userConverter.userToDto(users.get(0))).thenReturn(userDTO);
 
         mockMvc.perform(get("/api/v1/user/"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].userId").value(1L))
-                .andExpect(jsonPath("$[1].userId").value(2L));
+                .andExpect(jsonPath("$[0].username").value("juanantonio"));
 
         verify(userService, times(1)).getAllUsers();
     }
 
     @Test
     public void testUpdateUser() throws Exception {
-        when(userService.updateUser(eq(1L), any(User.class))).thenReturn(user1);
+        when(userService.getUserById(1L)).thenReturn(user);
+        when(userConverter.dtoToUser(any(UserDTO.class), any(User.class))).thenReturn(user);
+        when(userService.updateUser(eq(1L), any(User.class))).thenReturn(user);
+        when(userConverter.userToDto(user)).thenReturn(userDTO);
 
         mockMvc.perform(put("/api/v1/user/update/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(user1)))
+                        .content(new ObjectMapper().writeValueAsString(userDTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userId").value(1L))
                 .andExpect(jsonPath("$.username").value("juanantonio"));
