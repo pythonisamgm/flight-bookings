@@ -114,22 +114,24 @@ public class BookingConverter {
         bookingDTO.setBookingId(booking.getBookingId());
         return bookingDTO;
     }
+
     /**
-     * Convierte una lista de Booking a una lista de BookingDTO.
+     * Converts a list of Booking entities to a list of BookingDTOs.
      *
-     * @param bookings La lista de entidades Booking que se va a convertir.
-     * @return Una lista de BookingDTO correspondiente.
+     * @param bookings the list of Booking entities to convert
+     * @return a list of corresponding BookingDTOs
      */
     public List<BookingDTO> bookingsToDtoList(List<Booking> bookings) {
         return bookings.stream()
                 .map(this::bookingToDto)
                 .collect(Collectors.toList());
     }
+
     /**
-     * Convierte una lista de BookingDTO a una lista de Booking.
+     * Converts a list of BookingDTOs to a list of Booking entities.
      *
-     * @param bookingDTOs La lista de DTOs de Booking a convertir.
-     * @return Una lista de Booking correspondiente.
+     * @param bookingDTOs the list of BookingDTOs to convert
+     * @return a list of corresponding Booking entities
      */
     public List<Booking> dtoListToBookings(List<BookingDTO> bookingDTOs) {
         return bookingDTOs.stream()
