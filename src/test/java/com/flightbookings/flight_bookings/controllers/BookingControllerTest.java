@@ -1,31 +1,29 @@
 package com.flightbookings.flight_bookings.controllers;
 
-import com.flightbookings.flight_bookings.dtos.DTOBooking.BookingConverter;
 import com.flightbookings.flight_bookings.dtos.DTOBooking.BookingDTO;
-import com.flightbookings.flight_bookings.models.Booking;
-import com.flightbookings.flight_bookings.models.User;
+import com.flightbookings.flight_bookings.models.*;
 import com.flightbookings.flight_bookings.services.interfaces.BookingService;
 import com.flightbookings.flight_bookings.services.interfaces.UserService;
+import com.flightbookings.flight_bookings.dtos.DTOBooking.BookingConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.security.core.Authentication;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 class BookingControllerTest {
 
     @Mock
@@ -41,104 +39,168 @@ class BookingControllerTest {
     private BookingController bookingController;
 
     private MockMvc mockMvc;
-
-    private BookingDTO bookingDTO;
     private Booking booking;
+    private BookingDTO bookingDTO;
+    private Principal mockPrincipal;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(bookingController).build();
 
+        booking = new Booking();
+        booking.setBookingId(1L);
+
+        booking = new Booking();
+
+        Passenger passenger = new Passenger();
+        passenger.setPassengerId(200L);
+        booking.setPassenger(passenger);
+
+        Flight flight = new Flight();
+        flight.setFlightId(100L);
+        booking.setFlight(flight);
+
+        Seat seat = new Seat();
+        seat.setSeatName("A1");
+        booking.setSeat(seat);
+
+        User user = new User();
+        user.setUserId(300L);
+        booking.setUser(user);
+
         bookingDTO = new BookingDTO();
         bookingDTO.setBookingId(1L);
         bookingDTO.setFlightId(100L);
         bookingDTO.setPassengerId(200L);
         bookingDTO.setSeatName("A1");
+        bookingDTO.setUserId(300L);
 
-        booking = new Booking();
-        booking.setBookingId(1L);
-    }
-
-    @Test
-    void testCreateBooking() throws Exception {
+        when(userService.findByUsername(anyString())).thenReturn(user);
         when(bookingService.createBooking(anyLong(), anyLong(), anyString(), anyLong())).thenReturn(booking);
         when(bookingConverter.bookingToDto(any(Booking.class))).thenReturn(bookingDTO);
 
-        mockMvc.perform(post("/api/v1/bookings/create/100/200/A1/1")
+        mockPrincipal = () -> "username";
+    }
+
+    @Test
+    void createBooking() throws Exception {
+        Flight flight = new Flight();
+        flight.setFlightId(100L);
+
+        Passenger passenger = new Passenger();
+        passenger.setPassengerId(200L);
+
+        Seat seat = new Seat();
+        seat.setSeatName("A1");
+
+        User user = new User();
+        user.setUserId(300L);
+
+        Booking booking = new Booking();
+        booking.setBookingId(1L);
+        booking.setFlight(flight);
+        booking.setPassenger(passenger);
+        booking.setSeat(seat);
+        booking.setUser(user);
+
+        when(userService.findByUsername(anyString())).thenReturn(user);
+        when(bookingService.createBooking(anyLong(), anyLong(), anyString(), anyLong())).thenReturn(booking);
+        when(bookingConverter.bookingToDto(any(Booking.class))).thenCallRealMethod(); // Asegúrate de que llame al método real
+
+        mockMvc.perform(post("/api/v1/bookings/create/100/200/A1")
+                        .principal(mockPrincipal)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.bookingId").value(1L))
                 .andExpect(jsonPath("$.flightId").value(100L))
                 .andExpect(jsonPath("$.passengerId").value(200L))
-                .andExpect(jsonPath("$.seatName").value("A1"));
+                .andExpect(jsonPath("$.seatName").value("A1"))
+                .andExpect(jsonPath("$.userId").value(300L));
 
         verify(bookingService, times(1)).createBooking(anyLong(), anyLong(), anyString(), anyLong());
     }
 
-    @Test
-    void testGetBookingById() throws Exception {
-        Principal principal = mock(Principal.class);
-        when(principal.getName()).thenReturn("username");  // Simula un nombre de usuario
-
-        // Configura el servicio para encontrar el usuario
-        User user = new User();
-        user.setUsername("username");
-        when(userService.findByUsername("username")).thenReturn(user);
-        when(bookingService.getBookingById(anyLong(), eq(user))).thenReturn(booking);
-        when(bookingConverter.bookingToDto(any(Booking.class))).thenReturn(bookingDTO);
-
-        mockMvc.perform(get("/api/v1/bookings/1")
-                        .principal(principal)  // Pasa el Principal mockeado
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.bookingId").value(1L))
-                .andExpect(jsonPath("$.flightId").value(100L))
-                .andExpect(jsonPath("$.passengerId").value(200L))
-                .andExpect(jsonPath("$.seatName").value("A1"));
-    }
-    @Test
-    void testGetAllBookings() throws Exception {
-        when(bookingService.getAllBookings()).thenReturn(List.of(booking));
-        when(bookingConverter.bookingToDto(any(Booking.class))).thenReturn(bookingDTO);
-
-        mockMvc.perform(get("/api/v1/bookings/all")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].bookingId").value(1L))
-                .andExpect(jsonPath("$[0].flightId").value(100L))
-                .andExpect(jsonPath("$[0].passengerId").value(200L))
-                .andExpect(jsonPath("$[0].seatName").value("A1"));
-
-        verify(bookingService, times(1)).getAllBookings();
-    }
 
     @Test
-    void testUpdateBooking() throws Exception {
+    void updateBooking() throws Exception {
         when(bookingService.updateBooking(any(Booking.class))).thenReturn(booking);
-        when(bookingConverter.dtoToBooking(any(BookingDTO.class))).thenReturn(booking);
         when(bookingConverter.bookingToDto(any(Booking.class))).thenReturn(bookingDTO);
 
-        mockMvc.perform(put("/api/v1/bookings/update/1")
+        mockMvc.perform(put("/api/v1/bookings/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{ \"flightId\": 100, \"passengerId\": 200, \"seatName\": \"A1\" }"))
+                        .content("{\"seatName\": \"A1\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.bookingId").value(1L))
                 .andExpect(jsonPath("$.flightId").value(100L))
-                .andExpect(jsonPath("$.passengerId").value(200L))
                 .andExpect(jsonPath("$.seatName").value("A1"));
 
         verify(bookingService, times(1)).updateBooking(any(Booking.class));
     }
 
     @Test
-    void testDeleteBookingById() throws Exception {
+    void getBookingById() throws Exception {
+        when(userService.findByUsername(anyString())).thenReturn(new User());
+        when(bookingService.getBookingById(anyLong(), any(User.class))).thenReturn(booking);
+        when(bookingConverter.bookingToDto(any(Booking.class))).thenReturn(bookingDTO);
+
+        mockMvc.perform(get("/api/v1/bookings/1")
+                        .principal(mockPrincipal)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.bookingId").value(1L))
+                .andExpect(jsonPath("$.flightId").value(100L))
+                .andExpect(jsonPath("$.seatName").value("A1"));
+
+        verify(bookingService, times(1)).getBookingById(anyLong(), any(User.class));
+    }
+
+    @Test
+    void getAllBookings() throws Exception {
+        List<Booking> bookings = List.of(booking);
+        List<BookingDTO> bookingDTOs = List.of(bookingDTO);
+
+        when(bookingService.getAllBookings()).thenReturn(bookings);
+        when(bookingConverter.bookingsToDtoList(bookings)).thenReturn(bookingDTOs);
+
+        mockMvc.perform(get("/api/v1/bookings/all")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].bookingId").value(1L))
+                .andExpect(jsonPath("$[0].flightId").value(100L))
+                .andExpect(jsonPath("$[0].seatName").value("A1"));
+
+        verify(bookingService, times(1)).getAllBookings();
+    }
+
+    @Test
+    void deleteBooking() throws Exception {
         when(bookingService.deleteBooking(anyLong())).thenReturn(true);
 
         mockMvc.perform(delete("/api/v1/bookings/delete/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
-        verify(bookingService, times(1)).deleteBooking(anyLong());
+        verify(bookingService, times(1)).deleteBooking(1L);
+    }
+
+    @Test
+    void getAllBookingsByUser() throws Exception {
+        when(userService.findByUsername(anyString())).thenReturn(new User());
+        List<Booking> bookings = List.of(booking);
+        List<BookingDTO> bookingDTOs = List.of(bookingDTO);
+
+        when(bookingService.getAllBookingsByUser(any(User.class))).thenReturn(bookings);
+        when(bookingConverter.bookingsToDtoList(bookings)).thenReturn(bookingDTOs);
+
+        mockMvc.perform(get("/api/v1/bookings/")
+                        .principal(mockPrincipal)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].bookingId").value(1L))
+                .andExpect(jsonPath("$[0].flightId").value(100L))
+                .andExpect(jsonPath("$[0].seatName").value("A1"));
+
+        verify(bookingService, times(1)).getAllBookingsByUser(any(User.class));
     }
 }

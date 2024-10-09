@@ -28,8 +28,20 @@ public class BookingDTO {
     @NotNull(message = "Seat name cannot be null")
     private String seatName;
 
+    @Schema(description = "The ID of the user for this booking")
+    @NotNull(message = "User ID cannot be null")
+    @Positive(message = "User ID must be a positive number")
+    private Long userId;
     // Default constructor
     public BookingDTO() {}
+
+    public BookingDTO(Long bookingId, Long flightId, Long passengerId, String seatName, Long userId) {
+        this.bookingId = bookingId;
+        this.flightId = flightId;
+        this.passengerId = passengerId;
+        this.seatName = seatName;
+        this.userId = userId;
+    }
 
     /**
      * Gets the booking ID.
@@ -102,4 +114,22 @@ public class BookingDTO {
     public void setSeatName(String seatName) {
         this.seatName = seatName;
     }
+    /**
+     * Gets the user ID associated with this booking.
+     *
+     * @return the user ID
+     */
+    public Long getUserId() {
+        return userId;
+    }
+
+    /**
+     * Sets the user ID associated with this booking.
+     *
+     * @param userId the user ID to set
+     */
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
 }

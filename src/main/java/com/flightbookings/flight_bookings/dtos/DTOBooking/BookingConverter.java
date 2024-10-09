@@ -1,10 +1,12 @@
 package com.flightbookings.flight_bookings.dtos.DTOBooking;
 
-import com.flightbookings.flight_bookings.models.Booking;
-import com.flightbookings.flight_bookings.models.Flight;
+import com.flightbookings.flight_bookings.exceptions.FlightNotFoundException;
+import com.flightbookings.flight_bookings.exceptions.PassengerNotFoundException;
+import com.flightbookings.flight_bookings.exceptions.SeatNotFoundException;
+import com.flightbookings.flight_bookings.exceptions.UserNotFoundException;
+import com.flightbookings.flight_bookings.models.*;
 import com.flightbookings.flight_bookings.services.interfaces.FlightService;
-import jakarta.persistence.EntityNotFoundException;
-import org.modelmapper.ModelMapper;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -12,23 +14,19 @@ import java.util.stream.Collectors;
 
 /**
  * Converter class for converting between Booking and BookingDTO objects.
- * This class uses ModelMapper for object mapping and integrates with FlightService
- * to resolve flight details when creating Booking objects from BookingDTOs.
+ * This class uses manual mapping to convert fields between objects without using ModelMapper.
  */
 @Component
 public class BookingConverter {
 
-    private final ModelMapper modelMapper;
     private final FlightService flightService;
 
     /**
-     * Constructs a BookingConverter with the specified ModelMapper and FlightService.
+     * Constructs a BookingConverter with the specified FlightService.
      *
-     * @param modelMapper the ModelMapper used for object mapping
      * @param flightService the FlightService used to retrieve flight details
      */
-    public BookingConverter(ModelMapper modelMapper, FlightService flightService) {
-        this.modelMapper = modelMapper;
+    public BookingConverter(FlightService flightService) {
         this.flightService = flightService;
     }
 
@@ -37,21 +35,52 @@ public class BookingConverter {
      *
      * @param bookingDTO the BookingDTO to convert
      * @return the converted Booking entity
+     * @throws FlightNotFoundException if Flight ID is missing in bookingDTO
+     * @throws PassengerNotFoundException if Passenger ID is missing in bookingDTO
+     * @throws SeatNotFoundException if Seat Name is missing in bookingDTO
+     * @throws UserNotFoundException if User ID is missing in bookingDTO
      */
+    @Operation(summary = "Converts a BookingDTO to a Booking entity")
     public Booking dtoToBooking(BookingDTO bookingDTO) {
-        Booking booking = modelMapper.map(bookingDTO, Booking.class);
-
-        // Resuelve el Flight relacionado usando el FlightService
-        if (bookingDTO.getFlightId() != null) {
-            Flight flight = flightService.getFlightById(bookingDTO.getFlightId());
-            if (flight != null) {
-                booking.setFlight(flight);
-            } else {
-                throw new EntityNotFoundException("Flight with ID " + bookingDTO.getFlightId() + " not found");
-            }
+        if (bookingDTO == null) {
+            return null;
         }
-        // Puedes agregar más lógica si Booking tiene más relaciones con otras entidades.
 
+        Booking booking = new Booking();
+
+        if (bookingDTO.getFlightId() != null) {
+            Flight flight = new Flight();
+            flight.setFlightId(bookingDTO.getFlightId());
+            booking.setFlight(flight);
+        } else {
+            throw new FlightNotFoundException("Flight ID is missing for booking DTO");
+        }
+
+        if (bookingDTO.getPassengerId() != null) {
+            Passenger passenger = new Passenger();
+            passenger.setPassengerId(bookingDTO.getPassengerId());
+            booking.setPassenger(passenger);
+        } else {
+            throw new PassengerNotFoundException("Passenger ID is missing for booking DTO");
+        }
+
+        if (bookingDTO.getSeatName() != null) {
+            Seat seat = new Seat();
+            seat.setSeatName(bookingDTO.getSeatName());
+            booking.setSeat(seat);
+        } else {
+            throw new SeatNotFoundException("Seat name is missing for booking DTO");
+        }
+
+        if (bookingDTO.getUserId() != null) {
+            User user = new User();
+            user.setUserId(bookingDTO.getUserId());
+            booking.setUser(user);
+        } else {
+            throw new UserNotFoundException("User ID is missing for booking DTO");
+        }
+
+        booking.setBookingId(bookingDTO.getBookingId());
         return booking;
     }
 
@@ -60,16 +89,48 @@ public class BookingConverter {
      *
      * @param booking the Booking entity to convert
      * @return the converted BookingDTO
+     * @throws FlightNotFoundException if Flight is missing in booking
+     * @throws PassengerNotFoundException if Passenger is missing in booking
+     * @throws SeatNotFoundException if Seat is missing in booking
+     * @throws UserNotFoundException if User is missing in booking
      */
+    @Operation(summary = "Converts a Booking entity to a BookingDTO")
     public BookingDTO bookingToDto(Booking booking) {
-        BookingDTO bookingDTO = modelMapper.map(booking, BookingDTO.class);
+        if (booking == null) {
+            return null;
+        }
 
-        // Maneja relaciones anidadas, como el ID de Flight
+        BookingDTO bookingDTO = new BookingDTO();
+
         if (booking.getFlight() != null) {
             bookingDTO.setFlightId(booking.getFlight().getFlightId());
+            System.out.println("Mapped Flight ID: " + booking.getFlight().getFlightId());
+        } else {
+            throw new FlightNotFoundException("Flight not found for booking ID: " + booking.getBookingId());
         }
-        // Agrega lógica para otras relaciones anidadas si las hay
 
+        if (booking.getPassenger() != null) {
+            bookingDTO.setPassengerId(booking.getPassenger().getPassengerId());
+            System.out.println("Mapped Passenger ID: " + booking.getPassenger().getPassengerId());
+        } else {
+            throw new PassengerNotFoundException("Passenger not found for booking ID: " + booking.getBookingId());
+        }
+
+        if (booking.getSeat() != null) {
+            bookingDTO.setSeatName(booking.getSeat().getSeatName());
+            System.out.println("Mapped Seat Name: " + booking.getSeat().getSeatName());
+        } else {
+            throw new SeatNotFoundException("Seat not assigned for booking ID: " + booking.getBookingId());
+        }
+
+        if (booking.getUser() != null) {
+            bookingDTO.setUserId(booking.getUser().getUserId());
+            System.out.println("Mapped User ID: " + booking.getUser().getUserId());
+        } else {
+            throw new UserNotFoundException("User not found for booking ID: " + booking.getBookingId());
+        }
+
+        bookingDTO.setBookingId(booking.getBookingId());
         return bookingDTO;
     }
 
@@ -79,9 +140,10 @@ public class BookingConverter {
      * @param bookings the list of Booking entities to convert
      * @return the list of converted BookingDTOs
      */
+    @Operation(summary = "Converts a list of Booking entities to a list of BookingDTOs")
     public List<BookingDTO> bookingsToDtoList(List<Booking> bookings) {
         return bookings.stream()
-                .map(this::bookingToDto) // Utiliza el método personalizado para convertir cada Booking a BookingDTO
+                .map(this::bookingToDto)
                 .collect(Collectors.toList());
     }
 
@@ -91,10 +153,10 @@ public class BookingConverter {
      * @param bookingDTOs the list of BookingDTOs to convert
      * @return the list of converted Booking entities
      */
+    @Operation(summary = "Converts a list of BookingDTOs to a list of Booking entities")
     public List<Booking> dtoListToBookings(List<BookingDTO> bookingDTOs) {
         return bookingDTOs.stream()
-                .map(this::dtoToBooking) // Usa el método personalizado para convertir cada BookingDTO a Booking
+                .map(this::dtoToBooking)
                 .collect(Collectors.toList());
     }
-
 }
