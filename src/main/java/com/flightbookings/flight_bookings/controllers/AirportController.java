@@ -15,7 +15,7 @@ import java.util.List;
  */
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/api/airports")
+@RequestMapping("/api/v1/airports")
 @Tag(name = "Airport Management", description = "Operations pertaining to airport management")
 public class AirportController {
     private final AirportService airportService;
@@ -35,7 +35,7 @@ public class AirportController {
      * @return a list of all airports.
      */
     @Operation(summary = "Get all airports")
-    @GetMapping
+    @GetMapping("/")
     public ResponseEntity<List<Airport>> getAllAirports() {
         List<Airport> airports = airportService.getAllAirports();
         return new ResponseEntity<>(airports, HttpStatus.OK);
@@ -48,7 +48,7 @@ public class AirportController {
      * @return the created airport.
      */
     @Operation(summary = "Create a new airport")
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<Airport> createAirport(@RequestBody Airport airport) {
         Airport createdAirport = airportService.createAirport(airport);
         return new ResponseEntity<>(createdAirport, HttpStatus.CREATED);

@@ -101,12 +101,6 @@ public class FlightServiceImpl implements FlightService {
         return false;
     }
 
-    //    public List<Flight> searchFlightsByCity(String city) {
-//        return flightRepository.findAll()
-//                .stream()
-//                .filter(flight -> flight.getAirports().stream().anyMatch(airport -> airport.getCity().equalsIgnoreCase(city)))
-//                .collect(Collectors.toList());
-//    }
     /**
      * Cancels a flight by setting its availability to false.
      *

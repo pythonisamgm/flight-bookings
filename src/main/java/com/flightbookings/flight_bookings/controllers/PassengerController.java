@@ -62,7 +62,7 @@ public class PassengerController {
      * @return the list of passengers.
      */
     @Operation(summary = "Get all passengers")
-    @GetMapping
+    @GetMapping("/")
     public ResponseEntity<List<Passenger>> getAllPassengers() {
         List<Passenger> passengers = passengerService.getAllPassengers();
         return new ResponseEntity<>(passengers, HttpStatus.OK);
