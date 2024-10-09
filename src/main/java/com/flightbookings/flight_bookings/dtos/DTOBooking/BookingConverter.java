@@ -6,7 +6,6 @@ import com.flightbookings.flight_bookings.exceptions.SeatNotFoundException;
 import com.flightbookings.flight_bookings.exceptions.UserNotFoundException;
 import com.flightbookings.flight_bookings.models.*;
 import com.flightbookings.flight_bookings.services.interfaces.FlightService;
-import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -40,12 +39,7 @@ public class BookingConverter {
      * @throws SeatNotFoundException if Seat Name is missing in bookingDTO
      * @throws UserNotFoundException if User ID is missing in bookingDTO
      */
-    @Operation(summary = "Converts a BookingDTO to a Booking entity")
     public Booking dtoToBooking(BookingDTO bookingDTO) {
-        if (bookingDTO == null) {
-            return null;
-        }
-
         Booking booking = new Booking();
 
         if (bookingDTO.getFlightId() != null) {
@@ -89,74 +83,35 @@ public class BookingConverter {
      *
      * @param booking the Booking entity to convert
      * @return the converted BookingDTO
-     * @throws FlightNotFoundException if Flight is missing in booking
-     * @throws PassengerNotFoundException if Passenger is missing in booking
-     * @throws SeatNotFoundException if Seat is missing in booking
-     * @throws UserNotFoundException if User is missing in booking
      */
-    @Operation(summary = "Converts a Booking entity to a BookingDTO")
     public BookingDTO bookingToDto(Booking booking) {
-        if (booking == null) {
-            return null;
-        }
-
         BookingDTO bookingDTO = new BookingDTO();
 
         if (booking.getFlight() != null) {
             bookingDTO.setFlightId(booking.getFlight().getFlightId());
-            System.out.println("Mapped Flight ID: " + booking.getFlight().getFlightId());
         } else {
             throw new FlightNotFoundException("Flight not found for booking ID: " + booking.getBookingId());
         }
 
         if (booking.getPassenger() != null) {
             bookingDTO.setPassengerId(booking.getPassenger().getPassengerId());
-            System.out.println("Mapped Passenger ID: " + booking.getPassenger().getPassengerId());
         } else {
             throw new PassengerNotFoundException("Passenger not found for booking ID: " + booking.getBookingId());
         }
 
         if (booking.getSeat() != null) {
             bookingDTO.setSeatName(booking.getSeat().getSeatName());
-            System.out.println("Mapped Seat Name: " + booking.getSeat().getSeatName());
         } else {
             throw new SeatNotFoundException("Seat not assigned for booking ID: " + booking.getBookingId());
         }
 
         if (booking.getUser() != null) {
             bookingDTO.setUserId(booking.getUser().getUserId());
-            System.out.println("Mapped User ID: " + booking.getUser().getUserId());
         } else {
             throw new UserNotFoundException("User not found for booking ID: " + booking.getBookingId());
         }
 
         bookingDTO.setBookingId(booking.getBookingId());
         return bookingDTO;
-    }
-
-    /**
-     * Converts a list of Booking entities to a list of BookingDTOs.
-     *
-     * @param bookings the list of Booking entities to convert
-     * @return the list of converted BookingDTOs
-     */
-    @Operation(summary = "Converts a list of Booking entities to a list of BookingDTOs")
-    public List<BookingDTO> bookingsToDtoList(List<Booking> bookings) {
-        return bookings.stream()
-                .map(this::bookingToDto)
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Converts a list of BookingDTOs to a list of Booking entities.
-     *
-     * @param bookingDTOs the list of BookingDTOs to convert
-     * @return the list of converted Booking entities
-     */
-    @Operation(summary = "Converts a list of BookingDTOs to a list of Booking entities")
-    public List<Booking> dtoListToBookings(List<BookingDTO> bookingDTOs) {
-        return bookingDTOs.stream()
-                .map(this::dtoToBooking)
-                .collect(Collectors.toList());
     }
 }

@@ -3,6 +3,7 @@ package com.flightbookings.flight_bookings.dtos.DTOBooking;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import java.time.LocalDateTime;
 
 /**
  * Data Transfer Object for Booking, representing the details of a booking in the system.
@@ -32,9 +33,19 @@ public class BookingDTO {
     @NotNull(message = "User ID cannot be null")
     @Positive(message = "User ID must be a positive number")
     private Long userId;
+
     // Default constructor
     public BookingDTO() {}
 
+    /**
+     * Constructor to create BookingDTO with all required fields.
+     *
+     * @param bookingId   the booking ID
+     * @param flightId    the flight ID associated with the booking
+     * @param passengerId the passenger ID associated with the booking
+     * @param seatName    the name of the seat booked
+     * @param userId      the user ID associated with the booking
+     */
     public BookingDTO(Long bookingId, Long flightId, Long passengerId, String seatName, Long userId) {
         this.bookingId = bookingId;
         this.flightId = flightId;
@@ -114,6 +125,7 @@ public class BookingDTO {
     public void setSeatName(String seatName) {
         this.seatName = seatName;
     }
+
     /**
      * Gets the user ID associated with this booking.
      *
@@ -131,5 +143,4 @@ public class BookingDTO {
     public void setUserId(Long userId) {
         this.userId = userId;
     }
-
 }
