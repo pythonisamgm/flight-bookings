@@ -31,14 +31,6 @@ public interface BookingService {
     Booking updateBooking(Booking updatedBooking);
 
     /**
-     * Creates a booking from a provided Booking object.
-     *
-     * @param booking the Booking object to be created.
-     * @return the created Booking object.
-     */
-    Booking createBooking2(Booking booking);
-
-    /**
      * Retrieves a booking by its ID.
      *
      * @param id   the ID of the booking.

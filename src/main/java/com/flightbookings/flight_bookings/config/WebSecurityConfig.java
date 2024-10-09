@@ -53,7 +53,6 @@ public class WebSecurityConfig {
                                 .requestMatchers("/api/v1/bookings/create/{flightId}/{passengerId}/{seatName}").hasAuthority("USER")
                                 .requestMatchers(HttpMethod.PUT,"/api/v1/bookings/{id}").hasAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.PUT,"/api/v1/bookings/all").hasAuthority("ADMIN")
-                                //.requestMatchers("/api/v1/bookings/create2").permitAll()
                                 .requestMatchers(HttpMethod.GET,"/api/v1/bookings/{id}").hasAnyAuthority("ADMIN", "USER")
                                 .requestMatchers("/api/v1/bookings/").hasAnyAuthority("ADMIN", "USER")
                                 .requestMatchers("/api/v1/bookings/update/{id}").hasAuthority("ADMIN")

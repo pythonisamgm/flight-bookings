@@ -102,11 +102,6 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Booking createBooking2(Booking booking) {
-        return bookingRepository.save(booking);
-    }
-
-    @Override
     public Booking getBookingByIdByUser(Long id, User user) {
         Optional<Booking> bookingOptional = bookingRepository.findById(id);
         if (bookingOptional.isPresent()) {

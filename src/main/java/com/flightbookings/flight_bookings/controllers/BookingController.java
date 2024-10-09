@@ -76,12 +76,6 @@ public class BookingController {
         return new ResponseEntity<>(booking, HttpStatus.OK);
     }
 
-    @Operation(summary =  "Create a new booking. Version 1")
-    @PostMapping(value="/create2",consumes = "application/json")
-    public ResponseEntity<Booking> createBooking2(@RequestBody Booking booking) {
-        Booking newBooking = bookingService.createBooking2(booking);
-        return new ResponseEntity<>(newBooking, HttpStatus.CREATED);
-    }
     /**
      * Retrieves a booking by its ID.
      *
