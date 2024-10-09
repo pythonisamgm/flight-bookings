@@ -12,7 +12,7 @@ import jakarta.persistence.*;
 @Schema(description = "All details about the Airport entity.")
 public class Airport {
 
-    /** The airport code. */
+    /** The airport code, used as a unique identifier. */
     @Id
     @Column(name = "airport_code", length = 3, nullable = false)
     @Schema(description = "The airport code")
@@ -35,7 +35,7 @@ public class Airport {
     private ECountry airportCountry;
 
     /**
-     * Creates an instance of the Airport class.
+     * Creates an instance of the Airport class with specified details.
      *
      * @param airportCode the code of the airport.
      * @param airportName the name of the airport.
@@ -53,42 +53,74 @@ public class Airport {
     public Airport() {
     }
 
-    /** @return The airport code. */
+    /**
+     * Returns the airport code.
+     *
+     * @return The airport code.
+     */
     public String getAirportCode() {
         return airportCode;
     }
 
-    /** @param airportCode The airport code. */
+    /**
+     * Sets the airport code.
+     *
+     * @param airportCode The airport code.
+     */
     public void setAirportCode(String airportCode) {
         this.airportCode = airportCode;
     }
 
-    /** @return The airport name. */
+    /**
+     * Returns the name of the airport.
+     *
+     * @return The airport name.
+     */
     public String getAirportName() {
         return airportName;
     }
 
-    /** @param airportName The name of the airport. */
+    /**
+     * Sets the name of the airport.
+     *
+     * @param airportName The name of the airport.
+     */
     public void setAirportName(String airportName) {
         this.airportName = airportName;
     }
 
-    /** @return The airport city. */
+    /**
+     * Returns the city where the airport is located.
+     *
+     * @return The airport city.
+     */
     public String getAirportCity() {
         return airportCity;
     }
 
-    /** @param airportCity The city where the airport is located. */
+    /**
+     * Sets the city where the airport is located.
+     *
+     * @param airportCity The city of the airport.
+     */
     public void setAirportCity(String airportCity) {
         this.airportCity = airportCity;
     }
 
-    /** @return The airport country. */
+    /**
+     * Returns the country where the airport is located.
+     *
+     * @return The airport country.
+     */
     public ECountry getAirportCountry() {
         return airportCountry;
     }
 
-    /** @param airportCountry The airport country. */
+    /**
+     * Sets the country where the airport is located.
+     *
+     * @param airportCountry The airport country.
+     */
     public void setAirportCountry(ECountry airportCountry) {
         this.airportCountry = airportCountry;
     }
