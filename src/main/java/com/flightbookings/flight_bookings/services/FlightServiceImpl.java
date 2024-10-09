@@ -5,6 +5,7 @@ import com.flightbookings.flight_bookings.models.EFlightAirplane;
 import com.flightbookings.flight_bookings.models.Seat;
 import com.flightbookings.flight_bookings.repositories.IFlightRepository;
 import com.flightbookings.flight_bookings.repositories.ISeatRepository;
+import com.flightbookings.flight_bookings.services.interfaces.AirportService;
 import com.flightbookings.flight_bookings.services.interfaces.FlightService;
 import com.flightbookings.flight_bookings.services.interfaces.SeatService;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 /**
- * Service implementation for managing flight-related operations.
+ * Service implementation of the {@link FlightService} for managing flight-related operations.
  */
 @Service
 public class FlightServiceImpl implements FlightService {
@@ -71,38 +72,6 @@ public class FlightServiceImpl implements FlightService {
     public List<Flight> getAllFlights() {
         return flightRepository.findAll();
     }
-
-    /**
-     * Retrieves a list of flights that use a specified airplane type.
-     *
-     * @param airplaneType the type of airplane to filter flights by
-     * @return a list of Flight objects that match the specified airplane type
-     */
-    public List<Flight> getFlightsByAirplaneType(EFlightAirplane airplaneType) {
-        return flightRepository.findAll()
-                .stream()
-                .filter(flight -> flight.getFlightAirplane() == airplaneType)
-                .collect(Collectors.toList());
-    }
-    /**
-     * Updates the availability of all flights based on their arrival time and seat availability.
-     * If a flight's arrival time has passed or there are no seats available, its availability is set to false.
-     */
-    @Override
-    public void updateFlightAvailability() {
-        LocalDateTime now = LocalDateTime.now();
-        List<Flight> flights = flightRepository.findAll();
-
-        for (Flight flight : flights) {
-            boolean allSeatsBooked = flight.getSeats().stream().allMatch(Seat::isBooked);
-
-            if (flight.getDepartureTime().isBefore(now) || allSeatsBooked) {
-                flight.setAvailability(false);
-                flightRepository.save(flight);
-            }
-        }
-    }
-
     /**
      * Updates the details of an existing flight.
      *
@@ -133,4 +102,65 @@ public class FlightServiceImpl implements FlightService {
         return false;
     }
 
+    //    public List<Flight> searchFlightsByCity(String city) {
+//        return flightRepository.findAll()
+//                .stream()
+//                .filter(flight -> flight.getAirports().stream().anyMatch(airport -> airport.getCity().equalsIgnoreCase(city)))
+//                .collect(Collectors.toList());
+//    }
+    /**
+     * Cancels a flight by setting its availability to false.
+     *
+     * @param id the ID of the flight to cancel
+     */
+    public void cancelFlight(Long id) {
+        Flight flight = getFlightById(id);
+        if (flight != null) {
+            flight.setAvailability(false);
+            flightRepository.save(flight);
+        }
+    }
+    /**
+     * Delays a flight by updating its departure time.
+     *
+     * @param id the ID of the flight to delay
+     * @param newDepartureTime the new departure time for the flight
+     */
+    public void delayFlight(Long id, LocalDateTime newDepartureTime) {
+        Flight flight = getFlightById(id);
+        if (flight != null) {
+            flight.setDepartureTime(newDepartureTime);
+            flightRepository.save(flight);
+        }
+    }
+    /**
+     * Retrieves a list of flights that use a specified airplane type.
+     *
+     * @param airplaneType the type of airplane to filter flights by
+     * @return a list of Flight objects that match the specified airplane type
+     */
+    public List<Flight> getFlightsByAirplaneType(EFlightAirplane airplaneType) {
+        return flightRepository.findAll()
+                .stream()
+                .filter(flight -> flight.getFlightAirplane() == airplaneType)
+                .collect(Collectors.toList());
+    }
+    /**
+     * Updates the availability of all flights based on their arrival time and seat availability.
+     * If a flight's arrival time has passed or there are no seats available, its availability is set to false.
+     */
+    @Override
+    public void updateFlightAvailability() {
+        LocalDateTime now = LocalDateTime.now();
+        List<Flight> flights = flightRepository.findAll();
+
+        for (Flight flight : flights) {
+            boolean allSeatsBooked = flight.getSeats().stream().allMatch(Seat::isBooked);
+
+            if (flight.getDepartureTime().isBefore(now) || allSeatsBooked) {
+                flight.setAvailability(false);
+                flightRepository.save(flight);
+            }
+        }
+    }
 }

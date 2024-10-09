@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 /**
- * Implementation of the SeatService interface for managing seat operations.
+ * Implementation of the {@link SeatService} interface for managing seat operations.
  */
 @Service
 public class SeatServiceImpl implements SeatService {

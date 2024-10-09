@@ -3,44 +3,53 @@ package com.flightbookings.flight_bookings.models;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 
+import java.util.Set;
 /**
  * Represents an airport entity in the system.
  * Contains details about the airport's code, name, location, and associated flights.
  */
 @Entity
-@Table(name = "Airport")
+@Table(name = "airport")
 @Schema(description = "All details about the Airport entity.")
 public class Airport {
 
-    /** The airport code, used as a unique identifier. */
+    /**
+     * The airport code.
+     */
     @Id
     @Column(name = "airport_code", length = 3, nullable = false)
     @Schema(description = "The airport code")
     private String airportCode;
 
-    /** The name of the airport. */
+    /**
+     * The name of the airport.
+     */
     @Column(name = "airport_name", nullable = false)
     @Schema(description = "The name of the airport")
     private String airportName;
 
-    /** The city where the airport is located. */
+    /**
+     * The city where the airport is located.
+     */
     @Column(name = "city", nullable = false)
     @Schema(description = "The city where the airport is located")
     private String airportCity;
 
-    /** The country where the airport is located. */
+    /**
+     * The country where the airport is located.
+     */
     @Enumerated(EnumType.STRING)
     @Column(name = "country", nullable = false)
     @Schema(description = "The country where the airport is located")
     private ECountry airportCountry;
 
     /**
-     * Creates an instance of the Airport class with specified details.
-     *
-     * @param airportCode the code of the airport.
-     * @param airportName the name of the airport.
-     * @param airportCity the city where the airport is located.
-     * @param airportCountry the country of the airport.
+     * Constructs a new Airport with the specified details.
+
+     * * @param airportCode    The airport code.
+     * @param airportName    The name of the airport.
+     * @param airportCity    The city where the airport is located.
+     * @param airportCountry The country where the airport is located.
      */
     public Airport(String airportCode, String airportName, String airportCity, ECountry airportCountry) {
         this.airportCode = airportCode;
@@ -49,12 +58,14 @@ public class Airport {
         this.airportCountry = airportCountry;
     }
 
-    /** Default constructor for Airport. */
+    /**
+     * Default constructor for Airport.
+     */
     public Airport() {
     }
 
     /**
-     * Returns the airport code.
+     * Gets the airport code.
      *
      * @return The airport code.
      */
@@ -72,9 +83,9 @@ public class Airport {
     }
 
     /**
-     * Returns the name of the airport.
+     * Gets the country where the airport is located.
      *
-     * @return The airport name.
+     * @return The airport country.
      */
     public String getAirportName() {
         return airportName;
@@ -90,7 +101,7 @@ public class Airport {
     }
 
     /**
-     * Returns the city where the airport is located.
+     * Gets the city where the airport is located.
      *
      * @return The airport city.
      */
@@ -101,18 +112,18 @@ public class Airport {
     /**
      * Sets the city where the airport is located.
      *
-     * @param airportCity The city of the airport.
+     * @param airportCity The airport city.
      */
     public void setAirportCity(String airportCity) {
         this.airportCity = airportCity;
     }
 
     /**
-     * Returns the country where the airport is located.
+     * Gets the country where the airport is located.
      *
      * @return The airport country.
      */
-    public ECountry getAirportCountry() {
+    public ECountry getAirportCountry() { // Cambiado a ECountry
         return airportCountry;
     }
 
@@ -121,7 +132,7 @@ public class Airport {
      *
      * @param airportCountry The airport country.
      */
-    public void setAirportCountry(ECountry airportCountry) {
+    public void setAirportCountry(ECountry airportCountry) { // Cambiado a ECountry
         this.airportCountry = airportCountry;
     }
 }

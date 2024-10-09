@@ -37,8 +37,6 @@ public class BookingServiceImplTest {
     @Mock
     private IUserRepository userRepository;
 
-
-
     @Mock
     private SeatService seatService;
 
@@ -160,72 +158,6 @@ public class BookingServiceImplTest {
     }
 
     @Test
-    public void testGetBookingByIdByUser() {
-        Long bookingId = 1L;
-        User user = new User();
-        user.setUserId(1L);
-
-        booking1.setUser(user);
-
-        when(bookingRepository.findById(bookingId)).thenReturn(Optional.of(booking1));
-
-        Booking foundBooking = bookingService.getBookingByIdByUser(bookingId, user);
-
-        assertNotNull(foundBooking);
-        assertEquals(bookingId, foundBooking.getBookingId());
-
-        assertNotNull(foundBooking);
-        assertEquals(bookingId, foundBooking.getBookingId());
-
-        verify(bookingRepository, times(1)).findById(bookingId);
-    }
-
-    @Test
-    public void testGetBookingById_ByUser_NotFound() {
-        Long bookingId = 3L;
-        User user = new User();
-        user.setUserId(1L);
-        when(bookingRepository.findById(3L)).thenReturn(Optional.empty());
-
-        Booking foundBooking = bookingService.getBookingByIdByUser(3L, user);
-
-        assertNull(foundBooking);
-
-        verify(bookingRepository, times(1)).findById(3L);
-    }
-
-    @Test
-    public void testGetAllBookings() {
-        List<Booking> bookings = Arrays.asList(booking1, booking2);
-        when(bookingRepository.findAll()).thenReturn(bookings);
-
-        List<Booking> allBookings = bookingService.getAllBookings();
-
-        assertEquals(2, allBookings.size());
-        assertEquals(1L, allBookings.get(0).getBookingId());
-        assertEquals(2L, allBookings.get(1).getBookingId());
-
-        verify(bookingRepository, times(1)).findAll();
-    }
-    @Test
-    public void testGetAllBookingsByUser() {
-        User user = new User();
-        user.setUserId(1L);
-
-        List<Booking> bookings = Arrays.asList(booking1, booking2);
-
-        when(bookingRepository.findByUser(user)).thenReturn(bookings);
-
-        List<Booking> allBookings = bookingService.getAllBookingsByUser(user);
-
-        assertEquals(2, allBookings.size());
-        assertEquals(1L, allBookings.get(0).getBookingId());
-        assertEquals(2L, allBookings.get(1).getBookingId());
-
-        verify(bookingRepository, times(1)).findByUser(user);
-    }
-
-    @Test
     void test_update_method_basic_fields() {
         Long bookingId = 1L;
         Long userId = 1L;
@@ -309,6 +241,73 @@ public class BookingServiceImplTest {
         assertEquals("Booking not found with ID: " + bookingId, exception.getMessage());
         verify(bookingRepository, never()).save(any(Booking.class));
     }
+
+    @Test
+    public void testGetBookingById() {
+        Long bookingId = 1L;
+        User user = new User();
+        user.setUserId(1L);
+
+        booking1.setUser(user);
+
+        when(bookingRepository.findById(bookingId)).thenReturn(Optional.of(booking1));
+
+        Booking foundBooking = bookingService.getBookingById(bookingId, user);
+
+        assertNotNull(foundBooking);
+        assertEquals(bookingId, foundBooking.getBookingId());
+
+        assertNotNull(foundBooking);
+        assertEquals(bookingId, foundBooking.getBookingId());
+
+        verify(bookingRepository, times(1)).findById(bookingId);
+    }
+
+    @Test
+    public void testGetBookingById_NotFound() {
+        Long bookingId = 3L;
+        User user = new User();
+        user.setUserId(1L);
+        when(bookingRepository.findById(3L)).thenReturn(Optional.empty());
+
+        Booking foundBooking = bookingService.getBookingById(3L, user);
+
+        assertNull(foundBooking);
+
+        verify(bookingRepository, times(1)).findById(3L);
+    }
+
+    @Test
+    public void testGetAllBookings() {
+        List<Booking> bookings = Arrays.asList(booking1, booking2);
+        when(bookingRepository.findAll()).thenReturn(bookings);
+
+        List<Booking> allBookings = bookingService.getAllBookings();
+
+        assertEquals(2, allBookings.size());
+        assertEquals(1L, allBookings.get(0).getBookingId());
+        assertEquals(2L, allBookings.get(1).getBookingId());
+
+        verify(bookingRepository, times(1)).findAll();
+    }
+    @Test
+    public void testGetAllBookingsByUser() {
+        User user = new User();
+        user.setUserId(1L);
+
+        List<Booking> bookings = Arrays.asList(booking1, booking2);
+
+        when(bookingRepository.findByUser(user)).thenReturn(bookings);
+
+        List<Booking> allBookings = bookingService.getAllBookingsByUser(user);
+
+        assertEquals(2, allBookings.size());
+        assertEquals(1L, allBookings.get(0).getBookingId());
+        assertEquals(2L, allBookings.get(1).getBookingId());
+
+        verify(bookingRepository, times(1)).findByUser(user);
+    }
+
 
     @Test
     public void testDeleteBooking() {

@@ -1,9 +1,9 @@
 package com.flightbookings.flight_bookings.controllers;
 
+import com.flightbookings.flight_bookings.dtos.DTOAirport.AirportConverter;
+import com.flightbookings.flight_bookings.dtos.DTOAirport.AirportDTO;
 import com.flightbookings.flight_bookings.models.Airport;
 import com.flightbookings.flight_bookings.services.interfaces.AirportService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,46 +11,52 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * Controller for managing airports, including retrieving and creating airports.
+ * Controller for managing airports, including retrieving and creating airport records.
  */
-@CrossOrigin("*")
 @RestController
-@RequestMapping("/api/v1/airports")
-@Tag(name = "Airport Management", description = "Operations pertaining to airport management")
+@RequestMapping("/api/airports")
 public class AirportController {
     private final AirportService airportService;
+    private final AirportConverter airportConverter;
 
     /**
-     * Constructor to initialize AirportController with AirportService.
+     * Constructor to initialize the AirportController with AirportService and AirportConverter.
      *
-     * @param airportService the service for airport management.
+     * @param airportService  the service for managing airport records.
+     * @param airportConverter the converter for Airport and AirportDTO.
      */
-    public AirportController(AirportService airportService) {
+    public AirportController(AirportService airportService, AirportConverter airportConverter) {
         this.airportService = airportService;
+        this.airportConverter = airportConverter;
     }
 
     /**
-     * Retrieves all airports.
+     * Retrieves a list of all airports.
      *
-     * @return a list of all airports.
+     * This endpoint allows users to fetch all airport records in the system.
+     *
+     * @return ResponseEntity containing a list of AirportDTOs and an HTTP status of 200 (OK).
      */
-    @Operation(summary = "Get all airports")
-    @GetMapping("/")
-    public ResponseEntity<List<Airport>> getAllAirports() {
+    @GetMapping
+    public ResponseEntity<List<AirportDTO>> getAllAirports() {
         List<Airport> airports = airportService.getAllAirports();
-        return new ResponseEntity<>(airports, HttpStatus.OK);
+        List<AirportDTO> airportDTOs = airportConverter.airportsToDtoList(airports);
+        return new ResponseEntity<>(airportDTOs, HttpStatus.OK);
     }
 
     /**
-     * Creates a new airport.
+     * Creates a new airport record.
      *
-     * @param airport the airport object to be created.
-     * @return the created airport.
+     * This endpoint allows users to create a new airport by providing details in an AirportDTO.
+     *
+     * @param airportDTO the AirportDTO containing the details of the airport to be created.
+     * @return ResponseEntity containing the created AirportDTO and an HTTP status of 201 (Created).
      */
-    @Operation(summary = "Create a new airport")
-    @PostMapping("/create")
-    public ResponseEntity<Airport> createAirport(@RequestBody Airport airport) {
+    @PostMapping
+    public ResponseEntity<AirportDTO> createAirport(@RequestBody AirportDTO airportDTO) {
+        Airport airport = airportConverter.dtoToAirport(airportDTO);
         Airport createdAirport = airportService.createAirport(airport);
-        return new ResponseEntity<>(createdAirport, HttpStatus.CREATED);
+        AirportDTO createdAirportDTO = airportConverter.airportToDto(createdAirport);
+        return new ResponseEntity<>(createdAirportDTO, HttpStatus.CREATED);
     }
 }
