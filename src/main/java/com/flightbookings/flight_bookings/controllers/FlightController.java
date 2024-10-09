@@ -43,6 +43,27 @@ public class FlightController {
         return new ResponseEntity<>(newFlight, HttpStatus.CREATED);
     }
     /**
+     * Updates the availability of all flights based on their current status (e.g., past departure or no available seats).
+     *
+     * @return a response indicating whether the availability was successfully updated.
+     */
+    @PostMapping("/updateAvailability")
+    public ResponseEntity<String> updateAvailability() {
+        flightService.updateFlightAvailability();
+        return ResponseEntity.ok("Flight availability updated successfully.");
+    }
+    /**
+     * Retrieves a list of flights by airplane type.
+     *
+     * @param airplaneType the type of airplane to filter flights.
+     * @return a list of flights with the specified airplane type.
+     */
+    @GetMapping("/byAirplaneType")
+    public ResponseEntity<List<Flight>> getFlightsByAirplaneType(@RequestParam EFlightAirplane airplaneType) {
+        List<Flight> flights = flightService.getFlightsByAirplaneType(airplaneType);
+        return new ResponseEntity<>(flights, HttpStatus.OK);
+    }
+    /**
      * Retrieves a flight by its ID.
      *
      * @param id the ID of the flight.
@@ -89,26 +110,5 @@ public class FlightController {
     public ResponseEntity<Void> deleteFlight(@Parameter(description = "ID of the flight to be retrieved") @PathVariable Long id) {
         boolean isDeleted = flightService.deleteFlight(id);
         return isDeleted ? new ResponseEntity<>(HttpStatus.NO_CONTENT) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-    /**
-     * Updates the availability of all flights based on their current status (e.g., past departure or no available seats).
-     *
-     * @return a response indicating whether the availability was successfully updated.
-     */
-    @PostMapping("/updateAvailability")
-    public ResponseEntity<String> updateAvailability() {
-        flightService.updateFlightAvailability();
-        return ResponseEntity.ok("Flight availability updated successfully.");
-    }
-    /**
-     * Retrieves a list of flights by airplane type.
-     *
-     * @param airplaneType the type of airplane to filter flights.
-     * @return a list of flights with the specified airplane type.
-     */
-    @GetMapping("/byAirplaneType")
-    public ResponseEntity<List<Flight>> getFlightsByAirplaneType(@RequestParam EFlightAirplane airplaneType) {
-        List<Flight> flights = flightService.getFlightsByAirplaneType(airplaneType);
-        return new ResponseEntity<>(flights, HttpStatus.OK);
     }
 }

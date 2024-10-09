@@ -84,5 +84,4 @@ public class WebSecurityConfig {
                 .addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
-
 }

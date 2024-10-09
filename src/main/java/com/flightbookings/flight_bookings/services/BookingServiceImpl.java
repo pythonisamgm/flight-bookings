@@ -66,6 +66,30 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    public Booking getBookingByIdByUser(Long id, User user) {
+        Optional<Booking> bookingOptional = bookingRepository.findById(id);
+        if (bookingOptional.isPresent()) {
+            Booking booking = bookingOptional.get();
+            if (booking.getUser().equals(user)) {
+                return booking;
+            } else {
+                throw new UnauthorizedAccessException("You do not have permission to view this booking.");
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public List<Booking> getAllBookingsByUser(User user) {
+        return bookingRepository.findByUser(user);
+    }
+
+    @Override
+    public List<Booking> getAllBookings() {
+        return bookingRepository.findAll();
+    }
+
+    @Override
     public Booking updateBooking(Booking updatedBooking) {
         Optional<Booking> existingBookingOptional = bookingRepository.findById(updatedBooking.getBookingId());
         if (existingBookingOptional.isPresent()) {
@@ -96,30 +120,6 @@ public class BookingServiceImpl implements BookingService {
         } else {
             throw new BookingNotFoundException("Booking not found with ID: " + updatedBooking.getBookingId());
         }
-    }
-
-    @Override
-    public Booking getBookingByIdByUser(Long id, User user) {
-        Optional<Booking> bookingOptional = bookingRepository.findById(id);
-        if (bookingOptional.isPresent()) {
-            Booking booking = bookingOptional.get();
-            if (booking.getUser().equals(user)) {
-                return booking;
-            } else {
-                throw new UnauthorizedAccessException("You do not have permission to view this booking.");
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public List<Booking> getAllBookingsByUser(User user) {
-        return bookingRepository.findByUser(user);
-    }
-
-    @Override
-    public List<Booking> getAllBookings() {
-        return bookingRepository.findAll();
     }
 
     @Override

@@ -37,6 +37,14 @@ public interface FlightService {
     List<Flight> getAllFlights();
 
     /**
+     * Retrieves flights by the type of airplane.
+     *
+     * @param airplaneType the type of airplane for the flights to retrieve.
+     * @return a list of Flight objects that match the airplane type.
+     */
+    List<Flight> getFlightsByAirplaneType(EFlightAirplane airplaneType);
+
+    /**
      * Updates the details of an existing flight.
      *
      * @param id            the ID of the flight to update.
@@ -46,24 +54,15 @@ public interface FlightService {
     Flight updateFlight(Long id, Flight flightDetails);
 
     /**
+     * Updates the availability status of all flights.
+     */
+    void updateFlightAvailability();
+
+    /**
      * Deletes a flight by its ID.
      *
      * @param id the ID of the flight to delete.
      * @return true if the flight was successfully deleted, false otherwise.
      */
     boolean deleteFlight(Long id);
-
-    /**
-     * Updates the availability status of all flights.
-     */
-    void updateFlightAvailability();
-
-    /**
-     * Retrieves flights by the type of airplane.
-     *
-     * @param airplaneType the type of airplane for the flights to retrieve.
-     * @return a list of Flight objects that match the airplane type.
-     */
-    List<Flight> getFlightsByAirplaneType(EFlightAirplane airplaneType);
-
 }

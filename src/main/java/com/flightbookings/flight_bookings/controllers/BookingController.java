@@ -60,21 +60,6 @@ public class BookingController {
         return new ResponseEntity<>(booking, HttpStatus.CREATED);
     }
     /**
-     * Updates an existing booking.
-     *
-     * @param id             the ID of the booking to be updated.
-     * @param updatedBooking the booking object with updated details.
-     * @return the updated booking.
-     */
-    @Operation(summary =  "Update existing booking")
-    @PutMapping("/{id}")
-    public ResponseEntity<Booking> updateBooking(@Parameter(description = "ID of the booking  to be retrieved") @PathVariable Long id, @RequestBody Booking updatedBooking) {
-        updatedBooking.setBookingId(id);
-        Booking booking = bookingService.updateBooking(updatedBooking);
-        return new ResponseEntity<>(booking, HttpStatus.OK);
-    }
-
-    /**
      * Retrieves a booking by its ID.
      *
      * @param id       the ID of the booking.
@@ -116,6 +101,20 @@ public class BookingController {
     public ResponseEntity<List<Booking>> getAllBookings() {
         List<Booking> bookings = bookingService.getAllBookings();
         return new ResponseEntity<>(bookings, HttpStatus.OK);
+    }
+    /**
+     * Updates an existing booking.
+     *
+     * @param id             the ID of the booking to be updated.
+     * @param updatedBooking the booking object with updated details.
+     * @return the updated booking.
+     */
+    @Operation(summary =  "Update existing booking")
+    @PutMapping("/{id}")
+    public ResponseEntity<Booking> updateBooking(@Parameter(description = "ID of the booking  to be retrieved") @PathVariable Long id, @RequestBody Booking updatedBooking) {
+        updatedBooking.setBookingId(id);
+        Booking booking = bookingService.updateBooking(updatedBooking);
+        return new ResponseEntity<>(booking, HttpStatus.OK);
     }
     /**
      * Deletes an existing booking by ID.
