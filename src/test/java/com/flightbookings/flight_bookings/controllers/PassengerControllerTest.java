@@ -1,6 +1,8 @@
 package com.flightbookings.flight_bookings.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.flightbookings.flight_bookings.dtos.DTOPassenger.PassengerConverter;
+import com.flightbookings.flight_bookings.dtos.DTOPassenger.PassengerDTO;
 import com.flightbookings.flight_bookings.models.Passenger;
 import com.flightbookings.flight_bookings.services.PassengerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +26,10 @@ public class PassengerControllerTest {
 
     @Mock
     private PassengerServiceImpl passengerService;
+
+    @Mock
+    private PassengerConverter passengerConverter;
+
     private MockMvc mockMvc;
 
     @InjectMocks
@@ -31,7 +37,10 @@ public class PassengerControllerTest {
 
     private Passenger passenger1;
     private Passenger passenger2;
+    private PassengerDTO passengerDTO1;
+    private PassengerDTO passengerDTO2;
     private List<Passenger> passengerList;
+    private List<PassengerDTO> passengerDTOList;
 
     @BeforeEach
     public void setUp() {
@@ -52,25 +61,44 @@ public class PassengerControllerTest {
         passenger2.setTelephone(661888888L);
         passenger2.setNationality("Alemania");
 
+        passengerDTO1 = new PassengerDTO();
+        passengerDTO1.setPassengerId(1L);
+        passengerDTO1.setPassengerName("Juan Antonio");
+        passengerDTO1.setIdentityDoc("1337");
+        passengerDTO1.setTelephone(661777777L);
+        passengerDTO1.setNationality("Irlandés");
+
+        passengerDTO2 = new PassengerDTO();
+        passengerDTO2.setPassengerId(2L);
+        passengerDTO2.setPassengerName("Miguel Angel");
+        passengerDTO2.setIdentityDoc("7823");
+        passengerDTO2.setTelephone(661888888L);
+        passengerDTO2.setNationality("Alemania");
+
         passengerList = new ArrayList<>();
         passengerList.add(passenger1);
         passengerList.add(passenger2);
 
+        passengerDTOList = new ArrayList<>();
+        passengerDTOList.add(passengerDTO1);
+        passengerDTOList.add(passengerDTO2);
     }
 
     @Test
     public void testCreatePassenger() throws Exception {
+        when(passengerConverter.dtoToPassenger(any(PassengerDTO.class))).thenReturn(passenger1);
         when(passengerService.createPassenger(any(Passenger.class))).thenReturn(passenger1);
+        when(passengerConverter.passengerToDto(any(Passenger.class))).thenReturn(passengerDTO1);
 
         mockMvc.perform(post("/api/v1/passengers/create")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(passenger1)))
+                        .content(new ObjectMapper().writeValueAsString(passengerDTO1)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.passengerId").value(1L))
-        .andExpect(jsonPath("$.passengerName").value("Juan Antonio"))
-        .andExpect(jsonPath("$.identityDoc").value("1337"))
-        .andExpect(jsonPath("$.telephone").value(661777777L))
-        .andExpect(jsonPath("$.nationality").value("Irlandés"));
+                .andExpect(jsonPath("$.passengerName").value("Juan Antonio"))
+                .andExpect(jsonPath("$.identityDoc").value("1337"))
+                .andExpect(jsonPath("$.telephone").value(661777777L))
+                .andExpect(jsonPath("$.nationality").value("Irlandés"));
 
         verify(passengerService, times(1)).createPassenger(any(Passenger.class));
     }
@@ -78,10 +106,12 @@ public class PassengerControllerTest {
     @Test
     public void testGetPassengerById() throws Exception {
         when(passengerService.getPassengerById(1L)).thenReturn(passenger1);
+        when(passengerConverter.passengerToDto(passenger1)).thenReturn(passengerDTO1);
 
         mockMvc.perform(get("/api/v1/passengers/{id}", 1L))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.passengerId").value(1L));
+                .andExpect(jsonPath("$.passengerId").value(1L))
+                .andExpect(jsonPath("$.passengerName").value("Juan Antonio"));
 
         verify(passengerService, times(1)).getPassengerById(1L);
     }
@@ -99,6 +129,7 @@ public class PassengerControllerTest {
     @Test
     public void testGetAllPassengers() throws Exception {
         when(passengerService.getAllPassengers()).thenReturn(passengerList);
+        when(passengerConverter.passengersToDtoList(passengerList)).thenReturn(passengerDTOList);
 
         mockMvc.perform(get("/api/v1/passengers/"))
                 .andExpect(status().isOk())
@@ -110,11 +141,13 @@ public class PassengerControllerTest {
 
     @Test
     public void testUpdatePassenger() throws Exception {
+        when(passengerConverter.dtoToPassenger(any(PassengerDTO.class))).thenReturn(passenger1);
         when(passengerService.updatePassenger(eq(1L), any(Passenger.class))).thenReturn(passenger1);
+        when(passengerConverter.passengerToDto(passenger1)).thenReturn(passengerDTO1);
 
         mockMvc.perform(put("/api/v1/passengers/update/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(passenger1)))
+                        .content(new ObjectMapper().writeValueAsString(passengerDTO1)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.passengerId").value(1L));
 
@@ -123,11 +156,12 @@ public class PassengerControllerTest {
 
     @Test
     public void testUpdatePassenger_NotFound() throws Exception {
+        when(passengerConverter.dtoToPassenger(any(PassengerDTO.class))).thenReturn(passenger1);
         when(passengerService.updatePassenger(eq(3L), any(Passenger.class))).thenReturn(null);
 
         mockMvc.perform(put("/api/v1/passengers/update/{id}", 3L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(passenger1)))
+                        .content(new ObjectMapper().writeValueAsString(passengerDTO1)))
                 .andExpect(status().isNotFound());
 
         verify(passengerService, times(1)).updatePassenger(eq(3L), any(Passenger.class));

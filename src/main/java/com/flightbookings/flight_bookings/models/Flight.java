@@ -10,7 +10,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 /**
  * Represents a flight entity in the system.
  * Contains details such as the flight number, departure and arrival times, airplane type, and associated seats and bookings.
@@ -42,7 +41,7 @@ public class Flight {
     @Column
     private int numRows;
 
-     /**
+    /**
      * The time when the flight departs.
      */
     @Schema(description = "Time of departure")
@@ -126,7 +125,7 @@ public class Flight {
     /**
      * Constructs a new Flight with the specified details.
      *
-     * @param flightId            The flight ID.
+     * @param flightId          The flight ID.
      * @param flightNumber  The flight number.
      * @param departureTime The departure time.
      * @param arrivalTime   The arrival time.

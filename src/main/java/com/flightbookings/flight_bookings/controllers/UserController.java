@@ -1,23 +1,23 @@
 package com.flightbookings.flight_bookings.controllers;
 
-
+import com.flightbookings.flight_bookings.dtos.DTOUser.UserDTO;
+import com.flightbookings.flight_bookings.dtos.DTOUser.UserConverter;
+import com.flightbookings.flight_bookings.models.User;
 import com.flightbookings.flight_bookings.services.interfaces.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.flightbookings.flight_bookings.models.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-/**
- * Controller for managing user-related operations such as creating, retrieving, updating, and deleting users.
- */
+import java.util.stream.Collectors;
+
 @CrossOrigin("*")
 @RestController
 @RequestMapping("api/v1/user")
@@ -25,71 +25,88 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    /**
-     * Constructor to initialize the UserController with a UserService.
-     *
-     * @param userService the user service for managing user operations.
-     */
-    public UserController(UserService userService) {
+    private final UserConverter userConverter;
+
+    public UserController(UserService userService, UserConverter userConverter) {
         this.userService = userService;
+        this.userConverter = userConverter;
     }
+
     /**
-     * Creates a new user.
+     * Creates a new user in the system.
      *
-     * @param user the user object to be created.
-     * @return the created user.
+     * @param userDTO the user data transfer object containing user information
+     * @return ResponseEntity containing the created user data and HTTP status code
      */
     @Operation(summary = "Create a new user")
-    @PostMapping(value="/create",consumes = "application/json")
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    @PostMapping(value = "/create", consumes = "application/json")
+    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO userDTO) {
+        User user = userConverter.dtoToUser(userDTO, null);
         User newUser = userService.createUser(user);
-        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+        UserDTO newUserDTO = userConverter.userToDto(newUser);
+        return new ResponseEntity<>(newUserDTO, HttpStatus.CREATED);
     }
+
     /**
      * Retrieves a user by their ID.
      *
-     * @param id the ID of the user to be retrieved.
-     * @return the user if found, otherwise 404 response.
+     * @param id the ID of the user to be retrieved
+     * @return ResponseEntity containing the user data and HTTP status code
      */
-    @Operation(summary = "Get an user by ID")
+    @Operation(summary = "Get a user by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@Parameter(description = "ID of the booking  to be retrieved") @PathVariable Long id) {
+    public ResponseEntity<UserDTO> getUserById(
+            @Parameter(description = "ID of the user to be retrieved") @PathVariable Long id) {
         User user = userService.getUserById(id);
-        return user != null ? new ResponseEntity<>(user, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return user != null ?
+                new ResponseEntity<>(userConverter.userToDto(user), HttpStatus.OK) :
+                new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
     /**
-     * Retrieves all users.
+     * Retrieves all users in the system.
      *
-     * @return the list of all users.
+     * @return ResponseEntity containing a list of user data and HTTP status code
      */
     @Operation(summary = "Get all users")
     @GetMapping("/")
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
         List<User> users = userService.getAllUsers();
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        List<UserDTO> userDTOs = users.stream()
+                .map(userConverter::userToDto)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(userDTOs, HttpStatus.OK);
     }
+
     /**
-     * Updates an existing user by their ID.
+     * Updates an existing user's information.
      *
-     * @param id          the ID of the user to be updated.
-     * @param userDetails the updated user details.
-     * @return the updated user if found, otherwise 404 response.
+     * @param id the ID of the user to be updated
+     * @param userDTO the user data transfer object containing updated user information
+     * @return ResponseEntity containing the updated user data and HTTP status code
      */
-    @Operation(summary = "Update an user")
+    @Operation(summary = "Update a user")
     @PutMapping("/update/{id}")
-    public ResponseEntity<User> updateUser(@Parameter(description = "ID of the booking  to be retrieved") @PathVariable Long id, @RequestBody User userDetails) {
-        User updatedUser = userService.updateUser(id, userDetails);
-        return updatedUser != null ? new ResponseEntity<>(updatedUser, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<UserDTO> updateUser(
+            @Parameter(description = "ID of the user to be updated") @PathVariable Long id,
+            @Valid @RequestBody UserDTO userDTO) {
+        User user = userConverter.dtoToUser(userDTO, userService.getUserById(id));
+        User updatedUser = userService.updateUser(id, user);
+        return updatedUser != null ?
+                new ResponseEntity<>(userConverter.userToDto(updatedUser), HttpStatus.OK) :
+                new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
     /**
-     * Deletes a user by their ID.
+     * Deletes a user from the system by their ID.
      *
-     * @param id the ID of the user to be deleted.
-     * @return a 204 response if deleted, otherwise 404.
+     * @param id the ID of the user to be deleted
+     * @return ResponseEntity with HTTP status code
      */
-    @Operation(summary = "Deletes an user by ID")
+    @Operation(summary = "Deletes a user by ID")
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteUser(@Parameter(description = "ID of the booking  to be retrieved") @PathVariable Long id) {
+    public ResponseEntity<Void> deleteUser(
+            @Parameter(description = "ID of the user to be deleted") @PathVariable Long id) {
         boolean isDeleted = userService.deleteUser(id);
         return isDeleted ? new ResponseEntity<>(HttpStatus.NO_CONTENT) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
