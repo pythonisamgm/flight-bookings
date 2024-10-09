@@ -45,7 +45,7 @@ public interface BookingService {
      * @param user the user requesting the booking details.
      * @return the Booking object if found, null otherwise.
      */
-    Booking getBookingById(Long id, User user);
+    Booking getBookingByIdByUser(Long id, User user);
 
 
 

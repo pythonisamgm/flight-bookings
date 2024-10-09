@@ -2,7 +2,6 @@ package com.flightbookings.flight_bookings.controllers;
 
 import com.flightbookings.flight_bookings.models.Booking;
 import com.flightbookings.flight_bookings.models.User;
-import com.flightbookings.flight_bookings.services.UserServiceImpl;
 import com.flightbookings.flight_bookings.services.interfaces.BookingService;
 import com.flightbookings.flight_bookings.services.interfaces.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,8 +9,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -94,9 +91,9 @@ public class BookingController {
      */
     @Operation(summary =  "Get booking by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<Booking> getBookingById(@Parameter(description = "ID of the booking  to be retrieved")@PathVariable Long id, Principal principal) {
+    public ResponseEntity<Booking> getBookingByIdByUser(@Parameter(description = "ID of the booking  to be retrieved")@PathVariable Long id, Principal principal) {
         User user = userService.findByUsername(principal.getName());
-        Booking booking = bookingService.getBookingById(id, user);
+        Booking booking = bookingService.getBookingByIdByUser(id, user);
 
         if (booking != null) {
             return new ResponseEntity<>(booking, HttpStatus.OK);
