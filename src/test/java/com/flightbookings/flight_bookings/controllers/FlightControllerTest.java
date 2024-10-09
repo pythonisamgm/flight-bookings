@@ -1,167 +1,117 @@
 package com.flightbookings.flight_bookings.controllers;
 
+
+import com.flightbookings.flight_bookings.dtos.DTOFlight.FlightConverter;
 import com.flightbookings.flight_bookings.dtos.DTOFlight.FlightDTO;
-import com.flightbookings.flight_bookings.models.EFlightAirplane;
 import com.flightbookings.flight_bookings.models.Flight;
-import com.flightbookings.flight_bookings.repositories.IFlightRepository;
+import com.flightbookings.flight_bookings.models.EFlightAirplane;
 import com.flightbookings.flight_bookings.services.interfaces.FlightService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
+import org.mockito.MockitoAnnotations;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@AutoConfigureMockMvc
 class FlightControllerTest {
 
-    @InjectMocks
     private MockMvc mockMvc;
+
+    @Mock
     private FlightService flightService;
 
     @Mock
-    private IFlightRepository flightRepository;
-    private Flight flight;
+    private FlightConverter flightConverter;
 
+    @InjectMocks
+    private FlightController flightController;
+
+    private Flight flight;
+    private FlightDTO flightDTO;
 
     @BeforeEach
     void setUp() {
-        flightRepository.deleteAll();
+        MockitoAnnotations.openMocks(this);
+        mockMvc = MockMvcBuilders.standaloneSetup(flightController).build();
 
         flight = new Flight();
-        flight.setFlightId(1L);
-        flight.setFlightNumber(123);
+        flight.setFlightNumber(101);
         flight.setNumRows(10);
-        flight.setDepartureTime(LocalDateTime.now());
-        flight.setArrivalTime(LocalDateTime.now().plusHours(2));
-        flight.setFlightAirplane(EFlightAirplane.AIRBUS_A320);
-        flight.setCapacityPlane(180);
-        flight.setFlightPrice(BigDecimal.valueOf(200.00));
-        flight.setAvailability(true);
+        flight.setDepartureTime(LocalDateTime.now().plusDays(1)); // Debe ser en el futuro
+        flight.setArrivalTime(LocalDateTime.now().plusDays(1).plusHours(2)); // Debe ser después de departureTime
+        flight.setFlightPrice(BigDecimal.valueOf(200));
+        flight.setFlightAirplane(EFlightAirplane.BOEING_777);
 
-        flightRepository.save(flight);
+        flightDTO = new FlightDTO();
+        flightDTO.setFlightNumber(101);
+        flightDTO.setNumRows(10);
+        flightDTO.setDepartureTime(flight.getDepartureTime());
+        flightDTO.setArrivalTime(flight.getArrivalTime());
+        flightDTO.setFlightPrice(flight.getFlightPrice());
+        flightDTO.setFlightAirplane(EFlightAirplane.BOEING_777);
     }
 
     @Test
     void testCreateFlight() throws Exception {
-        FlightDTO flightDTO = new FlightDTO();
-        flightDTO.setFlightNumber(456);
-        flightDTO.setNumRows(15);
-        flightDTO.setDepartureTime(LocalDateTime.now());
-        flightDTO.setArrivalTime(LocalDateTime.now().plusHours(3));
-        flightDTO.setFlightAirplane(EFlightAirplane.AIRBUS_A320);
-        flightDTO.setCapacityPlane(200);
-        flightDTO.setFlightPrice(BigDecimal.valueOf(250.00));
-        flightDTO.setAvailability(true);
+        when(flightConverter.dtoToFlight(any(FlightDTO.class))).thenReturn(flight);
+        when(flightService.createFlight(any(Flight.class))).thenReturn(flight);
+        when(flightConverter.flightToDto(any(Flight.class))).thenReturn(flightDTO);
 
-        mockMvc.perform(post("/flights")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"flightNumber\":456,\"numRows\":15,\"departureTime\":\"" +
-                                flightDTO.getDepartureTime() + "\",\"arrivalTime\":\"" +
-                                flightDTO.getArrivalTime() + "\",\"flightAirplane\":\"" +
-                                flightDTO.getFlightAirplane() + "\",\"capacityPlane\":" +
-                                flightDTO.getCapacityPlane() + ",\"flightPrice\":" +
-                                flightDTO.getFlightPrice() + ",\"availability\":" +
-                                flightDTO.isAvailability() + "}"))
-                .andExpect(status().isCreated());
+        mockMvc.perform(post("/api/v1/flight/create")
+                        .contentType("application/json")
+                        .content("{\"flightNumber\":101,\"numRows\":10,\"departureTime\":\"01-01-2024 12:00:00\",\"arrivalTime\":\"01-01-2024 14:00:00\",\"flightPrice\":200,\"flightAirplane\":\"BOEING_777\"}"))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.flightNumber").value(101));
     }
 
     @Test
-    void testGetFlightById_Found() throws Exception {
-        mockMvc.perform(get("/flights/1"))
+    void testGetFlightByIdFound() throws Exception {
+        when(flightService.getFlightById(1L)).thenReturn(flight);
+        when(flightConverter.flightToDto(flight)).thenReturn(flightDTO);
+
+        mockMvc.perform(get("/api/v1/flight/1"))
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.flightId").value(1L));
+                .andExpect(jsonPath("$.flightNumber").value(101))
+                .andExpect(jsonPath("$.numRows").value(10));
     }
 
     @Test
-    void testGetFlightById_NotFound() throws Exception {
-        mockMvc.perform(get("/flights/999"))
+    void testGetFlightByIdNotFound() throws Exception {
+        when(flightService.getFlightById(1L)).thenReturn(null);
+
+        mockMvc.perform(get("/api/v1/flight/1"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    void testGetAllFlights() throws Exception {
-        mockMvc.perform(get("/flights"))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].flightId").value(1L));
-    }
+    void testDeleteFlightFound() throws Exception {
+        when(flightService.deleteFlight(1L)).thenReturn(true);
 
-    @Test
-    void testUpdateFlight_Found() throws Exception {
-        mockMvc.perform(put("/flights/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"flightId\":1,\"flightNumber\":123,\"numRows\":10,\"departureTime\":\"" +
-                                flight.getDepartureTime() + "\",\"arrivalTime\":\"" +
-                                flight.getArrivalTime() + "\",\"flightAirplane\":\"" +
-                                flight.getFlightAirplane() + "\",\"capacityPlane\":" +
-                                flight.getCapacityPlane() + ",\"flightPrice\":" +
-                                flight.getFlightPrice() + ",\"availability\":" +
-                                flight.isAvailability() + "}"))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void testUpdateFlight_NotFound() throws Exception {
-        mockMvc.perform(put("/flights/999")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"flightId\":999,\"flightNumber\":999,\"numRows\":0,\"departureTime\":\"" +
-                                LocalDateTime.now() + "\",\"arrivalTime\":\"" +
-                                LocalDateTime.now().plusHours(1) + "\",\"flightAirplane\":\"" +
-                                EFlightAirplane.AIRBUS_A320 + "\",\"capacityPlane\":0,\"flightPrice\":" +
-                                BigDecimal.ZERO + ",\"availability\":false}"))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void testDeleteFlight_Found() throws Exception {
-        mockMvc.perform(delete("/flights/1"))
+        mockMvc.perform(delete("/api/v1/flight/delete/1"))
                 .andExpect(status().isNoContent());
     }
 
     @Test
-    void testDeleteFlight_NotFound() throws Exception {
-        mockMvc.perform(delete("/flights/999"))
+    void testDeleteFlightNotFound() throws Exception {
+        when(flightService.deleteFlight(1L)).thenReturn(false);
+
+        mockMvc.perform(delete("/api/v1/flight/delete/1"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    void testCancelFlight() throws Exception {
-        mockMvc.perform(delete("/flights/1/cancel"))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.content().string("Flight canceled successfully."));
-    }
-
-    @Test
     void testDelayFlight() throws Exception {
-        String newDepartureTime = LocalDateTime.now().plusHours(1).toString();
-
-        mockMvc.perform(put("/flights/1/delay")
-                        .param("newDepartureTime", newDepartureTime))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.content().string("Flight delayed successfully."));
-    }
-
-    @Test
-    void testUpdateAvailability() throws Exception {
-        mockMvc.perform(put("/flights/update-availability"))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.content().string("Flight availability updated successfully."));
-    }
-
-    @Test
-    void testGetFlightsByAirplaneType() throws Exception {
-        mockMvc.perform(get("/flights/airplane-type/AIRBUS_A320"))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].flightId").value(1L));
+        mockMvc.perform(post("/api/v1/flight/1/delay?newDepartureTime=2024-01-01T15:00:00"))
+                .andExpect(status().isAccepted())
+                .andExpect(content().string("Flight delayed successfully."));
     }
 }

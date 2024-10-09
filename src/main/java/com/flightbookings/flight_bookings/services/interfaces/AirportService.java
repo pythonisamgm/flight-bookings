@@ -10,8 +10,7 @@ public interface AirportService {
 
     Airport createAirport(Airport airport);
 
-    List<Airport> createAirports(Set<Airport> airports); // Método para crear múltiples aeropuertos
-
+    List<Airport> createAirports(Set<Airport> airports);
 
     List<Airport> getAllAirports();
 

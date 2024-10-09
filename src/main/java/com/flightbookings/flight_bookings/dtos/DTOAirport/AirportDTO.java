@@ -27,7 +27,6 @@ public class AirportDTO {
     @NotNull(message = "Airport country cannot be null")
     private String airportCountry;
 
-    // Default constructor
     public AirportDTO() {}
 
     /**

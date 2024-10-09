@@ -28,7 +28,6 @@ public class BookingDTO {
     @NotNull(message = "Seat name cannot be null")
     private String seatName;
 
-    // Default constructor
     public BookingDTO() {}
 
     /**

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @CrossOrigin("*")
 @RestController
 @RequestMapping("api/v1/seat")
@@ -30,7 +29,6 @@ public class SeatController {
 
     /**
      * Initializes seats for all flights in the system.
-     *
      * This method will allocate and set up the seats for every flight currently available
      * in the system. This is useful for setting up the initial seat configuration for
      * new flights.
@@ -40,7 +38,11 @@ public class SeatController {
     @Operation(summary = "Initialize seats for all flights")
     @PostMapping("/initialize")
     public ResponseEntity<String> initializeSeats() {
-        seatService.initializeSeatsForAllFlights();
-        return ResponseEntity.ok("Seats initialized for all flights.");
+        try {
+            seatService.initializeSeatsForAllFlights();
+            return ResponseEntity.ok("Seats initialized for all flights.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(500).body("Error initializing seats: " + e.getMessage());
+        }
     }
 }
