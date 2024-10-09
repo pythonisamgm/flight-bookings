@@ -122,29 +122,6 @@ public class BookingServiceImpl implements BookingService {
         return bookingRepository.findAll();
     }
 
-
-    @Override
-    public Booking updateBooking2(Long id, Booking bookingDetails) {
-        return null;
-    }
-
-    @Override
-    public Booking updateBooking2(Long id, Booking bookingDetails, Long userId) {
-        Optional<Booking> existingBooking = bookingRepository.findById(id);
-        if (existingBooking.isPresent()) {
-            Booking bookingToUpdate = existingBooking.get();
-            User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId));
-            bookingToUpdate.setFlight(bookingDetails.getFlight());
-            bookingToUpdate.setPassenger(bookingDetails.getPassenger());
-            bookingToUpdate.setDateOfBooking(bookingDetails.getDateOfBooking());
-            bookingToUpdate.setUser(user);
-
-            return bookingRepository.save(bookingToUpdate);
-        }
-        return null;
-    }
-
     @Override
     public boolean deleteBooking(Long id) {
         Optional<Booking> booking = bookingRepository.findById(id);

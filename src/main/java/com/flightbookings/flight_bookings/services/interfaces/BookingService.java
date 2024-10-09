@@ -54,17 +54,6 @@ public interface BookingService {
     List<Booking> getAllBookings();
 
     /**
-     * Updates a booking by its ID.
-     *
-     * @param id             the ID of the booking to update.
-     * @param bookingDetails the updated Booking details.
-     * @return the updated Booking object.
-     */
-    Booking updateBooking2(Long id, Booking bookingDetails);
-
-    Booking updateBooking2(Long id, Booking bookingDetails, Long userId);
-
-    /**
      * Deletes a booking by its ID.
      *
      * @param id the ID of the booking to delete.

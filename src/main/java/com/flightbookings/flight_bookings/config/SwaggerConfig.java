@@ -85,8 +85,6 @@ public class SwaggerConfig {
                         "/api/v1/flight/create",
                         "/api/v1/flight/update/{id}",
                         "/api/v1/flight/delete/{id}",
-                        "/api/v1/flight/{id}/cancel",
-                        "/api/v1/flight/{id}/delay",
                         "/api/v1/flight/updateAvailability",
                         "/api/v1/flight/byAirplaneType",
 

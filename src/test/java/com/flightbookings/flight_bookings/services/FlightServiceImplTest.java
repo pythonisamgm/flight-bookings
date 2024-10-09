@@ -132,18 +132,6 @@ class FlightServiceImplTest {
     }
 
     @Test
-    void testDelayFlight() {
-        LocalDateTime newDepartureTime = LocalDateTime.of(2024, 10, 12, 15, 30);
-        when(flightRepository.findById(1L)).thenReturn(Optional.of(flight));
-        when(flightDurationService.calculateFlightDuration(any(Flight.class))).thenReturn(Duration.ofHours(2));
-
-        flightService.delayFlight(1L, newDepartureTime);
-
-        assertEquals(newDepartureTime, flight.getDepartureTime());
-        verify(flightRepository).save(flight);
-    }
-
-    @Test
     void testUpdateFlightAvailability_AllSeatsBooked_FutureDeparture() {
         LocalDateTime now = LocalDateTime.now();
         Flight flight = new Flight();

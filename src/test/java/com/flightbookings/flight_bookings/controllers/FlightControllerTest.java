@@ -148,28 +148,6 @@ class FlightControllerTest {
     }
 
     @Test
-    void test_Cancel_Flight() throws Exception {
-        doNothing().when(flightService).cancelFlight(1L);
-
-        mockMvc.perform(delete("/api/v1/flight/1/cancel")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Flight canceled successfully."));
-    }
-
-    @Test
-    void test_Delay_Flight() throws Exception {
-        String newDepartureTime = LocalDateTime.now().plusHours(4).toString();
-        doNothing().when(flightService).delayFlight(1L, LocalDateTime.parse(newDepartureTime));
-
-        mockMvc.perform(post("/api/v1/flight/1/delay")
-                        .param("newDepartureTime", newDepartureTime)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Flight delayed successfully."));
-    }
-
-    @Test
     void test_Update_Availability() throws Exception {
         doNothing().when(flightService).updateFlightAvailability();
 

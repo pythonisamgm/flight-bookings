@@ -43,8 +43,6 @@ public class BookingController {
      * @param flightId    the ID of the flight.
      * @param passengerId the ID of the passenger.
      * @param seatName    the name of the seat.
-     * @param userId      the ID of the user.
-     * @param authentication the authentication object to retrieve the current user.
      * @return the created booking.
      */
     @Operation(summary = "Create a new booking")
@@ -118,17 +116,6 @@ public class BookingController {
     public ResponseEntity<List<Booking>> getAllBookings() {
         List<Booking> bookings = bookingService.getAllBookings();
         return new ResponseEntity<>(bookings, HttpStatus.OK);
-    }
-
-    @Operation(summary =  "Update an existing booking-Version 1")
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Booking> updateBooking2(@Parameter(description = "ID of the booking  to be retrieved")@PathVariable Long id, @RequestBody Booking bookingDetails) {
-        Booking updatedBooking = bookingService.updateBooking2(id, bookingDetails);
-        if (updatedBooking != null) {
-            return new ResponseEntity<>(updatedBooking, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
     }
     /**
      * Deletes an existing booking by ID.

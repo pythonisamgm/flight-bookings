@@ -75,32 +75,9 @@ public class BookingControllerTest {
         when(bookingService.getBookingByIdByUser(1L, user1)).thenReturn(booking1);
         when(bookingService.getBookingByIdByUser(3L, user1)).thenReturn(null);
         when(bookingService.getAllBookings()).thenReturn(bookingList);
-        when(bookingService.createBooking2(any(Booking.class))).thenReturn(booking1);
-        when(bookingService.updateBooking2(eq(1L), any(Booking.class))).thenReturn(booking1);
-        when(bookingService.updateBooking2(eq(3L), any(Booking.class))).thenReturn(null);
         when(bookingService.deleteBooking(1L)).thenReturn(true);
         when(bookingService.deleteBooking(4L)).thenReturn(false);
         when(userService.findByUsername("testuser")).thenReturn(user1);
-    }
-    /**
-     * Tests the creation of a booking.
-     * Verifies that a booking is created and returned with the expected properties.
-     */
-    @Test
-    public void testCreateBooking2() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-
-        when(bookingService.createBooking2(any(Booking.class))).thenReturn(booking1);
-
-        mockMvc.perform(post("/api/v1/bookings/create2")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(booking1)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.bookingId").value(1L))
-                .andExpect(jsonPath("$.dateOfBooking").value("24-09-2024 10:00:00"));
-
-        verify(bookingService, times(1)).createBooking2(any(Booking.class));
     }
     /**
      * Tests the retrieval of a booking by ID.
@@ -174,33 +151,6 @@ public class BookingControllerTest {
 
         verify(bookingService, times(1)).getAllBookings();
     }
-    @Test
-    public void testUpdateBooking2() throws Exception {
-        when(bookingService.updateBooking2(eq(1L), any(Booking.class))).thenReturn(booking1);
-
-        mockMvc.perform(put("/api/v1/bookings/update/{id}", 1L)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(booking1))) // Usa el objectMapper configurado
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.bookingId").value(1L));
-
-        verify(bookingService, times(1)).updateBooking2(eq(1L), any(Booking.class));
-    }
-
-    @Test
-    public void testUpdateBooking_NotFound() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-
-        when(bookingService.updateBooking2(eq(3L), any(Booking.class))).thenReturn(null);
-
-        mockMvc.perform(put("/api/v1/bookings/update/{id}", 3L)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(booking1)))
-                .andExpect(status().isNotFound());
-
-        verify(bookingService, times(1)).updateBooking2(eq(3L), any(Booking.class));
-    }
 
     @Test
     public void testDeleteBooking() throws Exception {
@@ -221,7 +171,6 @@ public class BookingControllerTest {
 
         verify(bookingService, times(1)).deleteBooking(4L);
     }
-
 
     @Test
     void createBooking() throws Exception {
@@ -245,10 +194,6 @@ public class BookingControllerTest {
         verify(bookingService, times(1)).createBooking(1L, 1L, "1A", 1L);
     }
 
-
-
-
-
     @Test
     void updateBooking() throws Exception {
         when(bookingService.updateBooking(any(Booking.class))).thenReturn(booking1);
@@ -261,6 +206,4 @@ public class BookingControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(updatedBookingJson));
     }
-
-
 }

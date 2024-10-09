@@ -62,8 +62,6 @@ public class WebSecurityConfig {
                                 .requestMatchers("api/v1/flight/").permitAll()
                                 .requestMatchers("api/v1/flight/update/{id}").hasAuthority("ADMIN")
                                 .requestMatchers("api/v1/flight/delete/{id}").hasAuthority("ADMIN")
-                                //.requestMatchers("api/v1/flight/{id}/cancel").hasAuthority("ADMIN")
-                                //.requestMatchers("api/v1/flight/{id}/delay").hasAuthority("ADMIN")
                                 .requestMatchers("api/v1/flight/updateAvailability").hasAuthority("ADMIN")
                                 .requestMatchers("api/v1/flight/byAirplaneType").hasAuthority("ADMIN")
                                 .requestMatchers("/api/v1/passengers/create").hasAnyAuthority("ADMIN", "USER")
