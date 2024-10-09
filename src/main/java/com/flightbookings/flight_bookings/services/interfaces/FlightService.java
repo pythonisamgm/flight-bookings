@@ -63,15 +63,10 @@ public interface FlightService {
     /**
      * Delays a flight by updating its departure time.
      *
-     * @param id            the ID of the flight to delay.
-     * @param departureTime the new departure time for the flight.
+     * @param id              the ID of the flight to delay.
+     * @param newDepartureTime the new departure time for the flight.
      */
-    void delayFlight(Long id, LocalDateTime departureTime);
-
-    /**
-     * Updates the availability status of all flights.
-     */
-    void updateFlightAvailability();
+    void delayFlight(Long id, LocalDateTime newDepartureTime);
 
     /**
      * Retrieves flights by the type of airplane.
@@ -81,4 +76,8 @@ public interface FlightService {
      */
     List<Flight> getFlightsByAirplaneType(EFlightAirplane airplaneType);
 
+    /**
+     * Updates the availability status of all flights.
+     */
+    void updateFlightAvailability();
 }
