@@ -121,7 +121,7 @@ public class BookingController {
      */
     @Operation(summary = "Get all bookings")
     @GetMapping("/all")
-    public ResponseEntity<List<Booking>> getAllBookingsByUser() {
+    public ResponseEntity<List<Booking>> getAllBookings() {
         List<Booking> bookings = bookingService.getAllBookings();
         return new ResponseEntity<>(bookings, HttpStatus.OK);
     }

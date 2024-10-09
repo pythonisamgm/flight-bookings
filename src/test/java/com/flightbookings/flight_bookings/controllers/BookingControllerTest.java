@@ -146,7 +146,7 @@ public class BookingControllerTest {
      * Verifies that the correct response status is returned based on the booking's existence.
      */
     @Test
-    public void testGetAllBookingsByUserByUser() throws Exception {
+    public void testGetAllBookingsByUser() throws Exception {
 
         User testUser = new User(1L, "testUser", "password", "test@example.com", ERole.USER, bookingList);
 
@@ -164,7 +164,7 @@ public class BookingControllerTest {
         verify(bookingService, times(1)).getAllBookingsByUser(testUser);
     }
     @Test
-    public void testGetAllBookingsByUser() throws Exception {
+    public void testGetAllBookings() throws Exception {
         when(bookingService.getAllBookings()).thenReturn(bookingList);
 
         mockMvc.perform(get("/api/v1/bookings/all"))
