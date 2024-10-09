@@ -1,7 +1,5 @@
 package com.flightbookings.flight_bookings.controllers;
 
-import com.flightbookings.flight_bookings.dtos.DTOBooking.BookingConverter;
-import com.flightbookings.flight_bookings.dtos.DTOBooking.BookingDTO;
 import com.flightbookings.flight_bookings.models.Booking;
 import com.flightbookings.flight_bookings.models.User;
 import com.flightbookings.flight_bookings.services.UserServiceImpl;
@@ -16,9 +14,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.security.Principal;
 import java.util.List;
-
 /**
  * Controller for managing bookings, including creating, updating, retrieving, and deleting bookings.
  */
@@ -29,178 +30,124 @@ import java.util.List;
 public class BookingController {
     private final BookingService bookingService;
     private final UserService userService;
-    private final BookingConverter bookingConverter; // Add BookingConverter
-
-    /**
+    /**3
      * Constructor to initialize the BookingController with BookingService and UserService.
      *
-     * @param bookingService  the service for booking management.
-     * @param userService     the service for user management.
-     * @param bookingConverter the converter for Booking and BookingDTO.
+     * @param bookingService the service for booking management.
+     * @param userService    the service for user management.
      */
-    public BookingController(BookingService bookingService, UserService userService, BookingConverter bookingConverter) {
+    public BookingController(BookingService bookingService, UserService userService) {
         this.bookingService = bookingService;
         this.userService = userService;
-        this.bookingConverter = bookingConverter;
     }
-
     /**
      * Creates a new booking.
      *
-     * This endpoint allows a user to create a booking by specifying the flight ID, passenger ID,
-     * seat name, and user ID. The user is authenticated via the authentication object.
-     *
-     * @param flightId      the ID of the flight to be booked.
-     * @param passengerId   the ID of the passenger.
-     * @param seatName      the name of the seat.
-     * @param userId        the ID of the user making the booking.
+     * @param flightId    the ID of the flight.
+     * @param passengerId the ID of the passenger.
+     * @param seatName    the name of the seat.
+     * @param userId      the ID of the user.
      * @param authentication the authentication object to retrieve the current user.
-     * @return ResponseEntity containing the created BookingDTO and an HTTP status of 201 (Created).
+     * @return the created booking.
      */
     @Operation(summary = "Create a new booking")
-    @PostMapping(value = "/create/{flightId}/{passengerId}/{seatName}/{userId}")
-    public ResponseEntity<BookingDTO> createBooking(@PathVariable("flightId") Long flightId,
-                                                    @PathVariable("passengerId") Long passengerId,
-                                                    @PathVariable("seatName") String seatName,
-                                                    @PathVariable("userId") Long userId,
-                                                    @AuthenticationPrincipal Authentication authentication) {
-        User user = userService.findByUsername(authentication.getName());
-        Booking booking = bookingService.createBooking(flightId, passengerId, seatName, userId);
-        BookingDTO bookingDTO = bookingConverter.bookingToDto(booking);
-        return new ResponseEntity<>(bookingDTO, HttpStatus.CREATED);
-    }
+    @PostMapping(value = "/create/{flightId}/{passengerId}/{seatName}")
+    public ResponseEntity<Booking> createBooking(@PathVariable("flightId") Long flightId,
+                                                 @PathVariable("passengerId") Long passengerId,
+                                                 @PathVariable("seatName") String seatName,
+                                                 Principal principal) {
+        if (principal == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
 
+        User user = userService.findByUsername(principal.getName());
+        Booking booking = bookingService.createBooking(flightId, passengerId, seatName, user.getUserId());
+        return new ResponseEntity<>(booking, HttpStatus.CREATED);
+    }
     /**
      * Updates an existing booking.
      *
-     * This endpoint allows the user to update an existing booking by providing the booking ID
-     * and the new details in the BookingDTO.
-     *
      * @param id             the ID of the booking to be updated.
-     * @param updatedBooking the BookingDTO with updated details.
-     * @return ResponseEntity containing the updated BookingDTO and an HTTP status of 200 (OK),
-     *         or 404 (Not Found) if the booking does not exist.
+     * @param updatedBooking the booking object with updated details.
+     * @return the updated booking.
      */
-    @Operation(summary = "Update existing booking")
+    @Operation(summary =  "Update existing booking")
     @PutMapping("/{id}")
-    public ResponseEntity<BookingDTO> updateBooking(@Parameter(description = "ID of the booking to be retrieved") @PathVariable Long id,
-                                                    @RequestBody BookingDTO updatedBooking) {
-        Booking booking = bookingConverter.dtoToBooking(updatedBooking);
-        booking.setBookingId(id);
-        Booking updatedBookingEntity = bookingService.updateBooking(booking);
-        BookingDTO bookingDTO = bookingConverter.bookingToDto(updatedBookingEntity);
-        return new ResponseEntity<>(bookingDTO, HttpStatus.OK);
+    public ResponseEntity<Booking> updateBooking(@Parameter(description = "ID of the booking  to be retrieved") @PathVariable Long id, @RequestBody Booking updatedBooking) {
+        updatedBooking.setBookingId(id);
+        Booking booking = bookingService.updateBooking(updatedBooking);
+        return new ResponseEntity<>(booking, HttpStatus.OK);
     }
 
-    /**
-     * Creates a new booking using an alternative method.
-     *
-     * This endpoint allows the user to create a booking by providing a BookingDTO object.
-     *
-     * @param bookingDTO the BookingDTO containing details of the booking to be created.
-     * @return ResponseEntity containing the created BookingDTO and an HTTP status of 201 (Created).
-     */
-    @Operation(summary = "Create a new booking. Version 1")
-    @PostMapping(value = "/create2", consumes = "application/json")
-    public ResponseEntity<BookingDTO> createBooking2(@RequestBody BookingDTO bookingDTO) {
-        Booking booking = bookingConverter.dtoToBooking(bookingDTO);
+    @Operation(summary =  "Create a new booking. Version 1")
+    @PostMapping(value="/create2",consumes = "application/json")
+    public ResponseEntity<Booking> createBooking2(@RequestBody Booking booking) {
         Booking newBooking = bookingService.createBooking2(booking);
-        BookingDTO newBookingDTO = bookingConverter.bookingToDto(newBooking);
-        return new ResponseEntity<>(newBookingDTO, HttpStatus.CREATED);
+        return new ResponseEntity<>(newBooking, HttpStatus.CREATED);
     }
-
     /**
      * Retrieves a booking by its ID.
      *
-     * This endpoint allows the user to fetch the details of a specific booking by its unique ID.
-     *
-     * @param id        the ID of the booking to be retrieved.
+     * @param id       the ID of the booking.
      * @param principal the principal object to get the current user.
-     * @return ResponseEntity containing the BookingDTO if found, otherwise an HTTP status of 404 (Not Found).
+     * @return the booking if found, otherwise a 404 response.
      */
-    @Operation(summary = "Get booking by ID")
+    @Operation(summary =  "Get booking by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<BookingDTO> getBookingById(@Parameter(description = "ID of the booking to be retrieved") @PathVariable Long id, Principal principal) {
+    public ResponseEntity<Booking> getBookingById(@Parameter(description = "ID of the booking  to be retrieved")@PathVariable Long id, Principal principal) {
         User user = userService.findByUsername(principal.getName());
         Booking booking = bookingService.getBookingById(id, user);
 
         if (booking != null) {
-            BookingDTO bookingDTO = bookingConverter.bookingToDto(booking);
-            return new ResponseEntity<>(bookingDTO, HttpStatus.OK);
+            return new ResponseEntity<>(booking, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
     /**
      * Retrieves all bookings for the current user.
      *
-     * This endpoint allows the user to fetch all bookings associated with their account.
      *
-     * @param principal the principal object to get the current user.
-     * @return ResponseEntity containing a list of BookingDTOs and an HTTP status of 200 (OK).
+     * @return the list of bookings.
      */
-    @Operation(summary = "Get all the bookings for the current user")
+    @Operation(summary =  "Get all the bookings for the current user")
     @GetMapping("/")
-    public ResponseEntity<List<BookingDTO>> getAllBookings(Principal principal) {
+    public ResponseEntity<List<Booking>> getAllBookings(Principal principal) {
         User user = userService.findByUsername(principal.getName());
         List<Booking> bookings = bookingService.getAllBookingsByUser(user);
-        List<BookingDTO> bookingDTOs = bookingConverter.bookingsToDtoList(bookings);
-        return new ResponseEntity<>(bookingDTOs, HttpStatus.OK);
+        return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
-
     /**
-     * Retrieves all bookings in the system.
+     * Retrieves all bookings.
      *
-     * This endpoint allows the admin or authorized user to fetch all bookings present in the system.
-     *
-     * @return ResponseEntity containing a list of BookingDTOs and an HTTP status of 200 (OK).
+     * @return the list of bookings.
      */
     @Operation(summary = "Get all bookings")
     @GetMapping("/all")
-    public ResponseEntity<List<BookingDTO>> getAllBookings() {
+    public ResponseEntity<List<Booking>> getAllBookings() {
         List<Booking> bookings = bookingService.getAllBookings();
-        List<BookingDTO> bookingDTOs = bookingConverter.bookingsToDtoList(bookings);
-        return new ResponseEntity<>(bookingDTOs, HttpStatus.OK);
+        return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
 
-    /**
-     * Updates an existing booking using an alternative method.
-     *
-     * This endpoint allows the user to update an existing booking by providing the booking ID
-     * and the new details in the BookingDTO.
-     *
-     * @param id             the ID of the booking to be updated.
-     * @param bookingDetails the BookingDTO with updated details.
-     * @return ResponseEntity containing the updated BookingDTO and an HTTP status of 200 (OK),
-     *         or 404 (Not Found) if the booking does not exist.
-     */
-    @Operation(summary = "Update an existing booking-Version 1")
+    @Operation(summary =  "Update an existing booking-Version 1")
     @PutMapping("/update/{id}")
-    public ResponseEntity<BookingDTO> updateBooking2(@Parameter(description = "ID of the booking to be retrieved") @PathVariable Long id,
-                                                     @RequestBody BookingDTO bookingDetails) {
-        Booking booking = bookingConverter.dtoToBooking(bookingDetails);
-        Booking updatedBooking = bookingService.updateBooking2(id, booking);
+    public ResponseEntity<Booking> updateBooking2(@Parameter(description = "ID of the booking  to be retrieved")@PathVariable Long id, @RequestBody Booking bookingDetails) {
+        Booking updatedBooking = bookingService.updateBooking2(id, bookingDetails);
         if (updatedBooking != null) {
-            BookingDTO bookingDTO = bookingConverter.bookingToDto(updatedBooking);
-            return new ResponseEntity<>(bookingDTO, HttpStatus.OK);
+            return new ResponseEntity<>(updatedBooking, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
     /**
      * Deletes an existing booking by ID.
      *
-     * This endpoint allows the user to delete a specific booking from the system using its unique ID.
-     *
      * @param id the ID of the booking to be deleted.
-     * @return ResponseEntity with HTTP status of 204 (No Content) if deletion is successful,
-     *         otherwise an HTTP status of 404 (Not Found).
+     * @return a 204 response if deleted, otherwise 404.
      */
-    @Operation(summary = "Delete existing booking by ID")
+    @Operation(summary =  "Delete existing booking by ID")
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteBooking(@Parameter(description = "ID of the booking to be deleted") @PathVariable Long id) {
+    public ResponseEntity<Void> deleteBooking(@Parameter(description = "ID of the booking  to be retrieved") @PathVariable Long id) {
         boolean isDeleted = bookingService.deleteBooking(id);
         if (isDeleted) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

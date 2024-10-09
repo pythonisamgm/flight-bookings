@@ -10,6 +10,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 /**
  * Represents a flight entity in the system.
  * Contains details such as the flight number, departure and arrival times, airplane type, and associated seats and bookings.
@@ -41,7 +42,7 @@ public class Flight {
     @Column
     private int numRows;
 
-    /**
+     /**
      * The time when the flight departs.
      */
     @Schema(description = "Time of departure")
@@ -147,7 +148,7 @@ public class Flight {
         this.flightDuration = flightDuration;
         this.flightAirplane = flightAirplane;
         this.capacityPlane = capacityPlane;
-        this.availability = availability;
+        this.availability = true;
         this.flightPrice = flightPrice;
         this.seats = seats;
         this.bookingList = bookingList;
@@ -356,6 +357,13 @@ public class Flight {
     public void setBookingList(List<Booking> bookingList) {
         this.bookingList = bookingList;
     }
+
+
+
+
+
+
+
 
     public Duration getFlightDuration() { // Método getter para flightDuration
         return flightDuration;

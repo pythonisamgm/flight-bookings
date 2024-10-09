@@ -3,7 +3,6 @@ package com.flightbookings.flight_bookings.services;
 import com.flightbookings.flight_bookings.models.Flight;
 import com.flightbookings.flight_bookings.models.EFlightAirplane;
 import com.flightbookings.flight_bookings.models.Seat;
-//import com.flightbookings.flight_bookings.repositories.IAirportRepository;
 import com.flightbookings.flight_bookings.repositories.IFlightRepository;
 import com.flightbookings.flight_bookings.repositories.ISeatRepository;
 import com.flightbookings.flight_bookings.services.interfaces.FlightService;

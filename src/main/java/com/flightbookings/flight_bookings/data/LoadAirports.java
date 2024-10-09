@@ -8,11 +8,17 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.Set;
-
+/**
+ * Component to load airports into the database on application startup.
+ */
 @Component
 public class LoadAirports implements CommandLineRunner {
     private final AirportService airportService;
-
+    /**
+     * Constructor to initialize LoadAirports with AirportService.
+     *
+     * @param airportService the service for airport management.
+     */
     public LoadAirports(AirportService airportService) {
         this.airportService = airportService;
     }
@@ -21,11 +27,12 @@ public class LoadAirports implements CommandLineRunner {
     public void run(String... args) throws Exception {
         loadAirports();
     }
-
+    /**
+     * Loads airports from the EAirport enum and saves them to the database.
+     */
     private void loadAirports() {
         Set<Airport> airports = new HashSet<>();
 
-        // Carga de aeropuertos usando el enum
         for (EAirport airportEnum : EAirport.values()) {
             airports.add(new Airport(airportEnum.getAirportCode(),
                     airportEnum.getAirportName(),
@@ -34,7 +41,6 @@ public class LoadAirports implements CommandLineRunner {
             ));
         }
 
-        // Crea los aeropuertos en la base de datos
         airportService.createAirports(airports);
     }
 }

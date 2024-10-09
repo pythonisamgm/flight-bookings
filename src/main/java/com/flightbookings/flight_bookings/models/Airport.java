@@ -45,7 +45,7 @@ public class Airport {
 
     /**
      * Constructs a new Airport with the specified details.
-     *
+
      * * @param airportCode    The airport code.
      * @param airportName    The name of the airport.
      * @param airportCity    The city where the airport is located.
