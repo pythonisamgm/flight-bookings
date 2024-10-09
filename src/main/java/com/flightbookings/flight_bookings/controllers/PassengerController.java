@@ -1,5 +1,7 @@
 package com.flightbookings.flight_bookings.controllers;
 
+import com.flightbookings.flight_bookings.dtos.DTOPassenger.PassengerDTO;
+import com.flightbookings.flight_bookings.dtos.DTOPassenger.PassengerConverter;
 import com.flightbookings.flight_bookings.models.Passenger;
 import com.flightbookings.flight_bookings.services.interfaces.PassengerService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,9 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-/**
- * Controller for managing passenger-related operations such as creating, updating, retrieving, and deleting passengers.
- */
+
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/api/v1/passengers")
@@ -20,79 +20,103 @@ import java.util.List;
 public class PassengerController {
 
     private final PassengerService passengerService;
-    /**
-     * Constructor to initialize the PassengerController with a PassengerService.
-     *
-     * @param passengerService the passenger service for managing passenger operations.
-     */
-    public PassengerController(PassengerService passengerService) {
+    private final PassengerConverter passengerConverter;
+
+    public PassengerController(PassengerService passengerService, PassengerConverter passengerConverter) {
         this.passengerService = passengerService;
+        this.passengerConverter = passengerConverter;
     }
+
     /**
-     * Creates a new passenger.
+     * Creates a new passenger in the system.
      *
-     * @param passenger the passenger object to be created.
-     * @return the created passenger.
+     * This endpoint allows clients to create a new passenger by providing the passenger's details.
+     * The details are encapsulated in a PassengerDTO object.
+     *
+     * @param passengerDTO the details of the passenger to be created
+     * @return ResponseEntity containing the created PassengerDTO and an HTTP status of 201 (Created)
      */
     @Operation(summary = "Create a new passenger")
-    @PostMapping(value="/create",consumes = "application/json")
-    public ResponseEntity<Passenger> createPassenger(@RequestBody Passenger passenger) {
+    @PostMapping(value="/create", consumes = "application/json")
+    public ResponseEntity<PassengerDTO> createPassenger(@RequestBody PassengerDTO passengerDTO) {
+        Passenger passenger = passengerConverter.dtoToPassenger(passengerDTO);
         Passenger newPassenger = passengerService.createPassenger(passenger);
-        return new ResponseEntity<>(newPassenger, HttpStatus.CREATED);
+        PassengerDTO newPassengerDTO = passengerConverter.passengerToDto(newPassenger);
+        return new ResponseEntity<>(newPassengerDTO, HttpStatus.CREATED);
     }
+
     /**
-     * Retrieves a passenger by its ID.
+     * Retrieves a passenger by their ID.
      *
-     * @param id the ID of the passenger.
-     * @return the passenger if found, otherwise 404.
+     * This endpoint allows clients to fetch a specific passenger's details using their unique ID.
+     *
+     * @param id the ID of the passenger to be retrieved
+     * @return ResponseEntity containing the PassengerDTO if found, otherwise an HTTP status of 404 (Not Found)
      */
     @Operation(summary = "Get a passenger by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<Passenger> getPassengerById(@Parameter(description = "ID of the booking  to be retrieved") @PathVariable Long id) {
+    public ResponseEntity<PassengerDTO> getPassengerById(@Parameter(description = "ID of the passenger to be retrieved") @PathVariable Long id) {
         Passenger passenger = passengerService.getPassengerById(id);
         if (passenger != null) {
-            return new ResponseEntity<>(passenger, HttpStatus.OK);
+            PassengerDTO passengerDTO = passengerConverter.passengerToDto(passenger);
+            return new ResponseEntity<>(passengerDTO, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
     /**
-     * Retrieves all passengers.
+     * Retrieves all passengers from the system.
      *
-     * @return the list of passengers.
+     * This endpoint fetches a list of all passengers currently registered in the system.
+     *
+     * @return ResponseEntity containing a list of PassengerDTOs and an HTTP status of 200 (OK)
      */
     @Operation(summary = "Get all passengers")
     @GetMapping
-    public ResponseEntity<List<Passenger>> getAllPassengers() {
+    public ResponseEntity<List<PassengerDTO>> getAllPassengers() {
         List<Passenger> passengers = passengerService.getAllPassengers();
-        return new ResponseEntity<>(passengers, HttpStatus.OK);
+        List<PassengerDTO> passengerDTOs = passengerConverter.passengersToDtoList(passengers);
+        return new ResponseEntity<>(passengerDTOs, HttpStatus.OK);
     }
+
     /**
-     * Updates a passenger by its ID.
+     * Updates the details of an existing passenger.
      *
-     * @param id              the ID of the passenger to be updated.
-     * @param passengerDetails the passenger details to update.
-     * @return the updated passenger.
+     * This endpoint allows clients to update the information of a specific passenger
+     * using their ID and the new details provided in a PassengerDTO.
+     *
+     * @param id the ID of the passenger to be updated
+     * @param passengerDTO the new details for the passenger
+     * @return ResponseEntity containing the updated PassengerDTO if successful,
+     *         otherwise an HTTP status of 404 (Not Found)
      */
     @Operation(summary = "Update a passenger")
     @PutMapping("/update/{id}")
-    public ResponseEntity<Passenger> updatePassenger(@Parameter(description = "ID of the booking  to be retrieved") @PathVariable Long id, @RequestBody Passenger passengerDetails) {
-        Passenger updatedPassenger = passengerService.updatePassenger(id, passengerDetails);
+    public ResponseEntity<PassengerDTO> updatePassenger(@Parameter(description = "ID of the passenger to be updated") @PathVariable Long id, @RequestBody PassengerDTO passengerDTO) {
+        Passenger passenger = passengerConverter.dtoToPassenger(passengerDTO);
+        Passenger updatedPassenger = passengerService.updatePassenger(id, passenger);
         if (updatedPassenger != null) {
-            return new ResponseEntity<>(updatedPassenger, HttpStatus.OK);
+            PassengerDTO updatedPassengerDTO = passengerConverter.passengerToDto(updatedPassenger);
+            return new ResponseEntity<>(updatedPassengerDTO, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
     /**
-     * Deletes a passenger by its ID.
+     * Deletes a passenger by their ID.
      *
-     * @param id the ID of the passenger.
-     * @return a 204 response if deleted, otherwise 404.
+     * This endpoint allows clients to remove a specific passenger from the system
+     * using their unique ID.
+     *
+     * @param id the ID of the passenger to be deleted
+     * @return ResponseEntity with HTTP status of 204 (No Content) if deletion is successful,
+     *         otherwise an HTTP status of 404 (Not Found)
      */
     @Operation(summary = "Delete a passenger by ID")
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deletePassenger(@Parameter(description = "ID of the booking  to be retrieved") @PathVariable Long id) {
+    public ResponseEntity<Void> deletePassenger(@Parameter(description = "ID of the passenger to be deleted") @PathVariable Long id) {
         boolean isDeleted = passengerService.deletePassenger(id);
         if (isDeleted) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

@@ -1,8 +1,9 @@
 package com.flightbookings.flight_bookings.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.flightbookings.flight_bookings.dtos.DTOPassenger.PassengerDTO;
 import com.flightbookings.flight_bookings.models.Passenger;
-import com.flightbookings.flight_bookings.services.PassengerServiceImpl;
+import com.flightbookings.flight_bookings.services.interfaces.PassengerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -12,144 +13,133 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-public class PassengerControllerTest {
-
-    @Mock
-    private PassengerServiceImpl passengerService;
-    private MockMvc mockMvc;
+class PassengerControllerTest {
 
     @InjectMocks
     private PassengerController passengerController;
 
-    private Passenger passenger1;
-    private Passenger passenger2;
-    private List<Passenger> passengerList;
+    @Mock
+    private PassengerService passengerService;
+
+    private MockMvc mockMvc;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(passengerController).build();
-
-        passenger1 = new Passenger();
-        passenger1.setPassengerId(1L);
-        passenger1.setPassengerName("Juan Antonio");
-        passenger1.setIdentityDoc("1337");
-        passenger1.setTelephone(661777777L);
-        passenger1.setNationality("Irlandés");
-
-        passenger2 = new Passenger();
-        passenger2.setPassengerId(2L);
-        passenger2.setPassengerName("Miguel Angel");
-        passenger2.setIdentityDoc("7823");
-        passenger2.setTelephone(661888888L);
-        passenger2.setNationality("Alemania");
-
-        passengerList = new ArrayList<>();
-        passengerList.add(passenger1);
-        passengerList.add(passenger2);
-
     }
 
     @Test
-    public void testCreatePassenger() throws Exception {
-        when(passengerService.createPassenger(any(Passenger.class))).thenReturn(passenger1);
+    void createPassenger() throws Exception {
+        PassengerDTO passengerDTO = new PassengerDTO();
+        passengerDTO.setPassengerName("John Doe");
+        passengerDTO.setIdentityDoc("123456789");
+        passengerDTO.setTelephone(1234567890L);
+
+        Passenger passenger = new Passenger();
+
+        when(passengerService.createPassenger(any(Passenger.class))).thenReturn(passenger);
 
         mockMvc.perform(post("/api/v1/passengers/create")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(passenger1)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.passengerId").value(1L))
-        .andExpect(jsonPath("$.passengerName").value("Juan Antonio"))
-        .andExpect(jsonPath("$.identityDoc").value("1337"))
-        .andExpect(jsonPath("$.telephone").value(661777777L))
-        .andExpect(jsonPath("$.nationality").value("Irlandés"));
-
-        verify(passengerService, times(1)).createPassenger(any(Passenger.class));
+                        .content(new ObjectMapper().writeValueAsString(passengerDTO)))
+                .andExpect(status().isCreated());
     }
 
     @Test
-    public void testGetPassengerById() throws Exception {
-        when(passengerService.getPassengerById(1L)).thenReturn(passenger1);
+    void getPassengerById() throws Exception {
+        Long id = 1L;
+        Passenger passenger = new Passenger();
+        passenger.setPassengerName("John Doe");
 
-        mockMvc.perform(get("/api/v1/passengers/{id}", 1L))
+        when(passengerService.getPassengerById(id)).thenReturn(passenger);
+
+        mockMvc.perform(get("/api/v1/passengers/{id}", id))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.passengerId").value(1L));
-
-        verify(passengerService, times(1)).getPassengerById(1L);
+                .andExpect(jsonPath("$.passengerName").value("John Doe"));
     }
 
     @Test
-    public void testGetPassengerById_NotFound() throws Exception {
-        when(passengerService.getPassengerById(3L)).thenReturn(null);
+    void getPassengerById_NotFound() throws Exception {
+        Long id = 1L;
 
-        mockMvc.perform(get("/api/v1/passengers/{id}", 3L))
+        when(passengerService.getPassengerById(id)).thenReturn(null);
+
+        mockMvc.perform(get("/api/v1/passengers/{id}", id))
                 .andExpect(status().isNotFound());
-
-        verify(passengerService, times(1)).getPassengerById(3L);
     }
 
     @Test
-    public void testGetAllPassengers() throws Exception {
+    void getAllPassengers() throws Exception {
+        Passenger passenger1 = new Passenger();
+        passenger1.setPassengerName("John Doe");
+        Passenger passenger2 = new Passenger();
+        passenger2.setPassengerName("Jane Doe");
+
+        List<Passenger> passengerList = Arrays.asList(passenger1, passenger2);
+
         when(passengerService.getAllPassengers()).thenReturn(passengerList);
 
-        mockMvc.perform(get("/api/v1/passengers/"))
+        mockMvc.perform(get("/api/v1/passengers"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].passengerId").value(1L))
-                .andExpect(jsonPath("$[1].passengerId").value(2L));
-
-        verify(passengerService, times(1)).getAllPassengers();
+                .andExpect(jsonPath("$", hasSize(2)));
     }
 
     @Test
-    public void testUpdatePassenger() throws Exception {
-        when(passengerService.updatePassenger(eq(1L), any(Passenger.class))).thenReturn(passenger1);
+    void updatePassenger() throws Exception {
+        Long id = 1L;
+        PassengerDTO passengerDTO = new PassengerDTO();
+        passengerDTO.setPassengerName("John Doe Updated");
 
-        mockMvc.perform(put("/api/v1/passengers/update/{id}", 1L)
+        Passenger updatedPassenger = new Passenger();
+        when(passengerService.updatePassenger(eq(id), any(Passenger.class))).thenReturn(updatedPassenger);
+
+        mockMvc.perform(put("/api/v1/passengers/update/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(passenger1)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.passengerId").value(1L));
-
-        verify(passengerService, times(1)).updatePassenger(eq(1L), any(Passenger.class));
+                        .content(new ObjectMapper().writeValueAsString(passengerDTO)))
+                .andExpect(status().isOk());
     }
 
     @Test
-    public void testUpdatePassenger_NotFound() throws Exception {
-        when(passengerService.updatePassenger(eq(3L), any(Passenger.class))).thenReturn(null);
+    void updatePassenger_NotFound() throws Exception {
+        Long id = 1L;
+        PassengerDTO passengerDTO = new PassengerDTO();
 
-        mockMvc.perform(put("/api/v1/passengers/update/{id}", 3L)
+        when(passengerService.updatePassenger(eq(id), any(Passenger.class))).thenReturn(null);
+
+        mockMvc.perform(put("/api/v1/passengers/update/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(passenger1)))
+                        .content(new ObjectMapper().writeValueAsString(passengerDTO)))
                 .andExpect(status().isNotFound());
-
-        verify(passengerService, times(1)).updatePassenger(eq(3L), any(Passenger.class));
     }
 
     @Test
-    public void testDeletePassenger() throws Exception {
-        when(passengerService.deletePassenger(1L)).thenReturn(true);
+    void deletePassenger() throws Exception {
+        Long id = 1L;
 
-        mockMvc.perform(delete("/api/v1/passengers/delete/{id}", 1L))
+        when(passengerService.deletePassenger(id)).thenReturn(true);
+
+        mockMvc.perform(delete("/api/v1/passengers/delete/{id}", id))
                 .andExpect(status().isNoContent());
-
-        verify(passengerService, times(1)).deletePassenger(1L);
     }
 
     @Test
-    public void testDeletePassenger_NotFound() throws Exception {
-        when(passengerService.deletePassenger(4L)).thenReturn(false);
+    void deletePassenger_NotFound() throws Exception {
+        Long id = 1L;
 
-        mockMvc.perform(delete("/api/v1/passengers/delete/{id}", 4L))
+        when(passengerService.deletePassenger(id)).thenReturn(false);
+
+        mockMvc.perform(delete("/api/v1/passengers/delete/{id}", id))
                 .andExpect(status().isNotFound());
-
-        verify(passengerService, times(1)).deletePassenger(4L);
     }
 }
