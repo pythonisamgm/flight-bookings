@@ -22,10 +22,10 @@ public class FlightDurationServiceImplTest {
         flight.setDepartureTime(LocalDateTime.of(2024, 10, 12, 14, 0));
         flight.setArrivalTime(LocalDateTime.of(2024, 10, 12, 16, 0));
 
-        Duration duration = flightDurationService.calculateFlightDuration(flight);
+        Long duration = flightDurationService.calculateFlightDuration(flight);
 
         assertNotNull(duration);
-        assertEquals(Duration.ofHours(2), duration);
+        assertEquals(120L, duration);
     }
 
     @Test
@@ -34,7 +34,7 @@ public class FlightDurationServiceImplTest {
         flight.setDepartureTime(null);
         flight.setArrivalTime(LocalDateTime.of(2024, 10, 12, 16, 0));
 
-        Duration duration = flightDurationService.calculateFlightDuration(flight);
+        Long duration = flightDurationService.calculateFlightDuration(flight);
 
         assertNull(duration);
     }
@@ -45,7 +45,7 @@ public class FlightDurationServiceImplTest {
         flight.setDepartureTime(LocalDateTime.of(2024, 10, 12, 14, 0));
         flight.setArrivalTime(null);
 
-        Duration duration = flightDurationService.calculateFlightDuration(flight);
+        Long duration = flightDurationService.calculateFlightDuration(flight);
 
         assertNull(duration);
     }
@@ -56,7 +56,7 @@ public class FlightDurationServiceImplTest {
         flight.setDepartureTime(null);
         flight.setArrivalTime(null);
 
-        Duration duration = flightDurationService.calculateFlightDuration(flight);
+        Long duration = flightDurationService.calculateFlightDuration(flight);
 
         assertNull(duration);
     }

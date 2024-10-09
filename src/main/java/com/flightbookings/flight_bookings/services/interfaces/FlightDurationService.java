@@ -5,5 +5,5 @@ import com.flightbookings.flight_bookings.models.Flight;
 import java.time.Duration;
 
 public interface FlightDurationService {
-    Duration calculateFlightDuration(Flight flight);
+    Long calculateFlightDuration(Flight flight);
 }

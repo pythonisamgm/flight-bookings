@@ -59,6 +59,9 @@ public class WebSecurityConfig {
                                 .requestMatchers("/api/v1/bookings/update/{id}").hasAuthority("ADMIN")
                                 .requestMatchers("/api/v1/bookings/delete/{id}").hasAuthority("ADMIN")
 
+                                .requestMatchers("api/v1/airports/create").hasAuthority("ADMIN")
+                                .requestMatchers("api/v1/airports/").permitAll()
+
                                 .requestMatchers("api/v1/flight/create").hasAuthority("ADMIN")
                                 .requestMatchers("api/v1/flight/{id}").permitAll()
                                 .requestMatchers("api/v1/flight/").permitAll()

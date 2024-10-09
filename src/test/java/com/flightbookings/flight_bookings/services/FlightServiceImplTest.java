@@ -3,7 +3,9 @@ package com.flightbookings.flight_bookings.services;
 import com.flightbookings.flight_bookings.models.Flight;
 import com.flightbookings.flight_bookings.models.EFlightAirplane;
 import com.flightbookings.flight_bookings.repositories.IFlightRepository;
+import com.flightbookings.flight_bookings.repositories.ISeatRepository;
 import com.flightbookings.flight_bookings.services.interfaces.FlightDurationService;
+import com.flightbookings.flight_bookings.services.interfaces.SeatService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -32,6 +34,12 @@ class FlightServiceImplTest {
     @Mock
     private FlightDurationService flightDurationService;
 
+    @Mock
+    private SeatService seatService;
+
+    @Mock
+    private ISeatRepository seatRepository;
+
     private Flight flight;
 
     @BeforeEach
@@ -47,12 +55,12 @@ class FlightServiceImplTest {
         flight.setAvailability(true);
         flight.setNumRows(20);
         flight.setFlightPrice(BigDecimal.valueOf(300));
-        flight.setFlightDuration(Duration.ofHours(2));
+        flight.setFlightDuration(120L);
     }
 
     @Test
     void testCreateFlight() {
-        when(flightDurationService.calculateFlightDuration(any(Flight.class))).thenReturn(Duration.ofHours(2));
+        when(flightDurationService.calculateFlightDuration(any(Flight.class))).thenReturn(120L);;
         when(flightRepository.save(any(Flight.class))).thenReturn(flight);
 
         Flight createdFlight = flightService.createFlight(flight);
@@ -102,7 +110,7 @@ class FlightServiceImplTest {
 
         when(flightRepository.findById(1L)).thenReturn(Optional.of(flight));
         when(flightRepository.save(any(Flight.class))).thenReturn(flight);
-        when(flightDurationService.calculateFlightDuration(any(Flight.class))).thenReturn(Duration.ofHours(2));
+        when(flightDurationService.calculateFlightDuration(any(Flight.class))).thenReturn(120L);
 
         Flight result = flightService.updateFlight(1L, updatedFlight);
 
@@ -126,7 +134,7 @@ class FlightServiceImplTest {
     void testDelayFlight() {
         LocalDateTime newDepartureTime = LocalDateTime.of(2024, 10, 12, 15, 30);
         when(flightRepository.findById(1L)).thenReturn(Optional.of(flight));
-        when(flightDurationService.calculateFlightDuration(any(Flight.class))).thenReturn(Duration.ofHours(2));
+        when(flightDurationService.calculateFlightDuration(any(Flight.class))).thenReturn(120L);
 
         flightService.delayFlight(1L, newDepartureTime);
 

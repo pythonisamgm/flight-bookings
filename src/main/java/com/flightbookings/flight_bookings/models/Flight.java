@@ -26,7 +26,7 @@ public class Flight {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "The database generated flight ID")
-    private Long flightId;
+    private long flightId;
 
     /**
      * The flight number.
@@ -34,13 +34,19 @@ public class Flight {
     @Schema(description = "Flight number")
     @Column
     private int flightNumber;
-
     /**
-     * The number of rows in the airplane for this flight.
+     * List of airport origin associated with this flight.
      */
-    @Schema(description = "Number of rows in the airplane")
-    @Column
-    private int numRows;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "origin_airport_code", referencedColumnName = "airport_code", nullable = false)
+    private Airport originAirport;
+    /**
+     * List of airport destination associated with this flight.
+     */
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "destination_airport_code", referencedColumnName = "airport_code", nullable = false)
+    private Airport destinationAirport;
+
 
      /**
      * The time when the flight departs.
@@ -60,7 +66,7 @@ public class Flight {
 
     @Schema(description = "Duration of the flight")
     @Column
-    private Duration flightDuration;
+    private long flightDuration;
 
     /**
      * The type of airplane used for this flight.
@@ -76,6 +82,13 @@ public class Flight {
     @Column
     private int capacityPlane;
 
+    /**
+     * The number of rows in the airplane for this flight.
+     */
+
+    @Schema(description = "Number of rows in the airplane")
+    @Column
+    private int numRows;
     /**
      * The availability status of the flight.
      */
@@ -106,18 +119,7 @@ public class Flight {
     @Schema(description = "List of bookings associated with this flight.")
     private List<Booking> bookingList;
 
-    /**
-     * List of airport origin associated with this flight.
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "origin_airport_code", referencedColumnName = "airport_code", nullable = false)
-    private Airport originAirport;
-    /**
-     * List of airport destination associated with this flight.
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "destination_airport_code", referencedColumnName = "airport_code", nullable = false)
-    private Airport destinationAirport;
+
 
     /**
      * Default constructor for Flight.
@@ -154,11 +156,14 @@ public class Flight {
         this.availability = availability;
         this.numRows = numRows;
         this.flightPrice = flightPrice;
-        this.seats = seats; // Asignación correcta de seats
+        this.seats = seats;
         this.bookingList = bookingList;
-        this.flightDuration = Duration.between(departureTime, arrivalTime); // Cálculo de flightDuration
-        this.originAirport = originAirport; // Asignación del aeropuerto de origen
-        this.destinationAirport = destinationAirport; // Asignación del aeropuerto de destino
+        this.originAirport = originAirport;
+        this.destinationAirport = destinationAirport;
+        if (departureTime != null && arrivalTime != null) {
+            Duration duration = Duration.between(departureTime, arrivalTime);
+            this.flightDuration = duration.toMinutes(); // Calcula la duración en minutos
+        }
     }
 
     /**
@@ -364,11 +369,11 @@ public class Flight {
         this.destinationAirport = destinationAirport;
     }
 
-    public Duration getFlightDuration() { // Método getter para flightDuration
+    public Long getFlightDuration() {
         return flightDuration;
     }
 
-    public void setFlightDuration(Duration flightDuration) { // Método setter para flightDuration
+    public void setFlightDuration(long flightDuration) { // Método setter para flightDuration
         this.flightDuration = flightDuration;
     }
 }
