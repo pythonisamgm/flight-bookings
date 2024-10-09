@@ -11,16 +11,13 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
@@ -75,8 +72,8 @@ public class BookingControllerTest {
         bookingList.add(booking1);
         bookingList.add(booking2);
 
-        when(bookingService.getBookingById(1L, user1)).thenReturn(booking1);
-        when(bookingService.getBookingById(3L, user1)).thenReturn(null);
+        when(bookingService.getBookingByIdByUser(1L, user1)).thenReturn(booking1);
+        when(bookingService.getBookingByIdByUser(3L, user1)).thenReturn(null);
         when(bookingService.getAllBookings()).thenReturn(bookingList);
         when(bookingService.createBooking2(any(Booking.class))).thenReturn(booking1);
         when(bookingService.updateBooking2(eq(1L), any(Booking.class))).thenReturn(booking1);
@@ -110,12 +107,12 @@ public class BookingControllerTest {
      * Verifies that the correct booking is returned with a 200 OK status.
      */
     @Test
-    public void testGetBookingById() throws Exception {
+    public void testGetBookingByIdByUser() throws Exception {
         User user1 = new User();
         user1.setUserId(1L);
         user1.setUsername("testuser");
 
-        when(bookingService.getBookingById(1L, user1)).thenReturn(booking1);
+        when(bookingService.getBookingByIdByUser(1L, user1)).thenReturn(booking1);
         when(userService.findByUsername(anyString())).thenReturn(user1);
 
         mockMvc.perform(get("/api/v1/bookings/{id}", 1L)
@@ -124,25 +121,25 @@ public class BookingControllerTest {
                 .andExpect(jsonPath("$.bookingId").value(1L));
 
 
-        verify(bookingService, times(1)).getBookingById(1L,user1 );
+        verify(bookingService, times(1)).getBookingByIdByUser(1L,user1 );
     }
     /**
      * Tests the retrieval of all bookings for a specific user.
      * Verifies that the correct number of bookings is returned.
      */
     @Test
-    public void testGetBookingById_NotFound() throws Exception {
+    public void testGetBookingById_ByUser_NotFound() throws Exception {
         User user1 = new User();
         user1.setUserId(1L);
         user1.setUsername("testuser");
 
-        when(bookingService.getBookingById(1L, user1)).thenReturn(booking1);
+        when(bookingService.getBookingByIdByUser(1L, user1)).thenReturn(booking1);
         when(userService.findByUsername(anyString())).thenReturn(user1);
         mockMvc.perform(get("/api/v1/bookings/{id}", 3L)
                         .principal(() -> "testuser"))
                 .andExpect(status().isNotFound());
 
-        verify(bookingService, times(1)).getBookingById(3L, user1);
+        verify(bookingService, times(1)).getBookingByIdByUser(3L, user1);
     }
     /**
      * Tests the deletion of a booking.
