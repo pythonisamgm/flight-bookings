@@ -12,14 +12,14 @@ import java.util.List;
  */
 public interface FlightService {
 
-   /**
-    * Creates a new flight.
-    *
-    * @param flight the Flight object to be created.
-    * @return the created Flight object.
-    */
-   @Transactional
-   Flight createFlight(Flight flight);
+    /**
+     * Creates a new flight.
+     *
+     * @param flight the Flight object to be created.
+     * @return the created Flight object.
+     */
+    @Transactional
+    Flight createFlight(Flight flight);
 
     /**
      * Retrieves a flight by its ID.
@@ -54,19 +54,9 @@ public interface FlightService {
     boolean deleteFlight(Long id);
 
     /**
-     * Cancels a flight.
-     *
-     * @param id the ID of the flight to cancel.
+     * Updates the availability status of all flights.
      */
-    void cancelFlight(Long id);
-
-    /**
-     * Delays a flight by updating its departure time.
-     *
-     * @param id              the ID of the flight to delay.
-     * @param newDepartureTime the new departure time for the flight.
-     */
-    void delayFlight(Long id, LocalDateTime newDepartureTime);
+    void updateFlightAvailability();
 
     /**
      * Retrieves flights by the type of airplane.
@@ -76,8 +66,4 @@ public interface FlightService {
      */
     List<Flight> getFlightsByAirplaneType(EFlightAirplane airplaneType);
 
-    /**
-     * Updates the availability status of all flights.
-     */
-    void updateFlightAvailability();
 }

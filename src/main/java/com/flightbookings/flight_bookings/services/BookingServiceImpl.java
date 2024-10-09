@@ -43,9 +43,6 @@ public class BookingServiceImpl implements BookingService {
         this.seatService = seatService;
     }
 
-
-
-
     @Override
     public Booking createBooking(Long flightId, Long passengerId, String seatName, Long userId) {
         Flight flight = flightRepository.findById(flightId)
@@ -102,12 +99,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Booking createBooking2(Booking booking) {
-        return bookingRepository.save(booking);
-    }
-
-    @Override
-    public Booking getBookingById(Long id, User user) {
+    public Booking getBookingByIdByUser(Long id, User user) {
         Optional<Booking> bookingOptional = bookingRepository.findById(id);
         if (bookingOptional.isPresent()) {
             Booking booking = bookingOptional.get();
@@ -128,29 +120,6 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<Booking> getAllBookings() {
         return bookingRepository.findAll();
-    }
-
-
-    @Override
-    public Booking updateBooking2(Long id, Booking bookingDetails) {
-        return null;
-    }
-
-    @Override
-    public Booking updateBooking2(Long id, Booking bookingDetails, Long userId) {
-        Optional<Booking> existingBooking = bookingRepository.findById(id);
-        if (existingBooking.isPresent()) {
-            Booking bookingToUpdate = existingBooking.get();
-            User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + userId));
-            bookingToUpdate.setFlight(bookingDetails.getFlight());
-            bookingToUpdate.setPassenger(bookingDetails.getPassenger());
-            bookingToUpdate.setDateOfBooking(bookingDetails.getDateOfBooking());
-            bookingToUpdate.setUser(user);
-
-            return bookingRepository.save(bookingToUpdate);
-        }
-        return null;
     }
 
     @Override

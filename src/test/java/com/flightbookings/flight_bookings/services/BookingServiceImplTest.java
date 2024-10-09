@@ -37,6 +37,8 @@ public class BookingServiceImplTest {
     @Mock
     private IUserRepository userRepository;
 
+
+
     @Mock
     private SeatService seatService;
 
@@ -243,7 +245,7 @@ public class BookingServiceImplTest {
     }
 
     @Test
-    public void testGetBookingById() {
+    public void testGetBookingByIdByUser() {
         Long bookingId = 1L;
         User user = new User();
         user.setUserId(1L);
@@ -252,7 +254,7 @@ public class BookingServiceImplTest {
 
         when(bookingRepository.findById(bookingId)).thenReturn(Optional.of(booking1));
 
-        Booking foundBooking = bookingService.getBookingById(bookingId, user);
+        Booking foundBooking = bookingService.getBookingByIdByUser(bookingId, user);
 
         assertNotNull(foundBooking);
         assertEquals(bookingId, foundBooking.getBookingId());
@@ -264,13 +266,13 @@ public class BookingServiceImplTest {
     }
 
     @Test
-    public void testGetBookingById_NotFound() {
+    public void testGetBookingById_ByUser_NotFound() {
         Long bookingId = 3L;
         User user = new User();
         user.setUserId(1L);
         when(bookingRepository.findById(3L)).thenReturn(Optional.empty());
 
-        Booking foundBooking = bookingService.getBookingById(3L, user);
+        Booking foundBooking = bookingService.getBookingByIdByUser(3L, user);
 
         assertNull(foundBooking);
 

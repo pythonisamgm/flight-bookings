@@ -22,7 +22,7 @@ public interface AirportService {
      * @param airports the set of Airport objects to be created.
      * @return a list of created Airport objects.
      */
-    List<Airport> createAirports(Set<Airport> airports);
+    List<Airport> createAirports(Set<Airport> airports); // Método para crear múltiples aeropuertos
 
     /**
      * Retrieves all airports.

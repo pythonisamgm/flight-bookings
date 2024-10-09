@@ -100,38 +100,6 @@ public class FlightServiceImpl implements FlightService {
         }
         return false;
     }
-
-    //    public List<Flight> searchFlightsByCity(String city) {
-//        return flightRepository.findAll()
-//                .stream()
-//                .filter(flight -> flight.getAirports().stream().anyMatch(airport -> airport.getCity().equalsIgnoreCase(city)))
-//                .collect(Collectors.toList());
-//    }
-    /**
-     * Cancels a flight by setting its availability to false.
-     *
-     * @param id the ID of the flight to cancel
-     */
-    public void cancelFlight(Long id) {
-        Flight flight = getFlightById(id);
-        if (flight != null) {
-            flight.setAvailability(false);
-            flightRepository.save(flight);
-        }
-    }
-    /**
-     * Delays a flight by updating its departure time.
-     *
-     * @param id the ID of the flight to delay
-     * @param newDepartureTime the new departure time for the flight
-     */
-    public void delayFlight(Long id, LocalDateTime newDepartureTime) {
-        Flight flight = getFlightById(id);
-        if (flight != null) {
-            flight.setDepartureTime(newDepartureTime);
-            flightRepository.save(flight);
-        }
-    }
     /**
      * Retrieves a list of flights that use a specified airplane type.
      *

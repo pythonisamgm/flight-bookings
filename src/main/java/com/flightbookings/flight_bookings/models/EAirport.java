@@ -55,18 +55,22 @@ public enum EAirport {
         this.airportCountry = airportCountry;
     }
 
+    /** @return The airport code. */
     public String getAirportCode() {
         return airportCode;
     }
 
+    /** @return The airport name. */
     public String getAirportName() {
         return airportName;
     }
 
+    /** @return The airport city. */
     public String getAirportCity() {
         return airportCity;
     }
 
+    /** @return The airport country. */
     public ECountry getAirportCountry() {
         return airportCountry;
     }

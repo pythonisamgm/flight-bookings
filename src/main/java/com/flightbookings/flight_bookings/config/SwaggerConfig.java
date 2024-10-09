@@ -55,8 +55,6 @@ public class SwaggerConfig {
                         "/api/v1/auth/register",
                         "/api/v1/auth/login",
 
-                        "/api/v1/bookings/create2",
-
                         "/api/v1/flight/{id}",
                         "/api/v1/flight/"
                 )
@@ -87,8 +85,6 @@ public class SwaggerConfig {
                         "/api/v1/flight/create",
                         "/api/v1/flight/update/{id}",
                         "/api/v1/flight/delete/{id}",
-                        "/api/v1/flight/{id}/cancel",
-                        "/api/v1/flight/{id}/delay",
                         "/api/v1/flight/updateAvailability",
                         "/api/v1/flight/byAirplaneType",
 
@@ -106,7 +102,6 @@ public class SwaggerConfig {
 
                         "/api/airports"
                 )
-                .pathsToExclude("/api/v1/bookings/create2")
                 .build();
     }
 
@@ -120,7 +115,7 @@ public class SwaggerConfig {
         return GroupedOpenApi.builder()
                 .group("user")
                 .pathsToMatch(
-                        "/api/v1/bookings/create/{flightId}/{passengerId}/{seatName}/{userId}",
+                        "/api/v1/bookings/create/{flightId}/{passengerId}/{seatName}",
                         "/api/v1/bookings/{id}",
                         "/api/v1/bookings/",
 
@@ -130,7 +125,7 @@ public class SwaggerConfig {
                         "/api/v1/passengers/update/{id}",
                         "/api/v1/passengers/delete/{id}"
                 )
-                .pathsToExclude("/api/v1/bookings/create2", "/api/v1/bookings/all")
+                .pathsToExclude("/api/v1/bookings/all")
                 .addOpenApiCustomizer(userCustomizer())
                 .build();
     }

@@ -31,23 +31,13 @@ public interface BookingService {
     Booking updateBooking(Booking updatedBooking);
 
     /**
-     * Creates a booking from a provided Booking object.
-     *
-     * @param booking the Booking object to be created.
-     * @return the created Booking object.
-     */
-    Booking createBooking2(Booking booking);
-
-    /**
      * Retrieves a booking by its ID.
      *
      * @param id   the ID of the booking.
      * @param user the user requesting the booking details.
      * @return the Booking object if found, null otherwise.
      */
-    Booking getBookingById(Long id, User user);
-
-
+    Booking getBookingByIdByUser(Long id, User user);
 
     /**
      * Retrieves all bookings for a specific user.
@@ -62,17 +52,6 @@ public interface BookingService {
      * @return a list of Booking objects.
      */
     List<Booking> getAllBookings();
-
-    /**
-     * Updates a booking by its ID.
-     *
-     * @param id             the ID of the booking to update.
-     * @param bookingDetails the updated Booking details.
-     * @return the updated Booking object.
-     */
-    Booking updateBooking2(Long id, Booking bookingDetails);
-
-    Booking updateBooking2(Long id, Booking bookingDetails, Long userId);
 
     /**
      * Deletes a booking by its ID.
