@@ -71,35 +71,7 @@ public class FlightServiceImpl implements FlightService {
     public List<Flight> getAllFlights() {
         return flightRepository.findAll();
     }
-    /**
-     * Updates the details of an existing flight.
-     *
-     * @param id the ID of the flight to update
-     * @param flightDetails the Flight object with updated details
-     * @return the updated Flight object, or null if the flight does not exist
-     */
-    @Override
-    public Flight updateFlight(Long id, Flight flightDetails) {
-        if (flightRepository.existsById(id)) {
-            flightDetails.setFlightId(id);
-            return flightRepository.save(flightDetails);
-        }
-        return null;
-    }
-    /**
-     * Deletes a flight by its ID.
-     *
-     * @param id the ID of the flight to delete
-     * @return true if the flight was deleted, false if it did not exist
-     */
-    @Override
-    public boolean deleteFlight(Long id) {
-        if (flightRepository.existsById(id)) {
-            flightRepository.deleteById(id);
-            return true;
-        }
-        return false;
-    }
+
     /**
      * Retrieves a list of flights that use a specified airplane type.
      *
@@ -130,4 +102,35 @@ public class FlightServiceImpl implements FlightService {
             }
         }
     }
+
+    /**
+     * Updates the details of an existing flight.
+     *
+     * @param id the ID of the flight to update
+     * @param flightDetails the Flight object with updated details
+     * @return the updated Flight object, or null if the flight does not exist
+     */
+    @Override
+    public Flight updateFlight(Long id, Flight flightDetails) {
+        if (flightRepository.existsById(id)) {
+            flightDetails.setFlightId(id);
+            return flightRepository.save(flightDetails);
+        }
+        return null;
+    }
+    /**
+     * Deletes a flight by its ID.
+     *
+     * @param id the ID of the flight to delete
+     * @return true if the flight was deleted, false if it did not exist
+     */
+    @Override
+    public boolean deleteFlight(Long id) {
+        if (flightRepository.existsById(id)) {
+            flightRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
 }

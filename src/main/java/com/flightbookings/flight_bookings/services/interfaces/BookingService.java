@@ -23,14 +23,6 @@ public interface BookingService {
     Booking createBooking(Long flightId, Long passengerId, String seatName, Long userId);
 
     /**
-     * Updates an existing booking with new details.
-     *
-     * @param updatedBooking the updated Booking object containing the new details.
-     * @return the updated Booking object.
-     */
-    Booking updateBooking(Booking updatedBooking);
-
-    /**
      * Retrieves a booking by its ID.
      *
      * @param id   the ID of the booking.
@@ -52,6 +44,15 @@ public interface BookingService {
      * @return a list of Booking objects.
      */
     List<Booking> getAllBookings();
+
+
+    /**
+     * Updates an existing booking with new details.
+     *
+     * @param updatedBooking the updated Booking object containing the new details.
+     * @return the updated Booking object.
+     */
+    Booking updateBooking(Booking updatedBooking);
 
     /**
      * Deletes a booking by its ID.

@@ -122,16 +122,6 @@ class FlightServiceImplTest {
     }
 
     @Test
-    void testDeleteFlight() {
-        when(flightRepository.existsById(1L)).thenReturn(true);
-
-        boolean result = flightService.deleteFlight(1L);
-
-        assertTrue(result, "The flight deletion should return true");
-        verify(flightRepository, times(1)).deleteById(1L);
-    }
-
-    @Test
     void testUpdateFlightAvailability_AllSeatsBooked_FutureDeparture() {
         LocalDateTime now = LocalDateTime.now();
         Flight flight = new Flight();
@@ -198,5 +188,13 @@ class FlightServiceImplTest {
         verify(flightRepository, times(1)).findAll();
     }
 
+    @Test
+    void testDeleteFlight() {
+        when(flightRepository.existsById(1L)).thenReturn(true);
 
+        boolean result = flightService.deleteFlight(1L);
+
+        assertTrue(result, "The flight deletion should return true");
+        verify(flightRepository, times(1)).deleteById(1L);
+    }
 }
