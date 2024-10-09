@@ -39,8 +39,6 @@ public interface BookingService {
      */
     Booking getBookingByIdByUser(Long id, User user);
 
-
-
     /**
      * Retrieves all bookings for a specific user.
      *

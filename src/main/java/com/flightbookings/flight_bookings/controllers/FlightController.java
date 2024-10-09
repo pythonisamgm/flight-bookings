@@ -90,36 +90,6 @@ public class FlightController {
         boolean isDeleted = flightService.deleteFlight(id);
         return isDeleted ? new ResponseEntity<>(HttpStatus.NO_CONTENT) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-
-//    @GetMapping("/search")
-//    public ResponseEntity<List<Flight>> searchFlightsByCity(@RequestParam String city) {
-//        List<Flight> flights = flightService.searchFlightsByCity(city);
-//        return new ResponseEntity<>(flights, HttpStatus.OK);
-//    }
-    /**
-     * Cancels a flight by its ID.
-     *
-     * @param id the ID of the flight to be canceled.
-     * @return a response indicating whether the cancellation was successful.
-     */
-    @DeleteMapping("/{id}/cancel")
-    public ResponseEntity<String> cancelFlight(@PathVariable Long id) {
-        flightService.cancelFlight(id);
-        return ResponseEntity.ok("Flight canceled successfully.");
-    }
-    /**
-     * Delays a flight by setting a new departure time.
-     *
-     * @param id              the ID of the flight to be delayed.
-     * @param newDepartureTime the new departure time for the flight in ISO-8601 format.
-     * @return a response indicating whether the delay was successful.
-     */
-    @PostMapping("/{id}/delay")
-    public ResponseEntity<String> delayFlight(@PathVariable Long id, @RequestParam String newDepartureTime) {
-        LocalDateTime departureTime = LocalDateTime.parse(newDepartureTime);
-        flightService.delayFlight(id, departureTime);
-        return ResponseEntity.ok("Flight delayed successfully.");
-    }
     /**
      * Updates the availability of all flights based on their current status (e.g., past departure or no available seats).
      *

@@ -43,9 +43,6 @@ public class BookingServiceImpl implements BookingService {
         this.seatService = seatService;
     }
 
-
-
-
     @Override
     public Booking createBooking(Long flightId, Long passengerId, String seatName, Long userId) {
         Flight flight = flightRepository.findById(flightId)
