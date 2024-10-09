@@ -1,5 +1,8 @@
 package com.flightbookings.flight_bookings.models;
 
+/**
+ * Enumeration representing various airports with details like airport code, name, city, and country.
+ */
 public enum EAirport {
     MAD("MAD", "Madrid-Barajas Adolfo Suárez", "Madrid", ECountry.ESPAÑA),
     BCN("BCN", "Barcelona-El Prat", "Barcelona", ECountry.ESPAÑA),
@@ -37,7 +40,14 @@ public enum EAirport {
     private final String airportCity;
     private final ECountry airportCountry;
 
-    // Constructor
+    /**
+     * Constructor for EAirport enumeration.
+     *
+     * @param airportCode   The unique code for the airport.
+     * @param airportName   The name of the airport.
+     * @param airportCity   The city where the airport is located.
+     * @param airportCountry The country where the airport is located.
+     */
     EAirport(String airportCode, String airportName, String airportCity, ECountry airportCountry) {
         this.airportCode = airportCode;
         this.airportName = airportName;

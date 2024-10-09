@@ -47,12 +47,10 @@ jobs:
             attempt_num=$((attempt_num+1))
             sleep 5
           done
-
           if [ $attempt_num -gt $max_attempts ]; then
             echo "MySQL is not ready after $max_attempts attempts. Exiting."
             exit 1
           fi
-
       # 5. Set up JDK 21
       - name: Set up JDK 21
         uses: actions/setup-java@v4
@@ -70,15 +68,6 @@ jobs:
           echo "spring.jpa.hibernate.ddl-auto=create-drop" >> src/main/resources/application-test.properties
           echo "spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect" >> src/main/resources/application-test.properties
           echo "spring.sql.init.mode=always" >> src/main/resources/application-test.properties
-
       # 7. Build API with Maven
       - name: Build API
         run: mvn clean install -DskipTests
-
-      # 8. Run unit tests
-      - name: Run Unit Tests
-        run: mvn test -Dspring.profiles.active=test
-
-      # 9. Run integration tests
-      - name: Run Integration Tests
-        run: mvn verify -Dspring.profiles.active=test

@@ -1,25 +1,39 @@
 package com.flightbookings.flight_bookings.dtos.DTOPassenger;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-
+/**
+ * Data Transfer Object for Passenger.
+ */
 @Schema(description = "Data Transfer Object for Passenger.")
 public class PassengerDTO {
-
+    /**
+     * The unique identifier of the passenger.
+     */
     @Schema(description = "The database generated passenger ID")
     private Long passengerId;
-
+    /**
+     * The name of the passenger.
+     */
     @Schema(description = "The name of the passenger")
     private String passengerName;
-
+    /**
+     * The identity document number of the passenger.
+     */
     @Schema(description = "The identity document number of the passenger")
     private String identityDoc;
-
+    /**
+     * The telephone number of the passenger.
+     */
     @Schema(description = "The telephone number of the passenger")
     private Long telephone;
-
+    /**
+     * The nationality of the passenger.
+     */
     @Schema(description = "The nationality of the passenger")
     private String nationality;
-
+    /**
+     * The booking ID associated with this passenger.
+     */
     @Schema(description = "The booking ID associated with this passenger")
     private Long bookingId;
 

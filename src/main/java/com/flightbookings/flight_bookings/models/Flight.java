@@ -10,13 +10,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;import jakarta.persistence.*;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
+import java.util.Set;
 /**
  * Represents a flight entity in the system.
  * Contains details such as the flight number, departure and arrival times, airplane type, and associated seats and bookings.
@@ -35,24 +29,26 @@ public class Flight {
     private Long flightId;
 
     /**
-     * The number of rows in the airplane for this flight.
-     */
-    @Schema(description = "Number of rows in the airplane")
-    @Column
-    private int numRows;
-    /**
      * The flight number.
      */
     @Schema(description = "Flight number")
     @Column
     private int flightNumber;
 
-/*** The time when the flight departs.
- */
-@Schema(description = "Time of departure")
-@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
-@Column
-private LocalDateTime departureTime;
+    /**
+     * The number of rows in the airplane for this flight.
+     */
+    @Schema(description = "Number of rows in the airplane")
+    @Column
+    private int numRows;
+
+     /**
+     * The time when the flight departs.
+     */
+    @Schema(description = "Time of departure")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
+    @Column
+    private LocalDateTime departureTime;
 
     /**
      * The time when the flight arrives.
@@ -61,6 +57,10 @@ private LocalDateTime departureTime;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     @Column
     private LocalDateTime arrivalTime;
+
+    @Schema(description = "Duration of the flight")
+    @Column
+    private Duration flightDuration;
 
     /**
      * The type of airplane used for this flight.
@@ -75,6 +75,7 @@ private LocalDateTime departureTime;
     @Schema(description = "Capacity of the airplane")
     @Column
     private int capacityPlane;
+
     /**
      * The availability status of the flight.
      */
@@ -92,10 +93,11 @@ private LocalDateTime departureTime;
     /**
      * List of seats associated with this flight.
      */
-    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL)
     @JsonManagedReference(value = "flight-seat")
     @Schema(description = "List of seats associated with this flight.")
     private List<Seat> seats = new ArrayList<>();
+
     /**
      * List of bookings associated with this flight.
      */
@@ -104,9 +106,18 @@ private LocalDateTime departureTime;
     @Schema(description = "List of bookings associated with this flight.")
     private List<Booking> bookingList;
 
-    /*@ManyToMany(mappedBy = "flight", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonBackReference
-    private Set<Airport> airports;*/
+    /**
+     * List of airport origin associated with this flight.
+     */
+
+    private String originAirport;
+
+    /**
+     * List of airport destination associated with this flight.
+     */
+
+    private String destinationAirport;
+
     /**
      * Default constructor for Flight.
      */
@@ -115,7 +126,7 @@ private LocalDateTime departureTime;
     /**
      * Constructs a new Flight with the specified details.
      *
-     * @param id            The flight ID.
+     * @param flightId            The flight ID.
      * @param flightNumber  The flight number.
      * @param departureTime The departure time.
      * @param arrivalTime   The arrival time.
@@ -124,23 +135,41 @@ private LocalDateTime departureTime;
      * @param availability  The availability status.
      * @param numRows       The number of rows.
      * @param flightPrice   The price of the flight.
-     * @param seatList      The list of seats.
+     * @param seats      The list of seats.
      * @param bookingList   The list of bookings.
      */
-    public Flight(Long id, int flightNumber, LocalDateTime departureTime, LocalDateTime arrivalTime,
-                  EFlightAirplane flightAirplane, int capacityPlane, boolean availability, int numRows,
-                  BigDecimal flightPrice, List<Seat> seatList, List<Booking> bookingList) { this.flightId = id;
+
+    public Flight(Long flightId, int flightNumber, int numRows, LocalDateTime departureTime, LocalDateTime arrivalTime, Duration flightDuration, EFlightAirplane flightAirplane, int capacityPlane, boolean availability, BigDecimal flightPrice, List<Seat> seats, List<Booking> bookingList, String originAirport, String destinationAirport) {
+        this.flightId = flightId;
         this.flightNumber = flightNumber;
+        this.numRows = numRows;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
+        this.flightDuration = flightDuration;
         this.flightAirplane = flightAirplane;
         this.capacityPlane = capacityPlane;
-        this.availability = availability;
-        this.numRows = numRows;
+        this.availability = true;
         this.flightPrice = flightPrice;
         this.seats = seats;
         this.bookingList = bookingList;
-        //this.airports = airports;
+        this.originAirport = originAirport;
+        this.destinationAirport = destinationAirport;
+    }
+
+    public String getOriginAirport() {
+        return originAirport;
+    }
+
+    public void setOriginAirport(String originAirport) {
+        this.originAirport = originAirport;
+    }
+
+    public String getDestinationAirport() {
+        return destinationAirport;
+    }
+
+    public void setDestinationAirport(String destinationAirport) {
+        this.destinationAirport = destinationAirport;
     }
 
     /**
@@ -169,6 +198,7 @@ private LocalDateTime departureTime;
     public int getFlightNumber() {
         return flightNumber;
     }
+
     /**
      * Sets the flight number.
      *
@@ -195,14 +225,14 @@ private LocalDateTime departureTime;
     public void setDepartureTime(LocalDateTime departureTime) {
         this.departureTime = departureTime;
     }
-/**
- * Gets the arrival time.
- *
- * @return The arrival time.
- */
-public LocalDateTime getArrivalTime() {
-    return arrivalTime;
-}
+    /**
+     * Gets the arrival time.
+     *
+     * @return The arrival time.
+     */
+    public LocalDateTime getArrivalTime() {
+        return arrivalTime;
+    }
 
     /**
      * Sets the arrival time.
@@ -229,6 +259,7 @@ public LocalDateTime getArrivalTime() {
     public void setFlightAirplane(EFlightAirplane flightAirplane) {
         this.flightAirplane = flightAirplane;
     }
+
     /**
      * Gets the seating capacity of the airplane.
      *
@@ -255,6 +286,7 @@ public LocalDateTime getArrivalTime() {
     public boolean isAvailability() {
         return availability;
     }
+
     /**
      * Sets the availability status of the flight.
      *
@@ -325,4 +357,27 @@ public LocalDateTime getArrivalTime() {
     public void setBookingList(List<Booking> bookingList) {
         this.bookingList = bookingList;
     }
+
+
+
+
+
+
+
+
+    public Duration getFlightDuration() { // Método getter para flightDuration
+        return flightDuration;
+    }
+
+    public void setFlightDuration(Duration flightDuration) { // Método setter para flightDuration
+        this.flightDuration = flightDuration;
+    }
 }
+
+//    public Set<Airport> getAirports() {
+//        return airports;
+//    }
+//
+//    public void setAirports(Set<Airport> airports) {
+//        this.airports = airports;
+//    }
