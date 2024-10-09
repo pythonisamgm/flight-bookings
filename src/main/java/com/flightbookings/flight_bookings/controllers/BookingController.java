@@ -122,6 +122,28 @@ public class BookingController {
         List<BookingDTO> bookingDtos = bookingConverter.bookingsToDtoList(bookings);
         return new ResponseEntity<>(bookingDtos, HttpStatus.OK);
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<BookingDTO> getBookingById(
+            @Parameter(description = "ID of the booking to be retrieved") @PathVariable Long id,
+            Principal principal) {
+
+        User user = userService.findByUsername(principal.getName());
+        Booking booking = bookingService.getBookingById(id, user);
+
+        if (booking != null) {
+            BookingDTO bookingDto = bookingConverter.bookingToDto(booking);
+            return new ResponseEntity<>(bookingDto, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    @Operation(summary = "Get all bookings")
+    @GetMapping("/all")
+    public ResponseEntity<List<BookingDTO>> getAllBookings() {
+        List<Booking> bookings = bookingService.getAllBookings();
+        List<BookingDTO> bookingDtos = bookingConverter.bookingsToDtoList(bookings);
+        return new ResponseEntity<>(bookingDtos, HttpStatus.OK);
+    }
 
     /**
      * Deletes an existing booking by ID.

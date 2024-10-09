@@ -122,21 +122,7 @@ class BookingControllerTest {
     }
 
 
-    @Test
-    void updateBooking() throws Exception {
-        when(bookingService.updateBooking(any(Booking.class))).thenReturn(booking);
-        when(bookingConverter.bookingToDto(any(Booking.class))).thenReturn(bookingDTO);
 
-        mockMvc.perform(put("/api/v1/bookings/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"seatName\": \"A1\"}"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.bookingId").value(1L))
-                .andExpect(jsonPath("$.flightId").value(100L))
-                .andExpect(jsonPath("$.seatName").value("A1"));
-
-        verify(bookingService, times(1)).updateBooking(any(Booking.class));
-    }
 
     @Test
     void getBookingById() throws Exception {
@@ -154,36 +140,6 @@ class BookingControllerTest {
 
         verify(bookingService, times(1)).getBookingById(anyLong(), any(User.class));
     }
-
-    @Test
-    void getAllBookings() throws Exception {
-        List<Booking> bookings = List.of(booking);
-        List<BookingDTO> bookingDTOs = List.of(bookingDTO);
-
-        when(bookingService.getAllBookings()).thenReturn(bookings);
-        when(bookingConverter.bookingsToDtoList(bookings)).thenReturn(bookingDTOs);
-
-        mockMvc.perform(get("/api/v1/bookings/all")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].bookingId").value(1L))
-                .andExpect(jsonPath("$[0].flightId").value(100L))
-                .andExpect(jsonPath("$[0].seatName").value("A1"));
-
-        verify(bookingService, times(1)).getAllBookings();
-    }
-
-    @Test
-    void deleteBooking() throws Exception {
-        when(bookingService.deleteBooking(anyLong())).thenReturn(true);
-
-        mockMvc.perform(delete("/api/v1/bookings/delete/1")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent());
-
-        verify(bookingService, times(1)).deleteBooking(1L);
-    }
-
     @Test
     void getAllBookingsByUser() throws Exception {
         when(userService.findByUsername(anyString())).thenReturn(new User());
@@ -202,5 +158,48 @@ class BookingControllerTest {
                 .andExpect(jsonPath("$[0].seatName").value("A1"));
 
         verify(bookingService, times(1)).getAllBookingsByUser(any(User.class));
+    }
+    @Test
+    void getAllBookings() throws Exception {
+        List<Booking> bookings = List.of(booking);
+        List<BookingDTO> bookingDTOs = List.of(bookingDTO);
+
+        when(bookingService.getAllBookings()).thenReturn(bookings);
+        when(bookingConverter.bookingsToDtoList(bookings)).thenReturn(bookingDTOs);
+
+        mockMvc.perform(get("/api/v1/bookings/all")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].bookingId").value(1L))
+                .andExpect(jsonPath("$[0].flightId").value(100L))
+                .andExpect(jsonPath("$[0].seatName").value("A1"));
+
+        verify(bookingService, times(1)).getAllBookings();
+    }
+    @Test
+    void updateBooking() throws Exception {
+        when(bookingService.updateBooking(any(Booking.class))).thenReturn(booking);
+        when(bookingConverter.bookingToDto(any(Booking.class))).thenReturn(bookingDTO);
+
+        mockMvc.perform(put("/api/v1/bookings/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"seatName\": \"A1\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.bookingId").value(1L))
+                .andExpect(jsonPath("$.flightId").value(100L))
+                .andExpect(jsonPath("$.seatName").value("A1"));
+
+        verify(bookingService, times(1)).updateBooking(any(Booking.class));
+    }
+
+    @Test
+    void deleteBooking() throws Exception {
+        when(bookingService.deleteBooking(anyLong())).thenReturn(true);
+
+        mockMvc.perform(delete("/api/v1/bookings/delete/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+        verify(bookingService, times(1)).deleteBooking(1L);
     }
 }
