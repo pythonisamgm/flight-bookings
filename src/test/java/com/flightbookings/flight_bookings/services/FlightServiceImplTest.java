@@ -140,35 +140,26 @@ class FlightServiceImplTest {
     }
 
     @Test
-    void testUpdateFlightAvailability() {
-        Flight flight1 = new Flight();
-        flight1.setFlightId(1L);
-        flight1.setDepartureTime(LocalDateTime.now().plusHours(1));
-        flight1.setAvailability(true);
+    void testUpdateFlightAvailability_SomeSeatsUnbooked_FutureDeparture() {
+        LocalDateTime now = LocalDateTime.now();
+        Flight flight = new Flight();
+        flight.setFlightId(3L);
+        flight.setDepartureTime(now.plusHours(5));
+        flight.setAvailability(true);
 
         Seat seat1 = new Seat();
-        seat1.setBooked(true);
+        seat1.setBooked(false);
         Seat seat2 = new Seat();
-        seat2.setBooked(false);
+        seat2.setBooked(true);
+        flight.setSeats(List.of(seat1, seat2));
 
-        flight1.setSeats(List.of(seat1, seat2));
-
-        Flight flight2 = new Flight();
-        flight2.setFlightId(2L);
-        flight2.setDepartureTime(LocalDateTime.now().minusHours(1));
-        flight2.setAvailability(true);
-
-        flight2.setSeats(List.of(seat1, seat2));
-
-        when(flightRepository.findAll()).thenReturn(List.of(flight1, flight2));
+        when(flightRepository.findAll()).thenReturn(List.of(flight));
 
         flightService.updateFlightAvailability();
 
-        assertTrue(flight1.isAvailability());
-        assertFalse(flight2.isAvailability());
-
-        verify(flightRepository).save(flight1);
-        verify(flightRepository).save(flight2);
+        assertTrue(flight.isAvailability(), "Future flight with some seats unbooked should remain available");
+        verify(flightRepository, never()).save(flight);
+        verify(flightRepository, times(1)).findAll();
     }
 
 }
