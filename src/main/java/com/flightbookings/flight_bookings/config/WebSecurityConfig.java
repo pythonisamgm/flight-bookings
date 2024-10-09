@@ -50,7 +50,6 @@ public class WebSecurityConfig {
                                 .requestMatchers("/api/v1/auth/**").permitAll()
                                 .requestMatchers("/api/v1/auth/register").permitAll()
                                 .requestMatchers("/api/v1/auth/login").permitAll()
-
                                 .requestMatchers("/api/v1/bookings/create/{flightId}/{passengerId}/{seatName}/{userId}").hasAuthority("USER")
                                 .requestMatchers(HttpMethod.PUT,"/api/v1/bookings/{id}").hasAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.PUT,"/api/v1/bookings/all").hasAuthority("ADMIN")
@@ -59,7 +58,6 @@ public class WebSecurityConfig {
                                 .requestMatchers("/api/v1/bookings/").hasAnyAuthority("ADMIN", "USER")
                                 .requestMatchers("/api/v1/bookings/update/{id}").hasAuthority("ADMIN")
                                 .requestMatchers("/api/v1/bookings/delete/{id}").hasAuthority("ADMIN")
-
                                 .requestMatchers("api/v1/flight/create").hasAuthority("ADMIN")
                                 .requestMatchers("api/v1/flight/{id}").permitAll()
                                 .requestMatchers("api/v1/flight/").permitAll()
@@ -69,21 +67,17 @@ public class WebSecurityConfig {
                                 .requestMatchers("api/v1/flight/{id}/delay").hasAuthority("ADMIN")
                                 .requestMatchers("api/v1/flight/updateAvailability").hasAuthority("ADMIN")
                                 .requestMatchers("api/v1/flight/byAirplaneType").hasAuthority("ADMIN")
-
                                 .requestMatchers("/api/v1/passengers/create").hasAnyAuthority("ADMIN", "USER")
                                 .requestMatchers("/api/v1/passengers/{id}").hasAnyAuthority("ADMIN", "USER")
                                 .requestMatchers("/api/v1/passengers").hasAnyAuthority("ADMIN", "USER")
                                 .requestMatchers("/api/v1/passengers/update/{id}").hasAnyAuthority("ADMIN", "USER")
                                 .requestMatchers("/api/v1/passengers/delete/{id}").hasAnyAuthority("ADMIN", "USER")
-
                                 .requestMatchers("api/v1/user/create").hasAuthority("ADMIN")
                                 .requestMatchers("api/v1/user/{id}").hasAuthority("ADMIN")
                                 .requestMatchers("api/v1/user/").hasAuthority("ADMIN")
                                 .requestMatchers("api/v1/user/update/{id}").hasAuthority("ADMIN")
                                 .requestMatchers("api/v1/user/delete/{id}").hasAuthority("ADMIN")
-
                                 .requestMatchers("api/airports").hasAuthority("ADMIN")
-
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManager ->

@@ -93,7 +93,7 @@ public class Flight {
     /**
      * List of seats associated with this flight.
      */
-    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL)
     @JsonManagedReference(value = "flight-seat")
     @Schema(description = "List of seats associated with this flight.")
     private List<Seat> seats = new ArrayList<>();
@@ -109,16 +109,14 @@ public class Flight {
     /**
      * List of airport origin associated with this flight.
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "origin_airport_id")
-    private Airport originAirport;
+
+    private String originAirport;
 
     /**
      * List of airport destination associated with this flight.
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "destination_airport_id")
-    private Airport destinationAirport;
+
+    private String destinationAirport;
 
     /**
      * Default constructor for Flight.
@@ -128,7 +126,7 @@ public class Flight {
     /**
      * Constructs a new Flight with the specified details.
      *
-     * @param id            The flight ID.
+     * @param flightId            The flight ID.
      * @param flightNumber  The flight number.
      * @param departureTime The departure time.
      * @param arrivalTime   The arrival time.
@@ -137,23 +135,40 @@ public class Flight {
      * @param availability  The availability status.
      * @param numRows       The number of rows.
      * @param flightPrice   The price of the flight.
-     * @param seatList      The list of seats.
+     * @param seats      The list of seats.
      * @param bookingList   The list of bookings.
      */
-    public Flight(Long id, int flightNumber, LocalDateTime departureTime, LocalDateTime arrivalTime,
-                  EFlightAirplane flightAirplane, int capacityPlane, boolean availability, int numRows,
-                  BigDecimal flightPrice, List<Seat> seatList, List<Booking> bookingList) {
+
+    public Flight(Long flightId, int flightNumber, int numRows, LocalDateTime departureTime, LocalDateTime arrivalTime, Duration flightDuration, EFlightAirplane flightAirplane, int capacityPlane, boolean availability, BigDecimal flightPrice, List<Seat> seats, List<Booking> bookingList, String originAirport, String destinationAirport) {
         this.flightId = flightId;
         this.flightNumber = flightNumber;
+        this.numRows = numRows;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
+        this.flightDuration = flightDuration;
         this.flightAirplane = flightAirplane;
         this.capacityPlane = capacityPlane;
-        this.availability = availability;
-        this.numRows = numRows;
+        this.availability = true;
         this.flightPrice = flightPrice;
-        this.flightDuration = flightDuration; // Inicialización de la duración
+        this.seats = seats;
+        this.bookingList = bookingList;
         this.originAirport = originAirport;
+        this.destinationAirport = destinationAirport;
+    }
+
+    public String getOriginAirport() {
+        return originAirport;
+    }
+
+    public void setOriginAirport(String originAirport) {
+        this.originAirport = originAirport;
+    }
+
+    public String getDestinationAirport() {
+        return destinationAirport;
+    }
+
+    public void setDestinationAirport(String destinationAirport) {
         this.destinationAirport = destinationAirport;
     }
 
@@ -344,21 +359,11 @@ public class Flight {
     }
 
 
-    public Airport getOriginAirport() {
-        return originAirport;
-    }
 
-    public void setOriginAirport(Airport originAirport) {
-        this.originAirport = originAirport;
-    }
 
-    public Airport getDestinationAirport() {
-        return destinationAirport;
-    }
 
-    public void setDestinationAirport(Airport destinationAirport) {
-        this.destinationAirport = destinationAirport;
-    }
+
+
 
     public Duration getFlightDuration() { // Método getter para flightDuration
         return flightDuration;
