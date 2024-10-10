@@ -120,7 +120,7 @@ class FlightControllerTest {
                 .andExpect(jsonPath("$[0].availability").value(flight1.isAvailability()))
                 .andExpect(jsonPath("$[0].flightPrice").value(flight1.getFlightPrice().doubleValue()));
     }
-
+    @Test
     void test_Update_Flight() throws Exception {
         flight1.setFlightId(1L);
         when(flightService.updateFlight(any(Flight.class))).thenReturn(flight2);
@@ -151,7 +151,7 @@ class FlightControllerTest {
     void test_Update_Availability() throws Exception {
         doNothing().when(flightService).updateFlightAvailability();
 
-        mockMvc.perform(post("/api/v1/flight/updateAvailability")
+        mockMvc.perform(put("/api/v1/flight/updateAvailability")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Flight availability updated successfully."));
