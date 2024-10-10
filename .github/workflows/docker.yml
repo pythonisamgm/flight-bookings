@@ -21,23 +21,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Detener MySQL por defecto (si está corriendo)
+      # 2. Stop default MySQL service if running
       - name: Shutdown Ubuntu MySQL (SUDO)
         run: sudo service mysql stop
 
-      # 3. Configurar MySQL usando mirromutth/mysql-action
+      # 3. Set up MySQL using mirromutth/mysql-action
       - name: Set up MySQL
         uses: mirromutth/mysql-action@v1.1
         with:
-          host port: 3306              # Puerto del host
-          container port: 3306          # Puerto del contenedor
-          mysql version: '8.0'          # Versión de MySQL
-          mysql database: 'db_flight_bookings'  # Base de datos que se creará
-          mysql root password: '123456'  # Contraseña del root
-          mysql user: 'root'             # Usuario root
-          mysql password: '123456'       # Contraseña del usuario root
+            host port: 3306              # Host port
+            container port: 3306         # Container port
+            mysql version: '8.0'         # MySQL version
+            mysql database: 'db_flight_bookings'  # Database to create
+            mysql root password: '123456'  # Root password
+            mysql user: 'root'           # Root user
+            mysql password: '123456'     # Root user password
 
-      # 4. Esperar que MySQL esté listo
+      # 4. Wait for MySQL to be ready
       - name: Wait for MySQL to be ready
         run: |
           max_attempts=5
