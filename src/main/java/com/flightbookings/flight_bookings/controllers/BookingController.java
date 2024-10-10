@@ -56,7 +56,8 @@ public class BookingController {
         }
 
         User user = userService.findByUsername(principal.getName());
-        Booking booking = bookingService.createBooking(flightId, passengerId, seatName, user.getUserId());
+        Booking booking = bookingService.createBooking(flightId, passengerId,
+                seatName, user.getUserId());
         return new ResponseEntity<>(booking, HttpStatus.CREATED);
     }
     /**
@@ -110,7 +111,7 @@ public class BookingController {
      * @return the updated booking.
      */
     @Operation(summary =  "Update existing booking")
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<Booking> updateBooking(@Parameter(description = "ID of the booking  to be retrieved") @PathVariable Long id, @RequestBody Booking updatedBooking) {
         updatedBooking.setBookingId(id);
         Booking booking = bookingService.updateBooking(updatedBooking);

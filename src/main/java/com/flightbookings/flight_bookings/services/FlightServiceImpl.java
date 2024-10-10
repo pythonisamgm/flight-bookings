@@ -1,5 +1,6 @@
 package com.flightbookings.flight_bookings.services;
 
+import com.flightbookings.flight_bookings.exceptions.FlightNotFoundException;
 import com.flightbookings.flight_bookings.models.Flight;
 import com.flightbookings.flight_bookings.models.EFlightAirplane;
 import com.flightbookings.flight_bookings.models.Seat;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 /**
  * Service implementation for managing flight-related operations.
@@ -84,6 +86,8 @@ public class FlightServiceImpl implements FlightService {
                 .filter(flight -> flight.getFlightAirplane() == airplaneType)
                 .collect(Collectors.toList());
     }
+
+
     /**
      * Updates the availability of all flights based on their arrival time and seat availability.
      * If a flight's arrival time has passed or there are no seats available, its availability is set to false.
@@ -106,17 +110,28 @@ public class FlightServiceImpl implements FlightService {
     /**
      * Updates the details of an existing flight.
      *
-     * @param id the ID of the flight to update
-     * @param flightDetails the Flight object with updated details
+     * @param updatedFlight the Flight object with updated details
      * @return the updated Flight object, or null if the flight does not exist
      */
     @Override
-    public Flight updateFlight(Long id, Flight flightDetails) {
-        if (flightRepository.existsById(id)) {
-            flightDetails.setFlightId(id);
-            return flightRepository.save(flightDetails);
+    public Flight updateFlight(Flight updatedFlight) {
+        Optional<Flight> existingFlight = flightRepository.findById(updatedFlight.getFlightId());
+        if (existingFlight.isPresent()) {
+            Flight flight = existingFlight.get();
+            flight.setFlightNumber(updatedFlight.getFlightNumber());
+            flight.setDepartureTime(updatedFlight.getDepartureTime());
+            flight.setArrivalTime(updatedFlight.getArrivalTime());
+            flight.setFlightDuration(updatedFlight.getFlightDuration());
+            flight.setFlightAirplane(updatedFlight.getFlightAirplane());
+            flight.setCapacityPlane(updatedFlight.getCapacityPlane());
+            flight.setAvailability(updatedFlight.isAvailability());
+            flight.setFlightPrice(updatedFlight.getFlightPrice());
+            flight.setOriginAirport(updatedFlight.getOriginAirport());
+            flight.setDestinationAirport(updatedFlight.getDestinationAirport());
+            return flightRepository.save(flight);
+        } else {
+            throw new FlightNotFoundException("Flight with ID " + updatedFlight.getFlightId() + " not found");
         }
-        return null;
     }
     /**
      * Deletes a flight by its ID.

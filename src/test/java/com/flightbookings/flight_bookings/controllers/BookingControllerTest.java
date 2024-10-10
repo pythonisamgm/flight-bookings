@@ -185,7 +185,7 @@ public class BookingControllerTest {
 
         when(bookingService.createBooking(anyLong(), anyLong(), anyString(), eq(1L))).thenReturn(booking1);
 
-        mockMvc.perform(post("/api/v1/bookings/create/1/1/1A/1")
+        mockMvc.perform(post("/api/v1/bookings/create/1/1/1A")
                         .principal(authentication)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())

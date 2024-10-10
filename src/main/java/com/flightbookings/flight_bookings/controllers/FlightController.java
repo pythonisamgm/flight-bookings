@@ -1,5 +1,6 @@
 package com.flightbookings.flight_bookings.controllers;
 
+import com.flightbookings.flight_bookings.exceptions.FlightNotFoundException;
 import com.flightbookings.flight_bookings.models.Flight;
 import com.flightbookings.flight_bookings.models.EFlightAirplane;
 import com.flightbookings.flight_bookings.services.interfaces.FlightService;
@@ -93,11 +94,16 @@ public class FlightController {
      * @param flightDetails the flight details to update.
      * @return the updated flight.
      */
-    @Operation(summary =  "Update an existing flight")
+    @Operation(summary = "Update an existing flight")
     @PutMapping("/update/{id}")
-    public ResponseEntity<Flight> updateFlight(@Parameter(description = "ID of the flight to be retrieved") @PathVariable Long id, @RequestBody Flight flightDetails) {
-        Flight updatedFlight = flightService.updateFlight(id, flightDetails);
-        return updatedFlight != null ? new ResponseEntity<>(updatedFlight, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<Flight> updateFlight(@Parameter(description = "ID of the flight to be updated") @PathVariable Long id, @RequestBody Flight flightDetails) {
+        flightDetails.setFlightId(id);
+        try {
+            Flight updatedFlight = flightService.updateFlight(flightDetails);
+            return new ResponseEntity<>(updatedFlight, HttpStatus.OK);
+        } catch (FlightNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
     /**
      * Deletes a flight by its ID.
