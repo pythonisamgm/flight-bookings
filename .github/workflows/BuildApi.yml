@@ -3,12 +3,10 @@ name: Build and Automated Testing
 on:
   push:
     branches:
-      - testingDev
       - dev
       - main
   pull_request:
     branches:
-      - testingDev
       - dev
       - main
 
