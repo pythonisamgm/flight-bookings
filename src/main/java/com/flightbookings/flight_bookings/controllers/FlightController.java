@@ -48,7 +48,7 @@ public class FlightController {
      *
      * @return a response indicating whether the availability was successfully updated.
      */
-    @PostMapping("/updateAvailability")
+    @PutMapping("/updateAvailability")
     public ResponseEntity<String> updateAvailability() {
         flightService.updateFlightAvailability();
         return ResponseEntity.ok("Flight availability updated successfully.");
