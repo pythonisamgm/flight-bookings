@@ -110,15 +110,24 @@ class FlightServiceImplTest {
         updatedFlight.setNumRows(25);
         updatedFlight.setFlightPrice(BigDecimal.valueOf(350));
 
-        when(flightRepository.existsById(1L)).thenReturn(true);
+        when(flightRepository.findById(1L)).thenReturn(Optional.of(flight));
         when(flightRepository.save(any(Flight.class))).thenReturn(updatedFlight);
 
-        Flight result = flightService.updateFlight(1L, updatedFlight);
+        Flight result = flightService.updateFlight(updatedFlight);
 
         assertNotNull(result, "The updated flight should not be null");
         assertEquals(124, result.getFlightNumber(), "The flight number does not match");
-        verify(flightRepository, times(1)).existsById(1L);
-        verify(flightRepository, times(1)).save(updatedFlight);
+        assertEquals(LocalDateTime.of(2024, 10, 12, 15, 0), result.getDepartureTime(), "The departure time does not match");
+        assertEquals(LocalDateTime.of(2024, 10, 12, 17, 0), result.getArrivalTime(), "The arrival time does not match");
+        assertEquals(EFlightAirplane.BOEING_777, result.getFlightAirplane(), "The airplane type does not match");
+        assertEquals(250, result.getCapacityPlane(), "The airplane capacity does not match");
+        assertFalse(result.isAvailability(), "The availability does not match");
+        assertEquals(BigDecimal.valueOf(350), result.getFlightPrice(), "The flight price does not match");
+        assertEquals("SFO", result.getOriginAirport(), "The origin airport does not match");
+        assertEquals("ORD", result.getDestinationAirport(), "The destination airport does not match");
+
+        verify(flightRepository, times(1)).findById(1L);
+        verify(flightRepository, times(1)).save(flight);
     }
 
     @Test
