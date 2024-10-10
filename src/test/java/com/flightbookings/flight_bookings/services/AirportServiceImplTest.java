@@ -5,9 +5,6 @@ import com.flightbookings.flight_bookings.models.ECountry;
 import com.flightbookings.flight_bookings.repositories.IAirportRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import java.util.*;
 

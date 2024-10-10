@@ -131,7 +131,6 @@ class FlightServiceImplTest {
         assertEquals("SFO", result.getOriginAirport(), "The origin airport does not match");
         assertEquals("ORD", result.getDestinationAirport(), "The destination airport does not match");
 
-        // Verifica que se hayan llamado los métodos en el repositorio
         verify(flightRepository, times(1)).findById(1L);
         verify(flightRepository, times(1)).save(existingFlight);
     }
