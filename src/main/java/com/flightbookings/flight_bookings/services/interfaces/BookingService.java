@@ -4,6 +4,7 @@ import com.flightbookings.flight_bookings.models.Booking;
 import com.flightbookings.flight_bookings.models.User;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Interface for managing booking operations in the flight booking system.
@@ -71,4 +72,6 @@ public interface BookingService {
      * @return true if the booking was successfully deleted, false otherwise.
      */
     boolean deleteBooking(Long id);
+
+    Optional<Booking> getGeneralBookingById(Long id);
 }

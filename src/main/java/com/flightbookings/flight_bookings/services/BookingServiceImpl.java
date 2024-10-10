@@ -179,4 +179,8 @@ public class BookingServiceImpl implements BookingService {
         }
         return false;
     }
+    @Override
+    public Optional<Booking> getGeneralBookingById(Long id) {
+        return bookingRepository.findById(id);
+    }
 }
