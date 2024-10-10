@@ -11,7 +11,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-
+/**
+ * Service for handling authentication operations such as login and registration.
+ */
 @Service
 public class AuthService {
 
@@ -20,25 +22,47 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
+    /**
+     * Constructs an AuthService with the required dependencies.
+     *
+     * @param jwtService           the service for generating JWT tokens.
+     * @param iUserRepository      the repository for managing users.
+     * @param passwordEncoder      the encoder for user passwords.
+     * @param authenticationManager the manager for handling authentication.
+     */
     public AuthService(JwtService jwtService, IUserRepository iUserRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
         this.jwtService = jwtService;
         this.iUserRepository = iUserRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
     }
+
+    /**
+     * Authenticates the user and returns an authentication response.
+     *
+     * @param login the login request containing username and password.
+     * @return an AuthResponse containing the JWT token and user role.
+     */
     public AuthResponse login(LoginRequest login) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword()));
 
-        UserDetails user = iUserRepository.findByUsername(login.getUsername()).orElseThrow();
+        User user = iUserRepository.findByUsername(login.getUsername()).orElseThrow();
 
         String token = jwtService.getTokenService(user);
 
         return AuthResponse
                 .builder()
                 .token(token)
+                .role(user.getRole())
                 .build();
     }
 
+    /**
+     * Registers a new user and returns an authentication response.
+     *
+     * @param register the registration request containing user details.
+     * @return an AuthResponse containing the JWT token and user role.
+     */
     public AuthResponse register(RegisterRequest register) {
         User user = User.builder()
                 .username(register.getUsername())
@@ -46,7 +70,6 @@ public class AuthService {
                 .password(passwordEncoder.encode(register.getPassword()))
                 .role(register.getRole())
                 .build();
-
 
         iUserRepository.save(user);
 
@@ -56,5 +79,4 @@ public class AuthService {
                 .role(register.getRole())
                 .build();
     }
-
 }
