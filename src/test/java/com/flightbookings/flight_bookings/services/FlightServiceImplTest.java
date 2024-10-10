@@ -101,16 +101,21 @@ class FlightServiceImplTest {
     @Test
     void testUpdateFlight() {
         Flight updatedFlight = new Flight();
+        updatedFlight.setFlightId(1L);
         updatedFlight.setFlightNumber(124);
         updatedFlight.setDepartureTime(LocalDateTime.of(2024, 10, 12, 15, 0));
         updatedFlight.setArrivalTime(LocalDateTime.of(2024, 10, 12, 17, 0));
         updatedFlight.setFlightAirplane(EFlightAirplane.BOEING_777);
         updatedFlight.setCapacityPlane(250);
         updatedFlight.setAvailability(false);
-        updatedFlight.setNumRows(25);
         updatedFlight.setFlightPrice(BigDecimal.valueOf(350));
+        updatedFlight.setOriginAirport("SFO");
+        updatedFlight.setDestinationAirport("ORD");
 
-        when(flightRepository.findById(1L)).thenReturn(Optional.of(flight));
+        Flight existingFlight = new Flight();
+        existingFlight.setFlightId(1L);
+        when(flightRepository.findById(1L)).thenReturn(Optional.of(existingFlight));
+
         when(flightRepository.save(any(Flight.class))).thenReturn(updatedFlight);
 
         Flight result = flightService.updateFlight(updatedFlight);
@@ -127,8 +132,9 @@ class FlightServiceImplTest {
         assertEquals("ORD", result.getDestinationAirport(), "The destination airport does not match");
 
         verify(flightRepository, times(1)).findById(1L);
-        verify(flightRepository, times(1)).save(flight);
+        verify(flightRepository, times(1)).save(existingFlight);
     }
+
 
     @Test
     void testUpdateFlightAvailability_AllSeatsBooked_FutureDeparture() {

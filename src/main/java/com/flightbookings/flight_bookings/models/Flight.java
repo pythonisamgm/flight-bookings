@@ -357,11 +357,11 @@ public class Flight {
         this.bookingList = bookingList;
     }
 
-    public Duration getFlightDuration() { // Método getter para flightDuration
+    public Duration getFlightDuration() {
         return flightDuration;
     }
 
-    public void setFlightDuration(Duration flightDuration) { // Método setter para flightDuration
+    public void setFlightDuration(Duration flightDuration) {
         this.flightDuration = flightDuration;
     }
 }
