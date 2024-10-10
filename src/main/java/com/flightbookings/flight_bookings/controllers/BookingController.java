@@ -110,7 +110,7 @@ public class BookingController {
      * @return the updated booking.
      */
     @Operation(summary =  "Update existing booking")
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<Booking> updateBooking(@Parameter(description = "ID of the booking  to be retrieved") @PathVariable Long id, @RequestBody Booking updatedBooking) {
         updatedBooking.setBookingId(id);
         Booking booking = bookingService.updateBooking(updatedBooking);
