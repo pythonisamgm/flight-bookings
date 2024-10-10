@@ -19,9 +19,13 @@ public class FlightDurationServiceImpl implements FlightDurationService {
      *         or null if either the departure or arrival time is not set.
      */
     @Override
-    public Duration calculateFlightDuration(Flight flight) {
+    public Long calculateFlightDuration(Flight flight) {
         if (flight.getDepartureTime() != null && flight.getArrivalTime() != null) {
-            return Duration.between(flight.getDepartureTime(), flight.getArrivalTime());
+            Duration duration = Duration.between(flight.getDepartureTime(), flight.getArrivalTime());
+            long minutes = duration.toMinutes(); // Convertimos la duración a minutos.
+
+            flight.setFlightDuration(minutes); // Guardamos la duración en minutos.
+            return minutes;
         }
         return null;
     }

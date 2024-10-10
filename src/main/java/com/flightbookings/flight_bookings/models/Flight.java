@@ -36,13 +36,20 @@ public class Flight {
     private int flightNumber;
 
     /**
-     * The number of rows in the airplane for this flight.
+     * List of airport origin associated with this flight.
      */
-    @Schema(description = "Number of rows in the airplane")
-    @Column
-    private int numRows;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "origin_airport_code", referencedColumnName = "airport_code", nullable = false)
+    private Airport originAirport;
 
-     /**
+    /**
+     * List of airport destination associated with this flight.
+     */
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "destination_airport_code", referencedColumnName = "airport_code", nullable = false)
+    private Airport destinationAirport;
+
+    /**
      * The time when the flight departs.
      */
     @Schema(description = "Time of departure")
@@ -60,7 +67,7 @@ public class Flight {
 
     @Schema(description = "Duration of the flight")
     @Column
-    private Duration flightDuration;
+    private long flightDuration;
 
     /**
      * The type of airplane used for this flight.
@@ -75,6 +82,14 @@ public class Flight {
     @Schema(description = "Capacity of the airplane")
     @Column
     private int capacityPlane;
+
+    /**
+     * The number of rows in the airplane for this flight.
+     */
+
+    @Schema(description = "Number of rows in the airplane")
+    @Column
+    private int numRows;
 
     /**
      * The availability status of the flight.
@@ -107,18 +122,6 @@ public class Flight {
     private List<Booking> bookingList;
 
     /**
-     * List of airport origin associated with this flight.
-     */
-
-    private String originAirport;
-
-    /**
-     * List of airport destination associated with this flight.
-     */
-
-    private String destinationAirport;
-
-    /**
      * Default constructor for Flight.
      */
     public Flight() {
@@ -135,41 +138,30 @@ public class Flight {
      * @param availability  The availability status.
      * @param numRows       The number of rows.
      * @param flightPrice   The price of the flight.
-     * @param seats      The list of seats.
+     * @param seatList      The list of seats.
      * @param bookingList   The list of bookings.
      */
-
-    public Flight(Long flightId, int flightNumber, int numRows, LocalDateTime departureTime, LocalDateTime arrivalTime, Duration flightDuration, EFlightAirplane flightAirplane, int capacityPlane, boolean availability, BigDecimal flightPrice, List<Seat> seats, List<Booking> bookingList, String originAirport, String destinationAirport) {
+    public Flight(Long id, int flightNumber, LocalDateTime departureTime, LocalDateTime arrivalTime,
+                  EFlightAirplane flightAirplane, int capacityPlane, boolean availability, int numRows,
+                  BigDecimal flightPrice, List<Seat> seats, List<Booking> bookingList,
+                  Airport originAirport, Airport destinationAirport) {
         this.flightId = flightId;
         this.flightNumber = flightNumber;
-        this.numRows = numRows;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
-        this.flightDuration = flightDuration;
         this.flightAirplane = flightAirplane;
         this.capacityPlane = capacityPlane;
-        this.availability = true;
+        this.availability = availability;
+        this.numRows = numRows;
         this.flightPrice = flightPrice;
         this.seats = seats;
         this.bookingList = bookingList;
         this.originAirport = originAirport;
         this.destinationAirport = destinationAirport;
-    }
-
-    public String getOriginAirport() {
-        return originAirport;
-    }
-
-    public void setOriginAirport(String originAirport) {
-        this.originAirport = originAirport;
-    }
-
-    public String getDestinationAirport() {
-        return destinationAirport;
-    }
-
-    public void setDestinationAirport(String destinationAirport) {
-        this.destinationAirport = destinationAirport;
+        if (departureTime != null && arrivalTime != null) {
+            Duration duration = Duration.between(departureTime, arrivalTime);
+            this.flightDuration = duration.toMinutes(); // Calcula la duración en minutos
+        }
     }
 
     /**
@@ -358,11 +350,28 @@ public class Flight {
         this.bookingList = bookingList;
     }
 
-    public Duration getFlightDuration() { // Método getter para flightDuration
+
+    public Airport getOriginAirport() {
+        return originAirport;
+    }
+
+    public void setOriginAirport(Airport originAirport) {
+        this.originAirport = originAirport;
+    }
+
+    public Airport getDestinationAirport() {
+        return destinationAirport;
+    }
+
+    public void setDestinationAirport(Airport destinationAirport) {
+        this.destinationAirport = destinationAirport;
+    }
+
+    public Long getFlightDuration() {
         return flightDuration;
     }
 
-    public void setFlightDuration(Duration flightDuration) { // Método setter para flightDuration
+    public void setFlightDuration(long flightDuration) { // Método setter para flightDuration
         this.flightDuration = flightDuration;
     }
 }

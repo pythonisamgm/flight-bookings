@@ -33,13 +33,13 @@ class FlightServiceImplTest {
     private IFlightRepository flightRepository;
 
     @Mock
+    private FlightDurationService flightDurationService;
+
+    @Mock
     private SeatService seatService;
 
     @Mock
     private ISeatRepository seatRepository;
-
-    @Mock
-    private FlightDurationService flightDurationService;
 
     private Flight flight;
 
@@ -56,14 +56,15 @@ class FlightServiceImplTest {
         flight.setAvailability(true);
         flight.setNumRows(20);
         flight.setFlightPrice(BigDecimal.valueOf(300));
-        flight.setFlightDuration(Duration.ofHours(2));
+        flight.setFlightDuration(120L);
     }
 
     @Test
     void testCreateFlight() {
-        when(flightRepository.save(any(Flight.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        when(seatService.initializeSeats(any(Flight.class), anyInt())).thenReturn(List.of("1A", "1B", "1C"));
-        when(seatRepository.findByFlight(any(Flight.class))).thenReturn(new ArrayList<>());
+        when(flightDurationService.calculateFlightDuration(any(Flight.class))).thenReturn(120L); // Simula la duración del vuelo
+        when(flightRepository.save(any(Flight.class))).thenAnswer(invocation -> invocation.getArgument(0)); // Simula la guardia
+        when(seatService.initializeSeats(any(Flight.class), anyInt())).thenReturn(List.of("1A", "1B", "1C")); // Simula la inicialización de asientos
+        when(seatRepository.findByFlight(any(Flight.class))).thenReturn(new ArrayList<>()); // Simula la búsqueda de asientos por vuelo
 
         Flight createdFlight = flightService.createFlight(flight);
 
@@ -110,15 +111,16 @@ class FlightServiceImplTest {
         updatedFlight.setNumRows(25);
         updatedFlight.setFlightPrice(BigDecimal.valueOf(350));
 
-        when(flightRepository.existsById(1L)).thenReturn(true);
-        when(flightRepository.save(any(Flight.class))).thenReturn(updatedFlight);
+        when(flightRepository.findById(1L)).thenReturn(Optional.of(flight));
+        when(flightRepository.save(any(Flight.class))).thenReturn(flight);
+        when(flightDurationService.calculateFlightDuration(any(Flight.class))).thenReturn(120L);
 
         Flight result = flightService.updateFlight(1L, updatedFlight);
 
-        assertNotNull(result, "The updated flight should not be null");
-        assertEquals(124, result.getFlightNumber(), "The flight number does not match");
-        verify(flightRepository, times(1)).existsById(1L);
-        verify(flightRepository, times(1)).save(updatedFlight);
+        assertNotNull(result);
+        assertEquals(124, result.getFlightNumber());
+        verify(flightRepository).findById(1L);
+        verify(flightRepository).save(flight);
     }
 
     @Test
@@ -143,6 +145,7 @@ class FlightServiceImplTest {
         verify(flightRepository, times(1)).save(flight);
         verify(flightRepository, times(1)).findAll();
     }
+
     @Test
     void testUpdateFlightAvailability_AllSeatsBooked_PastDeparture() {
         LocalDateTime now = LocalDateTime.now();
@@ -165,6 +168,7 @@ class FlightServiceImplTest {
         verify(flightRepository, times(1)).save(flight);
         verify(flightRepository, times(1)).findAll();
     }
+
     @Test
     void testUpdateFlightAvailability_SomeSeatsUnbooked_FutureDeparture() {
         LocalDateTime now = LocalDateTime.now();
@@ -197,4 +201,17 @@ class FlightServiceImplTest {
         assertTrue(result, "The flight deletion should return true");
         verify(flightRepository, times(1)).deleteById(1L);
     }
+
+    @Test
+    void testDelayFlight() {
+        LocalDateTime newDepartureTime = LocalDateTime.of(2024, 10, 12, 15, 30);
+        when(flightRepository.findById(1L)).thenReturn(Optional.of(flight));
+        when(flightDurationService.calculateFlightDuration(any(Flight.class))).thenReturn(120L);
+
+        flightService.delayFlight(1L, newDepartureTime);
+
+        assertEquals(newDepartureTime, flight.getDepartureTime());
+        verify(flightRepository).save(flight);
+    }
+
 }

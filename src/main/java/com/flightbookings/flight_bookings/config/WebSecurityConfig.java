@@ -75,6 +75,7 @@ public class WebSecurityConfig {
                                 .requestMatchers("api/v1/user/update/{id}").hasAuthority("ADMIN")
                                 .requestMatchers("api/v1/user/delete/{id}").hasAuthority("ADMIN")
                                 .requestMatchers("api/v1/airports/").hasAuthority("ADMIN")
+                                .requestMatchers("api/v1/airports/create").hasAuthority("ADMIN")
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManager ->
@@ -84,4 +85,5 @@ public class WebSecurityConfig {
                 .addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
 }

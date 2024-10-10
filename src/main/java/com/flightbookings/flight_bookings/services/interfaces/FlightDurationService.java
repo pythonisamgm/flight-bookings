@@ -13,5 +13,5 @@ public interface FlightDurationService {
      * @param flight the Flight object for which the duration is to be calculated.
      * @return the duration of the flight as a Duration object.
      */
-    Duration calculateFlightDuration(Flight flight);
+    Long calculateFlightDuration(Flight flight);
 }

@@ -65,4 +65,8 @@ public interface FlightService {
      * @return true if the flight was successfully deleted, false otherwise.
      */
     boolean deleteFlight(Long id);
+
+    void cancelFlight(Long id);
+
+    void delayFlight(Long id, LocalDateTime departureTime);
 }

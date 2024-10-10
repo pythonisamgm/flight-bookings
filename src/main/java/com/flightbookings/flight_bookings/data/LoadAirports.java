@@ -21,6 +21,9 @@ public class LoadAirports implements CommandLineRunner {
      *
      * @param airportService the service for airport management.
      */
+
+    private static final boolean ENABLE_DATA_LOADING = false;
+
     public LoadAirports(AirportService airportService) {
         this.airportService = airportService;
     }
@@ -42,15 +45,15 @@ public class LoadAirports implements CommandLineRunner {
     private void loadAirports() {
         Set<Airport> airports = new HashSet<>();
 
+        // Carga de aeropuertos usando el enum
         for (EAirport airportEnum : EAirport.values()) {
-            airports.add(new Airport(
-                    airportEnum.getAirportCode(),
+            airports.add(new Airport(airportEnum.getAirportCode(),
                     airportEnum.getAirportName(),
                     airportEnum.getAirportCity(),
                     airportEnum.getAirportCountry()
             ));
         }
 
-        airportService.createAirports(airports);
+       airportService.createAirports(airports);
     }
 }
