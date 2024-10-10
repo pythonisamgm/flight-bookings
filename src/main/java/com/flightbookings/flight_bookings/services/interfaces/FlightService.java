@@ -47,16 +47,17 @@ public interface FlightService {
     /**
      * Updates the details of an existing flight.
      *
-     * @param id            the ID of the flight to update.
-     * @param flightDetails the updated Flight object.
+     * @param updatedFlight the updated Flight object.
      * @return the updated Flight object.
      */
-    Flight updateFlight(Long id, Flight flightDetails);
 
+    Flight updateFlight(Flight updatedFlight);
     /**
      * Updates the availability status of all flights.
      */
     void updateFlightAvailability();
+
+
 
     /**
      * Deletes a flight by its ID.

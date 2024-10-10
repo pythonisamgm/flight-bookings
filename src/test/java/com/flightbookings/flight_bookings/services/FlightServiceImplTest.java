@@ -33,13 +33,13 @@ class FlightServiceImplTest {
     private IFlightRepository flightRepository;
 
     @Mock
-    private FlightDurationService flightDurationService;
-
-    @Mock
     private SeatService seatService;
 
     @Mock
     private ISeatRepository seatRepository;
+
+    @Mock
+    private FlightDurationService flightDurationService;
 
     private Flight flight;
 
@@ -112,15 +112,23 @@ class FlightServiceImplTest {
         updatedFlight.setFlightPrice(BigDecimal.valueOf(350));
 
         when(flightRepository.findById(1L)).thenReturn(Optional.of(flight));
-        when(flightRepository.save(any(Flight.class))).thenReturn(flight);
-        when(flightDurationService.calculateFlightDuration(any(Flight.class))).thenReturn(120L);
+        when(flightRepository.save(any(Flight.class))).thenReturn(updatedFlight);
 
-        Flight result = flightService.updateFlight(1L, updatedFlight);
+        Flight result = flightService.updateFlight(updatedFlight);
 
-        assertNotNull(result);
-        assertEquals(124, result.getFlightNumber());
-        verify(flightRepository).findById(1L);
-        verify(flightRepository).save(flight);
+        assertNotNull(result, "The updated flight should not be null");
+        assertEquals(124, result.getFlightNumber(), "The flight number does not match");
+        assertEquals(LocalDateTime.of(2024, 10, 12, 15, 0), result.getDepartureTime(), "The departure time does not match");
+        assertEquals(LocalDateTime.of(2024, 10, 12, 17, 0), result.getArrivalTime(), "The arrival time does not match");
+        assertEquals(EFlightAirplane.BOEING_777, result.getFlightAirplane(), "The airplane type does not match");
+        assertEquals(250, result.getCapacityPlane(), "The airplane capacity does not match");
+        assertFalse(result.isAvailability(), "The availability does not match");
+        assertEquals(BigDecimal.valueOf(350), result.getFlightPrice(), "The flight price does not match");
+        assertEquals("SFO", result.getOriginAirport(), "The origin airport does not match");
+        assertEquals("ORD", result.getDestinationAirport(), "The destination airport does not match");
+
+        verify(flightRepository, times(1)).findById(1L);
+        verify(flightRepository, times(1)).save(flight);
     }
 
     @Test
@@ -145,7 +153,6 @@ class FlightServiceImplTest {
         verify(flightRepository, times(1)).save(flight);
         verify(flightRepository, times(1)).findAll();
     }
-
     @Test
     void testUpdateFlightAvailability_AllSeatsBooked_PastDeparture() {
         LocalDateTime now = LocalDateTime.now();
@@ -168,7 +175,6 @@ class FlightServiceImplTest {
         verify(flightRepository, times(1)).save(flight);
         verify(flightRepository, times(1)).findAll();
     }
-
     @Test
     void testUpdateFlightAvailability_SomeSeatsUnbooked_FutureDeparture() {
         LocalDateTime now = LocalDateTime.now();

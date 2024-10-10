@@ -56,7 +56,8 @@ public class BookingController {
         }
 
         User user = userService.findByUsername(principal.getName());
-        Booking booking = bookingService.createBooking(flightId, passengerId, seatName, user.getUserId());
+        Booking booking = bookingService.createBooking(flightId, passengerId,
+                seatName, user.getUserId());
         return new ResponseEntity<>(booking, HttpStatus.CREATED);
     }
     /**
