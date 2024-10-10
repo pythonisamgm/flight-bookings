@@ -48,4 +48,5 @@ public interface PassengerService {
      * @return true if the passenger was successfully deleted, false otherwise.
      */
     boolean deletePassenger(Long id);
+
 }
