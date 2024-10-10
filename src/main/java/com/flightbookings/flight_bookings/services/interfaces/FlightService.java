@@ -12,14 +12,14 @@ import java.util.List;
  */
 public interface FlightService {
 
-   /**
-    * Creates a new flight.
-    *
-    * @param flight the Flight object to be created.
-    * @return the created Flight object.
-    */
-   @Transactional
-   Flight createFlight(Flight flight);
+    /**
+     * Creates a new flight.
+     *
+     * @param flight the Flight object to be created.
+     * @return the created Flight object.
+     */
+    @Transactional
+    Flight createFlight(Flight flight);
 
     /**
      * Retrieves a flight by its ID.
@@ -37,6 +37,14 @@ public interface FlightService {
     List<Flight> getAllFlights();
 
     /**
+     * Retrieves flights by the type of airplane.
+     *
+     * @param airplaneType the type of airplane for the flights to retrieve.
+     * @return a list of Flight objects that match the airplane type.
+     */
+    List<Flight> getFlightsByAirplaneType(EFlightAirplane airplaneType);
+
+    /**
      * Updates the details of an existing flight.
      *
      * @param id            the ID of the flight to update.
@@ -46,38 +54,15 @@ public interface FlightService {
     Flight updateFlight(Long id, Flight flightDetails);
 
     /**
+     * Updates the availability status of all flights.
+     */
+    void updateFlightAvailability();
+
+    /**
      * Deletes a flight by its ID.
      *
      * @param id the ID of the flight to delete.
      * @return true if the flight was successfully deleted, false otherwise.
      */
     boolean deleteFlight(Long id);
-
-    /**
-     * Cancels a flight.
-     *
-     * @param id the ID of the flight to cancel.
-     */
-    void cancelFlight(Long id);
-
-    /**
-     * Delays a flight by updating its departure time.
-     *
-     * @param id              the ID of the flight to delay.
-     * @param newDepartureTime the new departure time for the flight.
-     */
-    void delayFlight(Long id, LocalDateTime newDepartureTime);
-
-    /**
-     * Retrieves flights by the type of airplane.
-     *
-     * @param airplaneType the type of airplane for the flights to retrieve.
-     * @return a list of Flight objects that match the airplane type.
-     */
-    List<Flight> getFlightsByAirplaneType(EFlightAirplane airplaneType);
-
-    /**
-     * Updates the availability status of all flights.
-     */
-    void updateFlightAvailability();
 }

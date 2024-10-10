@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 /**
- * Implementation of the {@link UserService} interface for managing user operations.
+ * Implementation of the UserService interface for managing user operations.
  */
 @Service
 public class UserServiceImpl implements UserService {

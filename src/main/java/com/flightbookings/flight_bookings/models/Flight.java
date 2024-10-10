@@ -126,7 +126,7 @@ public class Flight {
     /**
      * Constructs a new Flight with the specified details.
      *
-     * @param flightId          The flight ID.
+     * @param flightId            The flight ID.
      * @param flightNumber  The flight number.
      * @param departureTime The departure time.
      * @param arrivalTime   The arrival time.
@@ -358,13 +358,6 @@ public class Flight {
         this.bookingList = bookingList;
     }
 
-
-
-
-
-
-
-
     public Duration getFlightDuration() { // Método getter para flightDuration
         return flightDuration;
     }
@@ -373,11 +366,3 @@ public class Flight {
         this.flightDuration = flightDuration;
     }
 }
-
-//    public Set<Airport> getAirports() {
-//        return airports;
-//    }
-//
-//    public void setAirports(Set<Airport> airports) {
-//        this.airports = airports;
-//    }
