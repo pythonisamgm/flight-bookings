@@ -3,6 +3,7 @@ package com.flightbookings.flight_bookings.repositories;
 import com.flightbookings.flight_bookings.models.FlightEntity;
 import com.flightbookings.flight_bookings.models.SeatEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,6 +11,7 @@ import java.util.Optional;
  * Repository interface for managing {@link SeatEntity} entities.
  * Provides CRUD operations and methods to find seats by flight and seat name.
  */
+@Repository
 public interface ISeatRepository extends JpaRepository<SeatEntity, Long> {
     /**
      * Finds a specific seat by flight and seat name.
