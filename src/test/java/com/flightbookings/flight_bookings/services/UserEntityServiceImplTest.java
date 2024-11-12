@@ -1,7 +1,7 @@
 package com.flightbookings.flight_bookings.services;
 
 import com.flightbookings.flight_bookings.models.ERole;
-import com.flightbookings.flight_bookings.models.User;
+import com.flightbookings.flight_bookings.models.UserEntity;
 import com.flightbookings.flight_bookings.repositories.IUserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class UserServiceImplTest {
+public class UserEntityServiceImplTest {
 
     @Mock
     private IUserRepository userRepository;
@@ -23,13 +23,13 @@ public class UserServiceImplTest {
     @InjectMocks
     private UserServiceImpl userService;
 
-    private User user1;
+    private UserEntity user1;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        user1 = User.builder()
+        user1 = UserEntity.builder()
                 .userId(1L)
                 .username("juanantonio")
                 .password("1234")
@@ -41,20 +41,20 @@ public class UserServiceImplTest {
 
     @Test
     public void testCreateUser() {
-        when(userRepository.save(any(User.class))).thenReturn(user1);
+        when(userRepository.save(any(UserEntity.class))).thenReturn(user1);
 
-        User createdUser = userService.createUser(user1);
+        UserEntity createdUser = userService.createUser(user1);
 
         assertNotNull(createdUser);
         assertEquals("juanantonio", createdUser.getUsername());
-        verify(userRepository, times(1)).save(any(User.class));
+        verify(userRepository, times(1)).save(any(UserEntity.class));
     }
 
     @Test
     public void testGetUserById() {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
 
-        User foundUser = userService.getUserById(1L);
+        UserEntity foundUser = userService.getUserById(1L);
 
         assertNotNull(foundUser);
         assertEquals("juanantonio", foundUser.getUsername());
@@ -64,13 +64,13 @@ public class UserServiceImplTest {
     @Test
     public void testUpdateUser() {
         when(userRepository.existsById(1L)).thenReturn(true);
-        when(userRepository.save(any(User.class))).thenReturn(user1);
+        when(userRepository.save(any(UserEntity.class))).thenReturn(user1);
 
-        User updatedUser = userService.updateUser(1L, user1);
+        UserEntity updatedUser = userService.updateUser(1L, user1);
 
         assertNotNull(updatedUser);
         assertEquals("juanantonio", updatedUser.getUsername());
-        verify(userRepository, times(1)).save(any(User.class));
+        verify(userRepository, times(1)).save(any(UserEntity.class));
     }
 
     @Test

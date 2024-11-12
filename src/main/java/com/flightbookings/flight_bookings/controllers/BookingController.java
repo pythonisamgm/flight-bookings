@@ -1,12 +1,13 @@
 package com.flightbookings.flight_bookings.controllers;
 
-import com.flightbookings.flight_bookings.models.Booking;
-import com.flightbookings.flight_bookings.models.User;
+import com.flightbookings.flight_bookings.models.BookingEntity;
+import com.flightbookings.flight_bookings.models.UserEntity;
 import com.flightbookings.flight_bookings.services.interfaces.BookingService;
 import com.flightbookings.flight_bookings.services.interfaces.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,19 +25,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/bookings")
 @Tag(name = "Booking Management", description = "Operations pertaining to booking management")
+@RequiredArgsConstructor
 public class BookingController {
     private final BookingService bookingService;
     private final UserService userService;
-    /**3
-     * Constructor to initialize the BookingController with BookingService and UserService.
-     *
-     * @param bookingService the service for booking management.
-     * @param userService    the service for user management.
-     */
-    public BookingController(BookingService bookingService, UserService userService) {
-        this.bookingService = bookingService;
-        this.userService = userService;
-    }
+
     /**
      * Creates a new booking.
      *
@@ -47,16 +40,16 @@ public class BookingController {
      */
     @Operation(summary = "Create a new booking")
     @PostMapping(value = "/create/{flightId}/{passengerId}/{seatName}")
-    public ResponseEntity<Booking> createBooking(@PathVariable("flightId") Long flightId,
-                                                 @PathVariable("passengerId") Long passengerId,
-                                                 @PathVariable("seatName") String seatName,
-                                                 Principal principal) {
+    public ResponseEntity<BookingEntity> createBooking(@PathVariable("flightId") Long flightId,
+                                                       @PathVariable("passengerId") Long passengerId,
+                                                       @PathVariable("seatName") String seatName,
+                                                       Principal principal) {
         if (principal == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
-        User user = userService.findByUsername(principal.getName());
-        Booking booking = bookingService.createBooking(flightId, passengerId,
+        UserEntity user = userService.findByUsername(principal.getName());
+        BookingEntity booking = bookingService.createBooking(flightId, passengerId,
                 seatName, user.getUserId());
         return new ResponseEntity<>(booking, HttpStatus.CREATED);
     }
@@ -69,9 +62,9 @@ public class BookingController {
      */
     @Operation(summary =  "Get booking by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<Booking> getBookingByIdByUser(@Parameter(description = "ID of the booking  to be retrieved")@PathVariable Long id, Principal principal) {
-        User user = userService.findByUsername(principal.getName());
-        Booking booking = bookingService.getBookingByIdByUser(id, user);
+    public ResponseEntity<BookingEntity> getBookingByIdByUser(@Parameter(description = "ID of the booking  to be retrieved")@PathVariable Long id, Principal principal) {
+        UserEntity user = userService.findByUsername(principal.getName());
+        BookingEntity booking = bookingService.getBookingByIdByUser(id, user);
 
         if (booking != null) {
             return new ResponseEntity<>(booking, HttpStatus.OK);
@@ -87,9 +80,9 @@ public class BookingController {
      */
     @Operation(summary =  "Get all the bookings for the current user")
     @GetMapping("/")
-    public ResponseEntity<List<Booking>> getAllBookingsByUser(Principal principal) {
-        User user = userService.findByUsername(principal.getName());
-        List<Booking> bookings = bookingService.getAllBookingsByUser(user);
+    public ResponseEntity<List<BookingEntity>> getAllBookingsByUser(Principal principal) {
+        UserEntity user = userService.findByUsername(principal.getName());
+        List<BookingEntity> bookings = bookingService.getAllBookingsByUser(user);
         return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
     /**
@@ -99,8 +92,8 @@ public class BookingController {
      */
     @Operation(summary = "Get all bookings")
     @GetMapping("/all")
-    public ResponseEntity<List<Booking>> getAllBookings() {
-        List<Booking> bookings = bookingService.getAllBookings();
+    public ResponseEntity<List<BookingEntity>> getAllBookings() {
+        List<BookingEntity> bookings = bookingService.getAllBookings();
         return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
     /**
@@ -112,9 +105,9 @@ public class BookingController {
      */
     @Operation(summary =  "Update existing booking")
     @PutMapping("/update/{id}")
-    public ResponseEntity<Booking> updateBooking(@Parameter(description = "ID of the booking  to be retrieved") @PathVariable Long id, @RequestBody Booking updatedBooking) {
+    public ResponseEntity<BookingEntity> updateBooking(@Parameter(description = "ID of the booking  to be retrieved") @PathVariable Long id, @RequestBody BookingEntity updatedBooking) {
         updatedBooking.setBookingId(id);
-        Booking booking = bookingService.updateBooking(updatedBooking);
+        BookingEntity booking = bookingService.updateBooking(updatedBooking);
         return new ResponseEntity<>(booking, HttpStatus.OK);
     }
     /**

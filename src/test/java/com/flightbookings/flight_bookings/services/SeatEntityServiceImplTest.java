@@ -3,8 +3,8 @@ package com.flightbookings.flight_bookings.services;
 import com.flightbookings.flight_bookings.exceptions.SeatAlreadyBookedException;
 import com.flightbookings.flight_bookings.exceptions.SeatNotFoundException;
 import com.flightbookings.flight_bookings.models.ESeatLetter;
-import com.flightbookings.flight_bookings.models.Flight;
-import com.flightbookings.flight_bookings.models.Seat;
+import com.flightbookings.flight_bookings.models.FlightEntity;
+import com.flightbookings.flight_bookings.models.SeatEntity;
 import com.flightbookings.flight_bookings.repositories.ISeatRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class SeatServiceImplTest {
+class SeatEntityServiceImplTest {
 
     @Mock
     private ISeatRepository seatRepository;
@@ -34,12 +34,12 @@ class SeatServiceImplTest {
 
     @Test
     void test_if_initializedSeats_creates_seats_and_rename_them() {
-        Flight flight = new Flight();
+        FlightEntity flight = new FlightEntity();
         int numRows = 2;
-        List<Seat> seats = new ArrayList<>();
+        List<SeatEntity> seats = new ArrayList<>();
         for (int i = 1; i <= numRows; i++) {
             for (ESeatLetter letter : ESeatLetter.values()) {
-                Seat seat = new Seat(null, i, letter, false, flight, null);
+                SeatEntity seat = new SeatEntity(null, i, letter, false, flight, null);
                 seat.setSeatName(i + letter.name());
                 seats.add(seat);
             }
@@ -57,14 +57,14 @@ class SeatServiceImplTest {
     }
     @Test
     void test_if_reserveSeat_save_seat_in_repo() {
-        Flight flight = new Flight();
-        Seat seat = new Seat(null, 1, ESeatLetter.A, false, flight, null);
+        FlightEntity flight = new FlightEntity();
+        SeatEntity seat = new SeatEntity(null, 1, ESeatLetter.A, false, flight, null);
         seat.setSeatName("1A");
 
         when(seatRepository.findByFlightAndSeatName(flight, "1A")).thenReturn(Optional.of(seat));
         when(seatRepository.save(seat)).thenReturn(seat);
 
-        Seat reservedSeat = seatService.reserveSeat(flight, "1A");
+        SeatEntity reservedSeat = seatService.reserveSeat(flight, "1A");
 
         assertNotNull(reservedSeat);
         assertTrue(reservedSeat.isBooked());
@@ -75,7 +75,7 @@ class SeatServiceImplTest {
     }
     @Test
     void testReserveSeatThrowsSeatNotFoundException() {
-        Flight flight = new Flight();
+        FlightEntity flight = new FlightEntity();
 
         when(seatRepository.findByFlightAndSeatName(flight, "1A")).thenReturn(Optional.empty());
 
@@ -84,13 +84,13 @@ class SeatServiceImplTest {
         });
 
         verify(seatRepository, times(1)).findByFlightAndSeatName(flight, "1A");
-        verify(seatRepository, times(0)).save(any(Seat.class));
+        verify(seatRepository, times(0)).save(any(SeatEntity.class));
     }
 
     @Test
     void testReserveSeatThrowsSeatAlreadyBookedException() {
-        Flight flight = new Flight();
-        Seat seat = new Seat(null, 1, ESeatLetter.A, true, flight, null); // Seat already booked
+        FlightEntity flight = new FlightEntity();
+        SeatEntity seat = new SeatEntity(null, 1, ESeatLetter.A, true, flight, null); // Seat already booked
         seat.setSeatName("1A");
 
         when(seatRepository.findByFlightAndSeatName(flight, "1A")).thenReturn(Optional.of(seat));
@@ -100,6 +100,6 @@ class SeatServiceImplTest {
         });
 
         verify(seatRepository, times(1)).findByFlightAndSeatName(flight, "1A");
-        verify(seatRepository, times(0)).save(any(Seat.class));
+        verify(seatRepository, times(0)).save(any(SeatEntity.class));
     }
 }

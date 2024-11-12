@@ -1,19 +1,19 @@
 package com.flightbookings.flight_bookings.repositories;
 
-import com.flightbookings.flight_bookings.models.User;
+import com.flightbookings.flight_bookings.models.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 /**
- * Repository interface for managing {@link User} entities.
+ * Repository interface for managing {@link UserEntity} entities.
  * Provides CRUD operations and a method to find a user by username.
  */
-public interface IUserRepository extends JpaRepository<User, Long> {
+public interface IUserRepository extends JpaRepository<UserEntity, Long> {
     /**
      * Finds a user by their username.
      *
      * @param username the username of the user to find.
      * @return an optional containing the found user, or empty if not found.
      */
-    Optional<User> findByUsername(String username);
+    Optional<UserEntity> findByUsername(String username);
 }

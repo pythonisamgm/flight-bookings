@@ -1,6 +1,6 @@
 package com.flightbookings.flight_bookings.services;
 
-import com.flightbookings.flight_bookings.models.Flight;
+import com.flightbookings.flight_bookings.models.FlightEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -8,7 +8,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
-public class FlightDurationServiceImplTest {
+public class FlightEntityDurationServiceImplTest {
     private FlightDurationServiceImpl flightDurationService;
 
     @BeforeEach
@@ -18,7 +18,7 @@ public class FlightDurationServiceImplTest {
 
     @Test
     void testCalculateFlightDuration_ValidTimes() {
-        Flight flight = new Flight();
+        FlightEntity flight = new FlightEntity();
         flight.setDepartureTime(LocalDateTime.of(2024, 10, 12, 14, 0));
         flight.setArrivalTime(LocalDateTime.of(2024, 10, 12, 16, 0));
 
@@ -30,7 +30,7 @@ public class FlightDurationServiceImplTest {
 
     @Test
     void testCalculateFlightDuration_NullDepartureTime() {
-        Flight flight = new Flight();
+        FlightEntity flight = new FlightEntity();
         flight.setDepartureTime(null);
         flight.setArrivalTime(LocalDateTime.of(2024, 10, 12, 16, 0));
 
@@ -41,7 +41,7 @@ public class FlightDurationServiceImplTest {
 
     @Test
     void testCalculateFlightDuration_NullArrivalTime() {
-        Flight flight = new Flight();
+        FlightEntity flight = new FlightEntity();
         flight.setDepartureTime(LocalDateTime.of(2024, 10, 12, 14, 0));
         flight.setArrivalTime(null);
 
@@ -52,7 +52,7 @@ public class FlightDurationServiceImplTest {
 
     @Test
     void testCalculateFlightDuration_BothTimesNull() {
-        Flight flight = new Flight();
+        FlightEntity flight = new FlightEntity();
         flight.setDepartureTime(null);
         flight.setArrivalTime(null);
 

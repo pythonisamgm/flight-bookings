@@ -1,6 +1,6 @@
 package com.flightbookings.flight_bookings.data;
 
-import com.flightbookings.flight_bookings.models.Airport;
+import com.flightbookings.flight_bookings.models.AirportEntity;
 import com.flightbookings.flight_bookings.models.EAirport;
 import com.flightbookings.flight_bookings.services.interfaces.AirportService;
 import org.springframework.boot.CommandLineRunner;
@@ -40,10 +40,10 @@ public class LoadAirports implements CommandLineRunner {
      * Loads airports from the EAirport enum and saves them to the database.
      */
     private void loadAirports() {
-        Set<Airport> airports = new HashSet<>();
+        Set<AirportEntity> airports = new HashSet<>();
 
         for (EAirport airportEnum : EAirport.values()) {
-            airports.add(new Airport(
+            airports.add(new AirportEntity(
                     airportEnum.getAirportCode(),
                     airportEnum.getAirportName(),
                     airportEnum.getAirportCity(),

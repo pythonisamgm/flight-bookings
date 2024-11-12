@@ -1,6 +1,6 @@
 package com.flightbookings.flight_bookings.services;
 
-import com.flightbookings.flight_bookings.models.Passenger;
+import com.flightbookings.flight_bookings.models.PassengerEntity;
 import com.flightbookings.flight_bookings.repositories.IPassengerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class PassengerServiceTest {
+public class PassengerEntityServiceTest {
 
     @Mock
     private IPassengerRepository passengerRepository;
@@ -24,22 +24,22 @@ public class PassengerServiceTest {
     @InjectMocks
     private PassengerServiceImpl passengerService;
 
-    private Passenger passenger1;
-    private Passenger passenger2;
-    private List<Passenger> passengerList;
+    private PassengerEntity passenger1;
+    private PassengerEntity passenger2;
+    private List<PassengerEntity> passengerList;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        passenger1 = new Passenger();
+        passenger1 = new PassengerEntity();
         passenger1.setPassengerId(1L);
         passenger1.setPassengerName("Juan Antonio");
         passenger1.setIdentityDoc("1337");
         passenger1.setTelephone(661777777L);
         passenger1.setNationality("Irlandés");
 
-        passenger2 = new Passenger();
+        passenger2 = new PassengerEntity();
         passenger2.setPassengerId(2L);
         passenger2.setPassengerName("Miguel Angel");
         passenger2.setIdentityDoc("7823");
@@ -51,22 +51,22 @@ public class PassengerServiceTest {
 
     @Test
     public void testCreatePassenger() {
-        when(passengerRepository.save(any(Passenger.class))).thenReturn(passenger1);
+        when(passengerRepository.save(any(PassengerEntity.class))).thenReturn(passenger1);
 
-        Passenger createdPassenger = passengerService.createPassenger(passenger1);
+        PassengerEntity createdPassenger = passengerService.createPassenger(passenger1);
 
         assertNotNull(createdPassenger);
         assertEquals(1L, createdPassenger.getPassengerId());
         assertEquals("Juan Antonio", createdPassenger.getPassengerName());
 
-        verify(passengerRepository, times(1)).save(any(Passenger.class));
+        verify(passengerRepository, times(1)).save(any(PassengerEntity.class));
     }
 
     @Test
     public void testGetPassengerById() {
         when(passengerRepository.findById(1L)).thenReturn(Optional.of(passenger1));
 
-        Passenger foundPassenger = passengerService.getPassengerById(1L);
+        PassengerEntity foundPassenger = passengerService.getPassengerById(1L);
 
         assertNotNull(foundPassenger);
         assertEquals("Juan Antonio", foundPassenger.getPassengerName());
@@ -78,7 +78,7 @@ public class PassengerServiceTest {
     public void testGetPassengerById_NotFound() {
         when(passengerRepository.findById(3L)).thenReturn(Optional.empty());
 
-        Passenger foundPassenger = passengerService.getPassengerById(3L);
+        PassengerEntity foundPassenger = passengerService.getPassengerById(3L);
 
         assertNull(foundPassenger);
         verify(passengerRepository, times(1)).findById(3L);
@@ -88,7 +88,7 @@ public class PassengerServiceTest {
     public void testGetAllPassengers() {
         when(passengerRepository.findAll()).thenReturn(passengerList);
 
-        List<Passenger> passengers = passengerService.getAllPassengers();
+        List<PassengerEntity> passengers = passengerService.getAllPassengers();
 
         assertEquals(2, passengers.size());
         assertEquals("Juan Antonio", passengers.get(0).getPassengerName());
@@ -100,22 +100,22 @@ public class PassengerServiceTest {
     @Test
     public void testUpdatePassenger() {
         when(passengerRepository.findById(1L)).thenReturn(Optional.of(passenger1));
-        when(passengerRepository.save(any(Passenger.class))).thenReturn(passenger1);
+        when(passengerRepository.save(any(PassengerEntity.class))).thenReturn(passenger1);
 
-        Passenger updatedPassenger = passengerService.updatePassenger(1L, passenger1);
+        PassengerEntity updatedPassenger = passengerService.updatePassenger(1L, passenger1);
 
         assertNotNull(updatedPassenger);
         assertEquals("Juan Antonio", updatedPassenger.getPassengerName());
 
         verify(passengerRepository, times(1)).findById(1L);
-        verify(passengerRepository, times(1)).save(any(Passenger.class));
+        verify(passengerRepository, times(1)).save(any(PassengerEntity.class));
     }
 
     @Test
     public void testUpdatePassenger_NotFound() {
         when(passengerRepository.findById(3L)).thenReturn(Optional.empty());
 
-        Passenger updatedPassenger = passengerService.updatePassenger(3L, passenger1);
+        PassengerEntity updatedPassenger = passengerService.updatePassenger(3L, passenger1);
 
         assertNull(updatedPassenger);
         verify(passengerRepository, times(1)).findById(3L);
@@ -140,6 +140,6 @@ public class PassengerServiceTest {
 
         assertFalse(isDeleted);
         verify(passengerRepository, times(1)).findById(4L);
-        verify(passengerRepository, never()).delete(any(Passenger.class));
+        verify(passengerRepository, never()).delete(any(PassengerEntity.class));
     }
 }

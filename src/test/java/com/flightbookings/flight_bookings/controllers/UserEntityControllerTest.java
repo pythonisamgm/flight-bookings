@@ -2,7 +2,7 @@ package com.flightbookings.flight_bookings.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flightbookings.flight_bookings.models.ERole;
-import com.flightbookings.flight_bookings.models.User;
+import com.flightbookings.flight_bookings.models.UserEntity;
 import com.flightbookings.flight_bookings.services.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class UserControllerTest {
+public class UserEntityControllerTest {
 
     @Mock
     private UserServiceImpl userService;
@@ -30,16 +30,16 @@ public class UserControllerTest {
     private UserController userController;
 
     private MockMvc mockMvc;
-    private User user1;
-    private User user2;
-    private List<User> userList;
+    private UserEntity user1;
+    private UserEntity user2;
+    private List<UserEntity> userList;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
 
-        user1 = User.builder()
+        user1 = UserEntity.builder()
                 .userId(1L)
                 .username("juanantonio")
                 .password("1234")
@@ -48,7 +48,7 @@ public class UserControllerTest {
                 .bookings(new ArrayList<>())
                 .build();
 
-        user2 = User.builder()
+        user2 = UserEntity.builder()
                 .userId(2L)
                 .username("miguelangel")
                 .password("12345")
@@ -64,7 +64,7 @@ public class UserControllerTest {
 
     @Test
     public void testCreateUser() throws Exception {
-        when(userService.createUser(any(User.class))).thenReturn(user1);
+        when(userService.createUser(any(UserEntity.class))).thenReturn(user1);
 
         mockMvc.perform(post("/api/v1/user/create")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -75,7 +75,7 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.password").value("1234"))
                 .andExpect(jsonPath("$.email").value("jantonio@gmail.com"));
 
-        verify(userService, times(1)).createUser(any(User.class));
+        verify(userService, times(1)).createUser(any(UserEntity.class));
     }
 
     @Test
@@ -104,7 +104,7 @@ public class UserControllerTest {
     @Test
     public void testUpdateUser() throws Exception {
 
-        when(userService.updateUser(eq(1L), any(User.class))).thenReturn(user1);
+        when(userService.updateUser(eq(1L), any(UserEntity.class))).thenReturn(user1);
 
         mockMvc.perform(put("/api/v1/user/update/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -112,7 +112,7 @@ public class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userId").value(1L));
 
-        verify(userService, times(1)).updateUser(eq(1L), any(User.class));
+        verify(userService, times(1)).updateUser(eq(1L), any(UserEntity.class));
     }
 
     @Test

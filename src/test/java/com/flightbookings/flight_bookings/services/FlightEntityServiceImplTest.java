@@ -1,8 +1,8 @@
 package com.flightbookings.flight_bookings.services;
 
-import com.flightbookings.flight_bookings.models.Flight;
+import com.flightbookings.flight_bookings.models.FlightEntity;
 import com.flightbookings.flight_bookings.models.EFlightAirplane;
-import com.flightbookings.flight_bookings.models.Seat;
+import com.flightbookings.flight_bookings.models.SeatEntity;
 import com.flightbookings.flight_bookings.repositories.IFlightRepository;
 import com.flightbookings.flight_bookings.repositories.ISeatRepository;
 import com.flightbookings.flight_bookings.services.interfaces.FlightDurationService;
@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-class FlightServiceImplTest {
+class FlightEntityServiceImplTest {
 
     @InjectMocks
     private FlightServiceImpl flightService;
@@ -41,12 +41,12 @@ class FlightServiceImplTest {
     @Mock
     private FlightDurationService flightDurationService;
 
-    private Flight flight;
+    private FlightEntity flight;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        flight = new Flight();
+        flight = new FlightEntity();
         flight.setFlightId(1L);
         flight.setFlightNumber(123);
         flight.setDepartureTime(LocalDateTime.of(2024, 10, 12, 14, 0));
@@ -61,11 +61,11 @@ class FlightServiceImplTest {
 
     @Test
     void testCreateFlight() {
-        when(flightRepository.save(any(Flight.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        when(seatService.initializeSeats(any(Flight.class), anyInt())).thenReturn(List.of("1A", "1B", "1C"));
-        when(seatRepository.findByFlight(any(Flight.class))).thenReturn(new ArrayList<>());
+        when(flightRepository.save(any(FlightEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(seatService.initializeSeats(any(FlightEntity.class), anyInt())).thenReturn(List.of("1A", "1B", "1C"));
+        when(seatRepository.findByFlight(any(FlightEntity.class))).thenReturn(new ArrayList<>());
 
-        Flight createdFlight = flightService.createFlight(flight);
+        FlightEntity createdFlight = flightService.createFlight(flight);
 
         assertNotNull(createdFlight, "The created flight should not be null");
         verify(flightRepository, times(1)).save(flight);
@@ -77,7 +77,7 @@ class FlightServiceImplTest {
     void testGetFlightById() {
         when(flightRepository.findById(1L)).thenReturn(Optional.of(flight));
 
-        Flight foundFlight = flightService.getFlightById(1L);
+        FlightEntity foundFlight = flightService.getFlightById(1L);
 
         assertNotNull(foundFlight);
         assertEquals(flight.getFlightId(), foundFlight.getFlightId());
@@ -86,11 +86,11 @@ class FlightServiceImplTest {
 
     @Test
     void testGetAllFlights() {
-        List<Flight> flights = new ArrayList<>();
+        List<FlightEntity> flights = new ArrayList<>();
         flights.add(flight);
         when(flightRepository.findAll()).thenReturn(flights);
 
-        List<Flight> allFlights = flightService.getAllFlights();
+        List<FlightEntity> allFlights = flightService.getAllFlights();
 
         assertFalse(allFlights.isEmpty());
         assertEquals(1, allFlights.size());
@@ -100,7 +100,7 @@ class FlightServiceImplTest {
 
     @Test
     void testUpdateFlight() {
-        Flight updatedFlight = new Flight();
+        FlightEntity updatedFlight = new FlightEntity();
         updatedFlight.setFlightNumber(124);
         updatedFlight.setDepartureTime(LocalDateTime.of(2024, 10, 12, 15, 0));
         updatedFlight.setArrivalTime(LocalDateTime.of(2024, 10, 12, 17, 0));
@@ -111,9 +111,9 @@ class FlightServiceImplTest {
         updatedFlight.setFlightPrice(BigDecimal.valueOf(350));
 
         when(flightRepository.findById(1L)).thenReturn(Optional.of(flight));
-        when(flightRepository.save(any(Flight.class))).thenReturn(updatedFlight);
+        when(flightRepository.save(any(FlightEntity.class))).thenReturn(updatedFlight);
 
-        Flight result = flightService.updateFlight(updatedFlight);
+        FlightEntity result = flightService.updateFlight(updatedFlight);
 
         assertNotNull(result, "The updated flight should not be null");
         assertEquals(124, result.getFlightNumber(), "The flight number does not match");
@@ -133,14 +133,14 @@ class FlightServiceImplTest {
     @Test
     void testUpdateFlightAvailability_AllSeatsBooked_FutureDeparture() {
         LocalDateTime now = LocalDateTime.now();
-        Flight flight = new Flight();
+        FlightEntity flight = new FlightEntity();
         flight.setFlightId(1L);
         flight.setDepartureTime(now.plusHours(2));
         flight.setAvailability(true);
 
-        Seat seat1 = new Seat();
+        SeatEntity seat1 = new SeatEntity();
         seat1.setBooked(true);
-        Seat seat2 = new Seat();
+        SeatEntity seat2 = new SeatEntity();
         seat2.setBooked(true);
         flight.setSeats(List.of(seat1, seat2));
 
@@ -155,14 +155,14 @@ class FlightServiceImplTest {
     @Test
     void testUpdateFlightAvailability_AllSeatsBooked_PastDeparture() {
         LocalDateTime now = LocalDateTime.now();
-        Flight flight = new Flight();
+        FlightEntity flight = new FlightEntity();
         flight.setFlightId(2L);
         flight.setDepartureTime(now.minusHours(2));
         flight.setAvailability(true);
 
-        Seat seat1 = new Seat();
+        SeatEntity seat1 = new SeatEntity();
         seat1.setBooked(true);
-        Seat seat2 = new Seat();
+        SeatEntity seat2 = new SeatEntity();
         seat2.setBooked(true);
         flight.setSeats(List.of(seat1, seat2));
 
@@ -177,14 +177,14 @@ class FlightServiceImplTest {
     @Test
     void testUpdateFlightAvailability_SomeSeatsUnbooked_FutureDeparture() {
         LocalDateTime now = LocalDateTime.now();
-        Flight flight = new Flight();
+        FlightEntity flight = new FlightEntity();
         flight.setFlightId(3L);
         flight.setDepartureTime(now.plusHours(5)); // En el futuro
         flight.setAvailability(true);
 
-        Seat seat1 = new Seat();
+        SeatEntity seat1 = new SeatEntity();
         seat1.setBooked(false);
-        Seat seat2 = new Seat();
+        SeatEntity seat2 = new SeatEntity();
         seat2.setBooked(true);
         flight.setSeats(List.of(seat1, seat2));
 

@@ -1,7 +1,7 @@
 package com.flightbookings.flight_bookings.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.flightbookings.flight_bookings.models.Passenger;
+import com.flightbookings.flight_bookings.models.PassengerEntity;
 import com.flightbookings.flight_bookings.services.PassengerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class PassengerControllerTest {
+public class PassengerEntityControllerTest {
 
     @Mock
     private PassengerServiceImpl passengerService;
@@ -29,23 +29,23 @@ public class PassengerControllerTest {
     @InjectMocks
     private PassengerController passengerController;
 
-    private Passenger passenger1;
-    private Passenger passenger2;
-    private List<Passenger> passengerList;
+    private PassengerEntity passenger1;
+    private PassengerEntity passenger2;
+    private List<PassengerEntity> passengerList;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(passengerController).build();
 
-        passenger1 = new Passenger();
+        passenger1 = new PassengerEntity();
         passenger1.setPassengerId(1L);
         passenger1.setPassengerName("Juan Antonio");
         passenger1.setIdentityDoc("1337");
         passenger1.setTelephone(661777777L);
         passenger1.setNationality("Irlandés");
 
-        passenger2 = new Passenger();
+        passenger2 = new PassengerEntity();
         passenger2.setPassengerId(2L);
         passenger2.setPassengerName("Miguel Angel");
         passenger2.setIdentityDoc("7823");
@@ -60,7 +60,7 @@ public class PassengerControllerTest {
 
     @Test
     public void testCreatePassenger() throws Exception {
-        when(passengerService.createPassenger(any(Passenger.class))).thenReturn(passenger1);
+        when(passengerService.createPassenger(any(PassengerEntity.class))).thenReturn(passenger1);
 
         mockMvc.perform(post("/api/v1/passengers/create")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -72,7 +72,7 @@ public class PassengerControllerTest {
         .andExpect(jsonPath("$.telephone").value(661777777L))
         .andExpect(jsonPath("$.nationality").value("Irlandés"));
 
-        verify(passengerService, times(1)).createPassenger(any(Passenger.class));
+        verify(passengerService, times(1)).createPassenger(any(PassengerEntity.class));
     }
 
     @Test
@@ -110,7 +110,7 @@ public class PassengerControllerTest {
 
     @Test
     public void testUpdatePassenger() throws Exception {
-        when(passengerService.updatePassenger(eq(1L), any(Passenger.class))).thenReturn(passenger1);
+        when(passengerService.updatePassenger(eq(1L), any(PassengerEntity.class))).thenReturn(passenger1);
 
         mockMvc.perform(put("/api/v1/passengers/update/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -118,19 +118,19 @@ public class PassengerControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.passengerId").value(1L));
 
-        verify(passengerService, times(1)).updatePassenger(eq(1L), any(Passenger.class));
+        verify(passengerService, times(1)).updatePassenger(eq(1L), any(PassengerEntity.class));
     }
 
     @Test
     public void testUpdatePassenger_NotFound() throws Exception {
-        when(passengerService.updatePassenger(eq(3L), any(Passenger.class))).thenReturn(null);
+        when(passengerService.updatePassenger(eq(3L), any(PassengerEntity.class))).thenReturn(null);
 
         mockMvc.perform(put("/api/v1/passengers/update/{id}", 3L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(passenger1)))
                 .andExpect(status().isNotFound());
 
-        verify(passengerService, times(1)).updatePassenger(eq(3L), any(Passenger.class));
+        verify(passengerService, times(1)).updatePassenger(eq(3L), any(PassengerEntity.class));
     }
 
     @Test

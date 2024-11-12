@@ -1,6 +1,6 @@
 package com.flightbookings.flight_bookings.dtos.DTOPassenger;
 
-import com.flightbookings.flight_bookings.models.Passenger;
+import com.flightbookings.flight_bookings.models.PassengerEntity;
 import org.modelmapper.ModelMapper;
 
 public class PassengerConverter {
@@ -11,11 +11,11 @@ public class PassengerConverter {
         this.modelMapper = modelMapper;
     }
 
-    public PassengerDTO convertToDto(Passenger passenger) {
+    public PassengerDTO convertToDto(PassengerEntity passenger) {
         return modelMapper.map(passenger, PassengerDTO.class);
     }
 
-    public Passenger convertToEntity(PassengerDTO passengerDTO) {
-        return modelMapper.map(passengerDTO, Passenger.class);
+    public PassengerEntity convertToEntity(PassengerDTO passengerDTO) {
+        return modelMapper.map(passengerDTO, PassengerEntity.class);
     }
 }

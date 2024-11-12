@@ -1,6 +1,6 @@
 package com.flightbookings.flight_bookings.controllers;
 
-import com.flightbookings.flight_bookings.models.Airport;
+import com.flightbookings.flight_bookings.models.AirportEntity;
 import com.flightbookings.flight_bookings.models.ECountry;
 import com.flightbookings.flight_bookings.services.interfaces.AirportService;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
  * Test class for {@link AirportController}.
  * Verifies the behavior of Airport-related endpoints.
  */
-class AirportControllerTest {
+class AirportEntityControllerTest {
     @Mock
     private AirportService airportService;
 
@@ -42,14 +42,14 @@ class AirportControllerTest {
     @Test
     void testGetAllAirports() {
         // Arrange
-        List<Airport> airportList = new ArrayList<>();
-        airportList.add(new Airport("MAD", "Madrid-Barajas", "Madrid", ECountry.ESPAÑA));
-        airportList.add(new Airport("BCN", "Barcelona-El Prat", "Barcelona", ECountry.ESPAÑA));
+        List<AirportEntity> airportList = new ArrayList<>();
+        airportList.add(new AirportEntity("MAD", "Madrid-Barajas", "Madrid", ECountry.ESPAÑA));
+        airportList.add(new AirportEntity("BCN", "Barcelona-El Prat", "Barcelona", ECountry.ESPAÑA));
 
         when(airportService.getAllAirports()).thenReturn(airportList);
 
         // Act
-        ResponseEntity<List<Airport>> response = airportController.getAllAirports();
+        ResponseEntity<List<AirportEntity>> response = airportController.getAllAirports();
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -64,11 +64,11 @@ class AirportControllerTest {
     @Test
     void testCreateAirport() {
         // Arrange
-        Airport airport = new Airport("MAD", "Madrid-Barajas", "Madrid", ECountry.ESPAÑA);
-        when(airportService.createAirport(any(Airport.class))).thenReturn(airport);
+        AirportEntity airport = new AirportEntity("MAD", "Madrid-Barajas", "Madrid", ECountry.ESPAÑA);
+        when(airportService.createAirport(any(AirportEntity.class))).thenReturn(airport);
 
         // Act
-        ResponseEntity<Airport> response = airportController.createAirport(airport);
+        ResponseEntity<AirportEntity> response = airportController.createAirport(airport);
 
         // Assert
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
@@ -78,7 +78,7 @@ class AirportControllerTest {
         assertEquals(airport.getAirportCity(), response.getBody().getAirportCity());
         assertEquals(airport.getAirportCountry(), response.getBody().getAirportCountry());
 
-        ArgumentCaptor<Airport> argumentCaptor = ArgumentCaptor.forClass(Airport.class);
+        ArgumentCaptor<AirportEntity> argumentCaptor = ArgumentCaptor.forClass(AirportEntity.class);
         verify(airportService, times(1)).createAirport(argumentCaptor.capture());
         assertEquals(airport.getAirportCode(), argumentCaptor.getValue().getAirportCode());
     }

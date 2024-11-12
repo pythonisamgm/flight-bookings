@@ -1,13 +1,10 @@
 package com.flightbookings.flight_bookings.services;
 
-import com.flightbookings.flight_bookings.models.Airport;
+import com.flightbookings.flight_bookings.models.AirportEntity;
 import com.flightbookings.flight_bookings.models.ECountry;
 import com.flightbookings.flight_bookings.repositories.IAirportRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import java.util.*;
 
@@ -15,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-class AirportServiceImplTest {
+class AirportEntityServiceImplTest {
 
     private IAirportRepository airportRepository;
     private AirportServiceImpl airportService;
@@ -29,11 +26,11 @@ class AirportServiceImplTest {
     @Test
     void testCreateAirport() {
         // Arrange
-        Airport airport = new Airport("MAD", "Madrid-Barajas Adolfo Suárez", "Madrid", ECountry.ESPAÑA);
-        when(airportRepository.save(any(Airport.class))).thenReturn(airport);
+        AirportEntity airport = new AirportEntity("MAD", "Madrid-Barajas Adolfo Suárez", "Madrid", ECountry.ESPAÑA);
+        when(airportRepository.save(any(AirportEntity.class))).thenReturn(airport);
 
         // Act
-        Airport createdAirport = airportService.createAirport(airport);
+        AirportEntity createdAirport = airportService.createAirport(airport);
 
         // Assert
         assertNotNull(createdAirport);
@@ -44,13 +41,13 @@ class AirportServiceImplTest {
     @Test
     void testCreateAirports() {
         // Arrange
-        Airport airport1 = new Airport("BCN", "Barcelona-El Prat", "Barcelona", ECountry.ESPAÑA);
-        Airport airport2 = new Airport("VLC", "Valencia", "Valencia", ECountry.ESPAÑA);
-        Set<Airport> airports = Set.of(airport1, airport2);
+        AirportEntity airport1 = new AirportEntity("BCN", "Barcelona-El Prat", "Barcelona", ECountry.ESPAÑA);
+        AirportEntity airport2 = new AirportEntity("VLC", "Valencia", "Valencia", ECountry.ESPAÑA);
+        Set<AirportEntity> airports = Set.of(airport1, airport2);
         when(airportRepository.saveAll(any(Set.class))).thenReturn(Arrays.asList(airport1, airport2));
 
         // Act
-        List<Airport> createdAirports = airportService.createAirports(airports);
+        List<AirportEntity> createdAirports = airportService.createAirports(airports);
 
         // Assert
         assertNotNull(createdAirports);
@@ -62,11 +59,11 @@ class AirportServiceImplTest {
     @Test
     void testGetAllAirports() {
         // Arrange
-        Airport airport = new Airport("MAD", "Madrid-Barajas Adolfo Suárez", "Madrid", ECountry.ESPAÑA);
+        AirportEntity airport = new AirportEntity("MAD", "Madrid-Barajas Adolfo Suárez", "Madrid", ECountry.ESPAÑA);
         when(airportRepository.findAll()).thenReturn(List.of(airport));
 
         // Act
-        List<Airport> airports = airportService.getAllAirports();
+        List<AirportEntity> airports = airportService.getAllAirports();
 
         // Assert
         assertNotNull(airports);
@@ -79,11 +76,11 @@ class AirportServiceImplTest {
     void testGetAirportById() {
         // Arrange
         String airportCode = "MAD";
-        Airport airport = new Airport(airportCode, "Madrid-Barajas Adolfo Suárez", "Madrid", ECountry.ESPAÑA);
+        AirportEntity airport = new AirportEntity(airportCode, "Madrid-Barajas Adolfo Suárez", "Madrid", ECountry.ESPAÑA);
         when(airportRepository.findById(airportCode)).thenReturn(Optional.of(airport));
 
         // Act
-        Optional<Airport> foundAirport = airportService.getAirportById(airportCode);
+        Optional<AirportEntity> foundAirport = airportService.getAirportById(airportCode);
 
         // Assert
         assertTrue(foundAirport.isPresent());

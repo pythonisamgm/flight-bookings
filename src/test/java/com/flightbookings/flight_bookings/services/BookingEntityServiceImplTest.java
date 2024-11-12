@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class BookingServiceImplTest {
+public class BookingEntityServiceImplTest {
 
     @Mock
     private IBookingRepository bookingRepository;
@@ -46,33 +46,33 @@ public class BookingServiceImplTest {
     private BookingServiceImpl bookingService;
 
 
-    private Booking booking1;
-    private Booking booking2;
+    private BookingEntity booking1;
+    private BookingEntity booking2;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        Passenger passenger1 = new Passenger();
+        PassengerEntity passenger1 = new PassengerEntity();
         passenger1.setPassengerId(1L);
-        Flight flight1 = new Flight();
+        FlightEntity flight1 = new FlightEntity();
         flight1.setFlightId(1L);
-        Seat seat1 = new Seat();
+        SeatEntity seat1 = new SeatEntity();
         seat1.setSeatName("1A");
-        User user1 = new User();
+        UserEntity user1 = new UserEntity();
         user1.setUserId(1L);
 
-        Passenger passenger2 = new Passenger();
+        PassengerEntity passenger2 = new PassengerEntity();
         passenger2.setPassengerId(2L);
-        Flight flight2 = new Flight();
+        FlightEntity flight2 = new FlightEntity();
         flight2.setFlightId(2L);
-        Seat seat2 = new Seat();
+        SeatEntity seat2 = new SeatEntity();
         seat2.setSeatName("2B");
-        User user2 = new User();
+        UserEntity user2 = new UserEntity();
         user2.setUserId(2L);
 
-        booking1 = new Booking(1L, LocalDateTime.of(2024, 9, 24, 10, 0), passenger1, flight1, seat1, user1);
-        booking2 = new Booking(2L, LocalDateTime.of(2024, 9, 25, 11, 0), passenger2, flight2, seat2, user2);
+        booking1 = new BookingEntity(1L, LocalDateTime.of(2024, 9, 24, 10, 0), passenger1, flight1, seat1, user1);
+        booking2 = new BookingEntity(2L, LocalDateTime.of(2024, 9, 25, 11, 0), passenger2, flight2, seat2, user2);
     }
 
 
@@ -83,25 +83,25 @@ public class BookingServiceImplTest {
         String seatName = "1A";
         Long userId = 1L;
 
-        Flight flight = new Flight();
+        FlightEntity flight = new FlightEntity();
         flight.setFlightId(flightId);
 
-        Passenger passenger = new Passenger();
+        PassengerEntity passenger = new PassengerEntity();
         passenger.setPassengerId(passengerId);
 
-        Seat seat = new Seat();
+        SeatEntity seat = new SeatEntity();
         seat.setSeatName(seatName);
 
-        User user = new User();
+        UserEntity user = new UserEntity();
         user.setUserId(userId);
 
         when(flightRepository.findById(flightId)).thenReturn(Optional.of(flight));
         when(passengerRepository.findById(passengerId)).thenReturn(Optional.of(passenger));
         when(seatService.reserveSeat(flight, seatName)).thenReturn(seat);
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(bookingRepository.save(any(Booking.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(bookingRepository.save(any(BookingEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Booking booking = bookingService.createBooking(flightId, passengerId, seatName, userId);
+        BookingEntity booking = bookingService.createBooking(flightId, passengerId, seatName, userId);
 
         assertNotNull(booking);
         assertEquals(flight, booking.getFlight());
@@ -114,7 +114,7 @@ public class BookingServiceImplTest {
         verify(passengerRepository, times(1)).findById(passengerId);
         verify(seatService, times(1)).reserveSeat(flight, seatName);
         verify(userRepository, times(1)).findById(userId);
-        verify(bookingRepository, times(1)).save(any(Booking.class));
+        verify(bookingRepository, times(1)).save(any(BookingEntity.class));
     }
 
     @Test
@@ -132,8 +132,8 @@ public class BookingServiceImplTest {
 
         verify(flightRepository, times(1)).findById(flightId);
         verify(passengerRepository, times(0)).findById(anyLong());
-        verify(seatService, times(0)).reserveSeat(any(Flight.class), anyString());
-        verify(bookingRepository, times(0)).save(any(Booking.class));
+        verify(seatService, times(0)).reserveSeat(any(FlightEntity.class), anyString());
+        verify(bookingRepository, times(0)).save(any(BookingEntity.class));
     }
 
     @Test
@@ -143,7 +143,7 @@ public class BookingServiceImplTest {
         String seatName = "1A";
         Long userId = 1L;
 
-        Flight flight = new Flight();
+        FlightEntity flight = new FlightEntity();
         flight.setFlightId(flightId);
 
         when(flightRepository.findById(flightId)).thenReturn(Optional.of(flight));
@@ -155,21 +155,21 @@ public class BookingServiceImplTest {
 
         verify(flightRepository, times(1)).findById(flightId);
         verify(passengerRepository, times(1)).findById(passengerId);
-        verify(seatService, times(0)).reserveSeat(any(Flight.class), anyString());
-        verify(bookingRepository, times(0)).save(any(Booking.class));
+        verify(seatService, times(0)).reserveSeat(any(FlightEntity.class), anyString());
+        verify(bookingRepository, times(0)).save(any(BookingEntity.class));
     }
 
     @Test
     public void testGetBookingByIdByUser() {
         Long bookingId = 1L;
-        User user = new User();
+        UserEntity user = new UserEntity();
         user.setUserId(1L);
 
         booking1.setUser(user);
 
         when(bookingRepository.findById(bookingId)).thenReturn(Optional.of(booking1));
 
-        Booking foundBooking = bookingService.getBookingByIdByUser(bookingId, user);
+        BookingEntity foundBooking = bookingService.getBookingByIdByUser(bookingId, user);
 
         assertNotNull(foundBooking);
         assertEquals(bookingId, foundBooking.getBookingId());
@@ -183,11 +183,11 @@ public class BookingServiceImplTest {
     @Test
     public void testGetBookingById_ByUser_NotFound() {
         Long bookingId = 3L;
-        User user = new User();
+        UserEntity user = new UserEntity();
         user.setUserId(1L);
         when(bookingRepository.findById(3L)).thenReturn(Optional.empty());
 
-        Booking foundBooking = bookingService.getBookingByIdByUser(3L, user);
+        BookingEntity foundBooking = bookingService.getBookingByIdByUser(3L, user);
 
         assertNull(foundBooking);
 
@@ -196,10 +196,10 @@ public class BookingServiceImplTest {
 
     @Test
     public void testGetAllBookings() {
-        List<Booking> bookings = Arrays.asList(booking1, booking2);
+        List<BookingEntity> bookings = Arrays.asList(booking1, booking2);
         when(bookingRepository.findAll()).thenReturn(bookings);
 
-        List<Booking> allBookings = bookingService.getAllBookings();
+        List<BookingEntity> allBookings = bookingService.getAllBookings();
 
         assertEquals(2, allBookings.size());
         assertEquals(1L, allBookings.get(0).getBookingId());
@@ -209,14 +209,14 @@ public class BookingServiceImplTest {
     }
     @Test
     public void testGetAllBookingsByUser() {
-        User user = new User();
+        UserEntity user = new UserEntity();
         user.setUserId(1L);
 
-        List<Booking> bookings = Arrays.asList(booking1, booking2);
+        List<BookingEntity> bookings = Arrays.asList(booking1, booking2);
 
         when(bookingRepository.findByUser(user)).thenReturn(bookings);
 
-        List<Booking> allBookings = bookingService.getAllBookingsByUser(user);
+        List<BookingEntity> allBookings = bookingService.getAllBookingsByUser(user);
 
         assertEquals(2, allBookings.size());
         assertEquals(1L, allBookings.get(0).getBookingId());
@@ -230,27 +230,27 @@ public class BookingServiceImplTest {
         Long bookingId = 1L;
         Long userId = 1L;
 
-        Booking existingBooking = new Booking();
+        BookingEntity existingBooking = new BookingEntity();
         existingBooking.setBookingId(bookingId);
 
-        Booking updatedBooking = new Booking();
+        BookingEntity updatedBooking = new BookingEntity();
         updatedBooking.setBookingId(bookingId);
         updatedBooking.setDateOfBooking(LocalDateTime.now().plusDays(1));
 
-        Passenger newPassenger = new Passenger();
+        PassengerEntity newPassenger = new PassengerEntity();
         updatedBooking.setPassenger(newPassenger);
 
-        Flight newFlight = new Flight();
+        FlightEntity newFlight = new FlightEntity();
         updatedBooking.setFlight(newFlight);
 
-        User newUser = new User();
+        UserEntity newUser = new UserEntity();
         newUser.setUserId(userId);
 
         when(bookingRepository.findById(bookingId)).thenReturn(Optional.of(existingBooking));
         when(userRepository.findById(userId)).thenReturn(Optional.of(newUser));
-        when(bookingRepository.save(any(Booking.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(bookingRepository.save(any(BookingEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Booking result = bookingService.updateBooking(updatedBooking);
+        BookingEntity result = bookingService.updateBooking(updatedBooking);
 
         assertNotNull(result);
         assertEquals(newPassenger, result.getPassenger());
@@ -264,25 +264,25 @@ public class BookingServiceImplTest {
     @Test
     public void testUpdateBooking_WhenBookingExists_ShouldUpdateBookingAndFreePreviousSeat() {
         Long bookingId = 1L;
-        Booking existingBooking = new Booking();
+        BookingEntity existingBooking = new BookingEntity();
         existingBooking.setBookingId(bookingId);
 
-        Seat previousSeat = new Seat();
+        SeatEntity previousSeat = new SeatEntity();
         previousSeat.setBooked(true);
         existingBooking.setSeat(previousSeat);
 
-        Booking updatedBooking = new Booking();
+        BookingEntity updatedBooking = new BookingEntity();
         updatedBooking.setBookingId(bookingId);
 
-        Seat newSeat = new Seat();
+        SeatEntity newSeat = new SeatEntity();
         newSeat.setBooked(false);
         updatedBooking.setSeat(newSeat);
 
         when(bookingRepository.findById(bookingId)).thenReturn(Optional.of(existingBooking));
-        when(seatRepository.save(any(Seat.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        when(bookingRepository.save(any(Booking.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(seatRepository.save(any(SeatEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(bookingRepository.save(any(BookingEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Booking result = bookingService.updateBooking(updatedBooking);
+        BookingEntity result = bookingService.updateBooking(updatedBooking);
 
         assertNotNull(result);
         assertEquals(updatedBooking.getBookingId(), result.getBookingId());
@@ -297,7 +297,7 @@ public class BookingServiceImplTest {
     @Test
     public void testUpdateBooking_WhenBookingDoesNotExist_ShouldThrowException() {
         Long bookingId = 1L;
-        Booking updatedBooking = new Booking();
+        BookingEntity updatedBooking = new BookingEntity();
         updatedBooking.setBookingId(bookingId);
 
         when(bookingRepository.findById(bookingId)).thenReturn(Optional.empty());
@@ -307,7 +307,7 @@ public class BookingServiceImplTest {
         });
 
         assertEquals("Booking not found with ID: " + bookingId, exception.getMessage());
-        verify(bookingRepository, never()).save(any(Booking.class));
+        verify(bookingRepository, never()).save(any(BookingEntity.class));
     }
 
     @Test

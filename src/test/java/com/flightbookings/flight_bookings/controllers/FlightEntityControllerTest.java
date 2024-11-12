@@ -1,7 +1,7 @@
 package com.flightbookings.flight_bookings.controllers;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.flightbookings.flight_bookings.models.Flight;
+import com.flightbookings.flight_bookings.models.FlightEntity;
 import com.flightbookings.flight_bookings.models.EFlightAirplane;
 import com.flightbookings.flight_bookings.services.interfaces.FlightService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,7 +16,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,14 +24,14 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-class FlightControllerTest {
+class FlightEntityControllerTest {
 
     @InjectMocks
     private FlightController flightController;
     private ObjectMapper objectMapper;
     private MockMvc mockMvc;
-    private Flight flight1;
-    private Flight flight2;
+    private FlightEntity flight1;
+    private FlightEntity flight2;
 
     @Mock
     private FlightService flightService;
@@ -47,7 +46,7 @@ class FlightControllerTest {
 
         objectMapper.setDateFormat(new java.text.SimpleDateFormat("dd-MM-yyyy HH:mm:ss"));
 
-        flight1 = new Flight();
+        flight1 = new FlightEntity();
         flight1.setFlightId(1L);
         flight1.setFlightNumber(101);
         flight1.setDepartureTime(LocalDateTime.of(2024, 10, 19, 20, 10, 20));
@@ -57,7 +56,7 @@ class FlightControllerTest {
         flight1.setAvailability(true);
         flight1.setFlightPrice(BigDecimal.valueOf(150.00));
 
-        flight2 = new Flight();
+        flight2 = new FlightEntity();
         flight2.setFlightId(2L);
         flight2.setFlightNumber(102);
         flight2.setDepartureTime(LocalDateTime.of(2024, 10, 19, 20, 10, 20));
@@ -70,7 +69,7 @@ class FlightControllerTest {
 
     @Test
     void test_Create_Flight() throws Exception {
-        when(flightService.createFlight(any(Flight.class))).thenReturn(flight1);
+        when(flightService.createFlight(any(FlightEntity.class))).thenReturn(flight1);
 
         mockMvc.perform(post("/api/v1/flight/create")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -104,7 +103,7 @@ class FlightControllerTest {
 
     @Test
     void test_Get_All_Flights() throws Exception {
-        List<Flight> flightList = new ArrayList<>();
+        List<FlightEntity> flightList = new ArrayList<>();
         flightList.add(flight1);
         when(flightService.getAllFlights()).thenReturn(flightList);
 
@@ -123,7 +122,7 @@ class FlightControllerTest {
     @Test
     void test_Update_Flight() throws Exception {
         flight1.setFlightId(1L);
-        when(flightService.updateFlight(any(Flight.class))).thenReturn(flight2);
+        when(flightService.updateFlight(any(FlightEntity.class))).thenReturn(flight2);
 
         mockMvc.perform(put("/api/v1/flight/update/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -159,7 +158,7 @@ class FlightControllerTest {
 
     @Test
     void test_Get_Flights_By_Airplane_Type() throws Exception {
-        List<Flight> flightList = new ArrayList<>();
+        List<FlightEntity> flightList = new ArrayList<>();
         flightList.add(flight1);
         when(flightService.getFlightsByAirplaneType(EFlightAirplane.BOEING_747)).thenReturn(flightList);
 

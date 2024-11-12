@@ -1,17 +1,17 @@
 package com.flightbookings.flight_bookings.controllers;
 
 import com.flightbookings.flight_bookings.exceptions.FlightNotFoundException;
-import com.flightbookings.flight_bookings.models.Flight;
+import com.flightbookings.flight_bookings.models.FlightEntity;
 import com.flightbookings.flight_bookings.models.EFlightAirplane;
 import com.flightbookings.flight_bookings.services.interfaces.FlightService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 /**
  * Controller for managing flight-related operations such as creating, updating, retrieving, and deleting flights.
@@ -20,17 +20,11 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/flight")
 @Tag(name = "Flight", description = "Operations pertaining to flight management")
+@RequiredArgsConstructor
 public class FlightController {
 
     private final FlightService flightService;
-    /**
-     * Constructor to initialize the FlightController with a FlightService.
-     *
-     * @param flightService the flight service for managing flight operations.
-     */
-    public FlightController(FlightService flightService) {
-        this.flightService = flightService;
-    }
+
     /**
      * Creates a new flight.
      *
@@ -39,8 +33,8 @@ public class FlightController {
      */
     @Operation(summary =  "Create a new flight")
     @PostMapping(value="/create",consumes = "application/json")
-    public ResponseEntity<Flight> createFlight(@RequestBody Flight flight) {
-        Flight newFlight = flightService.createFlight(flight);
+    public ResponseEntity<FlightEntity> createFlight(@RequestBody FlightEntity flight) {
+        FlightEntity newFlight = flightService.createFlight(flight);
         return new ResponseEntity<>(newFlight, HttpStatus.CREATED);
     }
     /**
@@ -60,8 +54,8 @@ public class FlightController {
      * @return a list of flights with the specified airplane type.
      */
     @GetMapping("/byAirplaneType")
-    public ResponseEntity<List<Flight>> getFlightsByAirplaneType(@RequestParam EFlightAirplane airplaneType) {
-        List<Flight> flights = flightService.getFlightsByAirplaneType(airplaneType);
+    public ResponseEntity<List<FlightEntity>> getFlightsByAirplaneType(@RequestParam EFlightAirplane airplaneType) {
+        List<FlightEntity> flights = flightService.getFlightsByAirplaneType(airplaneType);
         return new ResponseEntity<>(flights, HttpStatus.OK);
     }
     /**
@@ -72,8 +66,8 @@ public class FlightController {
      */
     @Operation(summary =  "Get flight by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<Flight> getFlightById(@Parameter(description = "ID of the flight to be retrieved") @PathVariable Long id) {
-        Flight flight = flightService.getFlightById(id);
+    public ResponseEntity<FlightEntity> getFlightById(@Parameter(description = "ID of the flight to be retrieved") @PathVariable Long id) {
+        FlightEntity flight = flightService.getFlightById(id);
         return flight != null ? new ResponseEntity<>(flight, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
     /**
@@ -83,8 +77,8 @@ public class FlightController {
      */
     @Operation(summary =  "Get all flights")
     @GetMapping("/")
-    public ResponseEntity<List<Flight>> getAllFlights() {
-        List<Flight> flights = flightService.getAllFlights();
+    public ResponseEntity<List<FlightEntity>> getAllFlights() {
+        List<FlightEntity> flights = flightService.getAllFlights();
         return new ResponseEntity<>(flights, HttpStatus.OK);
     }
     /**
@@ -96,10 +90,10 @@ public class FlightController {
      */
     @Operation(summary = "Update an existing flight")
     @PutMapping("/update/{id}")
-    public ResponseEntity<Flight> updateFlight(@Parameter(description = "ID of the flight to be updated") @PathVariable Long id, @RequestBody Flight flightDetails) {
+    public ResponseEntity<FlightEntity> updateFlight(@Parameter(description = "ID of the flight to be updated") @PathVariable Long id, @RequestBody FlightEntity flightDetails) {
         flightDetails.setFlightId(id);
         try {
-            Flight updatedFlight = flightService.updateFlight(flightDetails);
+            FlightEntity updatedFlight = flightService.updateFlight(flightDetails);
             return new ResponseEntity<>(updatedFlight, HttpStatus.OK);
         } catch (FlightNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

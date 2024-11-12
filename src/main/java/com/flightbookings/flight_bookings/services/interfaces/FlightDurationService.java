@@ -1,6 +1,6 @@
 package com.flightbookings.flight_bookings.services.interfaces;
 
-import com.flightbookings.flight_bookings.models.Flight;
+import com.flightbookings.flight_bookings.models.FlightEntity;
 
 import java.time.Duration;
 /**
@@ -13,5 +13,5 @@ public interface FlightDurationService {
      * @param flight the Flight object for which the duration is to be calculated.
      * @return the duration of the flight as a Duration object.
      */
-    Duration calculateFlightDuration(Flight flight);
+    Duration calculateFlightDuration(FlightEntity flight);
 }

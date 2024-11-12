@@ -1,6 +1,6 @@
 package com.flightbookings.flight_bookings.dtos.DTOUser;
 
-import com.flightbookings.flight_bookings.models.User;
+import com.flightbookings.flight_bookings.models.UserEntity;
 import org.modelmapper.ModelMapper;
 
 
@@ -12,11 +12,11 @@ public class UserConverter {
         this.modelMapper = modelMapper;
     }
 
-    public UserDTO convertToDto(User user) {
+    public UserDTO convertToDto(UserEntity user) {
         return modelMapper.map(user, UserDTO.class);
     }
 
-    public User convertToEntity(UserDTO userDTO) {
-        return modelMapper.map(userDTO, User.class);
+    public UserEntity convertToEntity(UserDTO userDTO) {
+        return modelMapper.map(userDTO, UserEntity.class);
     }
 }

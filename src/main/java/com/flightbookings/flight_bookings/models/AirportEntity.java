@@ -10,7 +10,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "Airport")
 @Schema(description = "All details about the Airport entity.")
-public class Airport {
+public class AirportEntity {
 
     /** The airport code, used as a unique identifier. */
     @Id
@@ -42,7 +42,7 @@ public class Airport {
      * @param airportCity the city where the airport is located.
      * @param airportCountry the country of the airport.
      */
-    public Airport(String airportCode, String airportName, String airportCity, ECountry airportCountry) {
+    public AirportEntity(String airportCode, String airportName, String airportCity, ECountry airportCountry) {
         this.airportCode = airportCode;
         this.airportName = airportName;
         this.airportCity = airportCity;
@@ -50,7 +50,7 @@ public class Airport {
     }
 
     /** Default constructor for Airport. */
-    public Airport() {
+    public AirportEntity() {
     }
 
     /**

@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Test class for {@link BookingController}.
  * Verifies the behavior of Booking-related endpoints.
  */
-public class BookingControllerTest {
+public class BookingEntityControllerTest {
 
     @Mock
     private BookingService bookingService;
@@ -40,13 +40,13 @@ public class BookingControllerTest {
 
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
-    private Booking booking1;
-    private Booking booking2;
-    private List<Booking> bookingList;
+    private BookingEntity booking1;
+    private BookingEntity booking2;
+    private List<BookingEntity> bookingList;
 
-    private Passenger passenger1;
-    private Flight flight1;
-    private Seat seat1;
+    private PassengerEntity passenger1;
+    private FlightEntity flight1;
+    private SeatEntity seat1;
     /**
      * Initializes mocks and test data before each test.
      */
@@ -58,16 +58,16 @@ public class BookingControllerTest {
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
 
-        User user1 = new User();
+        UserEntity user1 = new UserEntity();
         user1.setUserId(1L);
         user1.setUsername("testuser");
 
-        passenger1 = new Passenger();
-        flight1 = new Flight();
-        seat1 = new Seat();
+        passenger1 = new PassengerEntity();
+        flight1 = new FlightEntity();
+        seat1 = new SeatEntity();
 
-        booking1 = new Booking(1L, LocalDateTime.of(2024, 9, 24, 10, 0), passenger1, flight1, seat1, user1);
-        booking2 = new Booking(2L, LocalDateTime.of(2024, 9, 25, 12, 30), passenger1, flight1, seat1, user1);
+        booking1 = new BookingEntity(1L, LocalDateTime.of(2024, 9, 24, 10, 0), passenger1, flight1, seat1, user1);
+        booking2 = new BookingEntity(2L, LocalDateTime.of(2024, 9, 25, 12, 30), passenger1, flight1, seat1, user1);
         bookingList = new ArrayList<>();
         bookingList.add(booking1);
         bookingList.add(booking2);
@@ -85,7 +85,7 @@ public class BookingControllerTest {
      */
     @Test
     public void testGetBookingByIdByUser() throws Exception {
-        User user1 = new User();
+        UserEntity user1 = new UserEntity();
         user1.setUserId(1L);
         user1.setUsername("testuser");
 
@@ -106,7 +106,7 @@ public class BookingControllerTest {
      */
     @Test
     public void testGetBookingById_ByUser_NotFound() throws Exception {
-        User user1 = new User();
+        UserEntity user1 = new UserEntity();
         user1.setUserId(1L);
         user1.setUsername("testuser");
 
@@ -125,7 +125,7 @@ public class BookingControllerTest {
     @Test
     public void testGetAllBookingsByUser() throws Exception {
 
-        User testUser = new User(1L, "testUser", "password", "test@example.com", ERole.USER, bookingList);
+        UserEntity testUser = new UserEntity(1L, "testUser", "password", "test@example.com", ERole.USER, bookingList);
 
         when(userService.findByUsername("testUser")).thenReturn(testUser);
         when(bookingService.getAllBookingsByUser(testUser)).thenReturn(bookingList);
@@ -174,7 +174,7 @@ public class BookingControllerTest {
 
     @Test
     void createBooking() throws Exception {
-        User user1 = new User();
+        UserEntity user1 = new UserEntity();
         user1.setUserId(1L);
         user1.setUsername("testuser");
 
@@ -196,7 +196,7 @@ public class BookingControllerTest {
 
     @Test
     void updateBooking() throws Exception {
-        when(bookingService.updateBooking(any(Booking.class))).thenReturn(booking1);
+        when(bookingService.updateBooking(any(BookingEntity.class))).thenReturn(booking1);
 
         String updatedBookingJson = objectMapper.writeValueAsString(booking1);
 
