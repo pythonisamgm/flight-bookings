@@ -1,7 +1,8 @@
 package com.flightbookings.flight_bookings.services;
 
-import com.flightbookings.flight_bookings.models.Flight;
+import com.flightbookings.flight_bookings.models.FlightEntity;
 import com.flightbookings.flight_bookings.services.interfaces.FlightDurationService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -19,7 +20,7 @@ public class FlightDurationServiceImpl implements FlightDurationService {
      *         or null if either the departure or arrival time is not set.
      */
     @Override
-    public Duration calculateFlightDuration(Flight flight) {
+    public Duration calculateFlightDuration(FlightEntity flight) {
         if (flight.getDepartureTime() != null && flight.getArrivalTime() != null) {
             return Duration.between(flight.getDepartureTime(), flight.getArrivalTime());
         }
