@@ -5,7 +5,6 @@ import com.flightbookings.flight_bookings.models.EFlightAirplane;
 import com.flightbookings.flight_bookings.models.Seat;
 import com.flightbookings.flight_bookings.repositories.IFlightRepository;
 import com.flightbookings.flight_bookings.repositories.ISeatRepository;
-import com.flightbookings.flight_bookings.services.interfaces.FlightDurationService;
 import com.flightbookings.flight_bookings.services.interfaces.SeatService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,9 +37,6 @@ class FlightServiceImplTest {
     @Mock
     private ISeatRepository seatRepository;
 
-    @Mock
-    private FlightDurationService flightDurationService;
-
     private Flight flight;
 
     @BeforeEach
@@ -56,7 +52,6 @@ class FlightServiceImplTest {
         flight.setAvailability(true);
         flight.setNumRows(20);
         flight.setFlightPrice(BigDecimal.valueOf(300));
-        flight.setFlightDuration(Duration.ofHours(2));
     }
 
     @Test

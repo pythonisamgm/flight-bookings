@@ -57,9 +57,6 @@ public class Flight {
     @Column
     private LocalDateTime arrivalTime;
 
-    @Schema(description = "Duration of the flight")
-    @Column
-    private Duration flightDuration;
 
     /**
      * The type of airplane used for this flight.
@@ -138,13 +135,12 @@ public class Flight {
      * @param bookingList   The list of bookings.
      */
 
-    public Flight(Long flightId, int flightNumber, int numRows, LocalDateTime departureTime, LocalDateTime arrivalTime, Duration flightDuration, EFlightAirplane flightAirplane, int capacityPlane, boolean availability, BigDecimal flightPrice, List<Seat> seats, List<Booking> bookingList, String originAirport, String destinationAirport) {
+    public Flight(Long flightId, int flightNumber, int numRows, LocalDateTime departureTime, LocalDateTime arrivalTime,  EFlightAirplane flightAirplane, int capacityPlane, boolean availability, BigDecimal flightPrice, List<Seat> seats, List<Booking> bookingList, String originAirport, String destinationAirport) {
         this.flightId = flightId;
         this.flightNumber = flightNumber;
         this.numRows = numRows;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
-        this.flightDuration = flightDuration;
         this.flightAirplane = flightAirplane;
         this.capacityPlane = capacityPlane;
         this.availability = true;
@@ -357,11 +353,4 @@ public class Flight {
         this.bookingList = bookingList;
     }
 
-    public Duration getFlightDuration() {
-        return flightDuration;
-    }
-
-    public void setFlightDuration(Duration flightDuration) {
-        this.flightDuration = flightDuration;
-    }
 }

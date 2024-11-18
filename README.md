@@ -43,7 +43,6 @@ The application implements a service layer with interfaces and classes for each 
 - **AuthService**: Interface for authentication-related operations.
 - **BookingService**: Interface for booking-related operations.
 - **FlightService**: Interface for managing flight-related operations.
-- **FlightDurationService**: Interface for managing flight duration calculations.
 - **PassengerService**: Interface for managing passenger information.
 - **SeatService**: Interface for seat reservation and management.
 - **UserService**: Interface for user-related operations.
@@ -51,7 +50,6 @@ The application implements a service layer with interfaces and classes for each 
 #### Service Implementations
 - **AirportServiceImpl**: Implementation of airport-related operations.
 - **BookingServiceImpl**: Manages business logic for booking creation, updating, and deletion.
-- **FlightDurationServiceImpl**: Handles operations related to flight durations.
 - **FlightServiceImpl**: Manages flights.
 - **PassengerServiceImpl**: Manages passenger information.
 - **SeatServiceImpl**: Manages seat reservations and availability.

@@ -121,7 +121,6 @@ public class FlightServiceImpl implements FlightService {
             flight.setFlightNumber(updatedFlight.getFlightNumber());
             flight.setDepartureTime(updatedFlight.getDepartureTime());
             flight.setArrivalTime(updatedFlight.getArrivalTime());
-            flight.setFlightDuration(updatedFlight.getFlightDuration());
             flight.setFlightAirplane(updatedFlight.getFlightAirplane());
             flight.setCapacityPlane(updatedFlight.getCapacityPlane());
             flight.setAvailability(updatedFlight.isAvailability());
