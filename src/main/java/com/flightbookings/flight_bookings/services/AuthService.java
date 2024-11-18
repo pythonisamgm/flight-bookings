@@ -3,9 +3,8 @@ package com.flightbookings.flight_bookings.services;
 import com.flightbookings.flight_bookings.dtos.response.AuthResponse;
 import com.flightbookings.flight_bookings.dtos.request.LoginRequest;
 import com.flightbookings.flight_bookings.dtos.request.RegisterRequest;
-import com.flightbookings.flight_bookings.models.UserEntity;
+import com.flightbookings.flight_bookings.models.User;
 import com.flightbookings.flight_bookings.repositories.IUserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
  * Service for handling authentication operations such as login and registration.
  */
 @Service
-@RequiredArgsConstructor
 public class AuthService {
 
     private final JwtService jwtService;
@@ -23,7 +21,20 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
-
+    /**
+     * Constructs an AuthService with the required dependencies.
+     *
+     * @param jwtService           the service for generating JWT tokens.
+     * @param iUserRepository      the repository for managing users.
+     * @param passwordEncoder      the encoder for user passwords.
+     * @param authenticationManager the manager for handling authentication.
+     */
+    public AuthService(JwtService jwtService, IUserRepository iUserRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
+        this.jwtService = jwtService;
+        this.iUserRepository = iUserRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+    }
 
     /**
      * Authenticates the user and returns an authentication response.
@@ -34,7 +45,7 @@ public class AuthService {
     public AuthResponse login(LoginRequest login) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword()));
 
-        UserEntity user = iUserRepository.findByUsername(login.getUsername()).orElseThrow();
+        User user = iUserRepository.findByUsername(login.getUsername()).orElseThrow();
 
         String token = jwtService.getTokenService(user);
 
@@ -52,7 +63,7 @@ public class AuthService {
      * @return an AuthResponse containing the JWT token and user role.
      */
     public AuthResponse register(RegisterRequest register) {
-        UserEntity user = UserEntity.builder()
+        User user = User.builder()
                 .username(register.getUsername())
                 .email(register.getEmail())
                 .password(passwordEncoder.encode(register.getPassword()))

@@ -1,11 +1,10 @@
 package com.flightbookings.flight_bookings.controllers;
 
-import com.flightbookings.flight_bookings.models.PassengerEntity;
+import com.flightbookings.flight_bookings.models.Passenger;
 import com.flightbookings.flight_bookings.services.interfaces.PassengerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,11 +17,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/passengers")
 @Tag(name ="Passenger Management", description = "Operations pertaining to passenger management")
-@RequiredArgsConstructor
 public class PassengerController {
 
     private final PassengerService passengerService;
-
+    /**
+     * Constructor to initialize the PassengerController with a PassengerService.
+     *
+     * @param passengerService the passenger service for managing passenger operations.
+     */
+    public PassengerController(PassengerService passengerService) {
+        this.passengerService = passengerService;
+    }
     /**
      * Creates a new passenger.
      *
@@ -31,8 +36,8 @@ public class PassengerController {
      */
     @Operation(summary = "Create a new passenger")
     @PostMapping(value="/create",consumes = "application/json")
-    public ResponseEntity<PassengerEntity> createPassenger(@RequestBody PassengerEntity passenger) {
-        PassengerEntity newPassenger = passengerService.createPassenger(passenger);
+    public ResponseEntity<Passenger> createPassenger(@RequestBody Passenger passenger) {
+        Passenger newPassenger = passengerService.createPassenger(passenger);
         return new ResponseEntity<>(newPassenger, HttpStatus.CREATED);
     }
     /**
@@ -43,8 +48,8 @@ public class PassengerController {
      */
     @Operation(summary = "Get a passenger by ID")
     @GetMapping("/{id}")
-    public ResponseEntity<PassengerEntity> getPassengerById(@Parameter(description = "ID of the booking  to be retrieved") @PathVariable Long id) {
-        PassengerEntity passenger = passengerService.getPassengerById(id);
+    public ResponseEntity<Passenger> getPassengerById(@Parameter(description = "ID of the booking  to be retrieved") @PathVariable Long id) {
+        Passenger passenger = passengerService.getPassengerById(id);
         if (passenger != null) {
             return new ResponseEntity<>(passenger, HttpStatus.OK);
         } else {
@@ -58,8 +63,8 @@ public class PassengerController {
      */
     @Operation(summary = "Get all passengers")
     @GetMapping("/")
-    public ResponseEntity<List<PassengerEntity>> getAllPassengers() {
-        List<PassengerEntity> passengers = passengerService.getAllPassengers();
+    public ResponseEntity<List<Passenger>> getAllPassengers() {
+        List<Passenger> passengers = passengerService.getAllPassengers();
         return new ResponseEntity<>(passengers, HttpStatus.OK);
     }
     /**
@@ -71,8 +76,8 @@ public class PassengerController {
      */
     @Operation(summary = "Update a passenger")
     @PutMapping("/update/{id}")
-    public ResponseEntity<PassengerEntity> updatePassenger(@Parameter(description = "ID of the booking  to be retrieved") @PathVariable Long id, @RequestBody PassengerEntity passengerDetails) {
-        PassengerEntity updatedPassenger = passengerService.updatePassenger(id, passengerDetails);
+    public ResponseEntity<Passenger> updatePassenger(@Parameter(description = "ID of the booking  to be retrieved") @PathVariable Long id, @RequestBody Passenger passengerDetails) {
+        Passenger updatedPassenger = passengerService.updatePassenger(id, passengerDetails);
         if (updatedPassenger != null) {
             return new ResponseEntity<>(updatedPassenger, HttpStatus.OK);
         } else {

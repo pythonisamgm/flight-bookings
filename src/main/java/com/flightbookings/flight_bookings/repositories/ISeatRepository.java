@@ -1,18 +1,16 @@
 package com.flightbookings.flight_bookings.repositories;
 
-import com.flightbookings.flight_bookings.models.FlightEntity;
-import com.flightbookings.flight_bookings.models.SeatEntity;
+import com.flightbookings.flight_bookings.models.Flight;
+import com.flightbookings.flight_bookings.models.Seat;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 /**
- * Repository interface for managing {@link SeatEntity} entities.
+ * Repository interface for managing {@link Seat} entities.
  * Provides CRUD operations and methods to find seats by flight and seat name.
  */
-@Repository
-public interface ISeatRepository extends JpaRepository<SeatEntity, Long> {
+public interface ISeatRepository extends JpaRepository<Seat, Long> {
     /**
      * Finds a specific seat by flight and seat name.
      *
@@ -20,12 +18,12 @@ public interface ISeatRepository extends JpaRepository<SeatEntity, Long> {
      * @param seatName the name of the seat to find.
      * @return an optional containing the found seat, or empty if not found.
      */
-    Optional<SeatEntity> findByFlightAndSeatName(FlightEntity flight, String seatName);
+    Optional<Seat> findByFlightAndSeatName(Flight flight, String seatName);
     /**
      * Finds a list of seats associated with a given flight.
      *
      * @param flight the flight whose seats are to be found.
      * @return a list of seats for the specified flight.
      */
-    List<SeatEntity> findByFlight(FlightEntity flight);
+    List<Seat> findByFlight(Flight flight);
 }

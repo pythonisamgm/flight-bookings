@@ -1,6 +1,6 @@
 package com.flightbookings.flight_bookings.services.interfaces;
 
-import com.flightbookings.flight_bookings.models.UserEntity;
+import com.flightbookings.flight_bookings.models.User;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ public interface UserService {
      * @param user the User object to create.
      * @return the created User object.
      */
-    UserEntity createUser(UserEntity user);
+    User createUser(User user);
 
     /**
      * Retrieves a user by their ID.
@@ -23,14 +23,14 @@ public interface UserService {
      * @param id the ID of the user to retrieve.
      * @return the User object if found, null otherwise.
      */
-    UserEntity getUserById(Long id);
+    User getUserById(Long id);
 
     /**
      * Retrieves all users.
      *
      * @return a list of all User objects.
      */
-    List<UserEntity> getAllUsers();
+    List<User> getAllUsers();
 
     /**
      * Updates a user's details.
@@ -39,7 +39,7 @@ public interface UserService {
      * @param userDetails the updated User object.
      * @return the updated User object.
      */
-    UserEntity updateUser(Long id, UserEntity userDetails);
+    User updateUser(Long id, User userDetails);
 
     /**
      * Deletes a user by their ID.
@@ -55,5 +55,5 @@ public interface UserService {
      * @param username the username of the user to find.
      * @return the User object if found, throws an exception if not found.
      */
-    UserEntity findByUsername(String username);
+    User findByUsername(String username);
 }

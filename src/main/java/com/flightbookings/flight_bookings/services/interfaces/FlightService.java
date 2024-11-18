@@ -1,7 +1,7 @@
 package com.flightbookings.flight_bookings.services.interfaces;
 
 import com.flightbookings.flight_bookings.models.EFlightAirplane;
-import com.flightbookings.flight_bookings.models.FlightEntity;
+import com.flightbookings.flight_bookings.models.Flight;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -18,7 +18,7 @@ public interface FlightService {
      * @return the created Flight object.
      */
     @Transactional
-    FlightEntity createFlight(FlightEntity flight);
+    Flight createFlight(Flight flight);
 
     /**
      * Retrieves a flight by its ID.
@@ -26,14 +26,14 @@ public interface FlightService {
      * @param id the ID of the flight to retrieve.
      * @return the Flight object if found, null otherwise.
      */
-    FlightEntity getFlightById(Long id);
+    Flight getFlightById(Long id);
 
     /**
      * Retrieves all flights.
      *
      * @return a list of all Flight objects.
      */
-    List<FlightEntity> getAllFlights();
+    List<Flight> getAllFlights();
 
     /**
      * Retrieves flights by the type of airplane.
@@ -41,7 +41,7 @@ public interface FlightService {
      * @param airplaneType the type of airplane for the flights to retrieve.
      * @return a list of Flight objects that match the airplane type.
      */
-    List<FlightEntity> getFlightsByAirplaneType(EFlightAirplane airplaneType);
+    List<Flight> getFlightsByAirplaneType(EFlightAirplane airplaneType);
 
     /**
      * Updates the details of an existing flight.
@@ -50,7 +50,7 @@ public interface FlightService {
      * @return the updated Flight object.
      */
 
-    FlightEntity updateFlight(FlightEntity updatedFlight);
+    Flight updateFlight(Flight updatedFlight);
     /**
      * Updates the availability status of all flights.
      */

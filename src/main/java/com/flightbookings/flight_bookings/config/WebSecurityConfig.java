@@ -4,7 +4,6 @@ package com.flightbookings.flight_bookings.config;
 import com.flightbookings.flight_bookings.jwt.AuthTokenFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -51,9 +50,6 @@ public class WebSecurityConfig {
                                 .requestMatchers("/api/v1/auth/register").permitAll()
                                 .requestMatchers("/api/v1/auth/login").permitAll()
                                 .requestMatchers("/api/v1/bookings/create/{flightId}/{passengerId}/{seatName}").hasAuthority("USER")
-                                //.requestMatchers(HttpMethod.PUT,"/api/v1/bookings/update/{id}").hasAuthority("ADMIN")
-                                //.requestMatchers(HttpMethod.PUT,"/api/v1/bookings/all").hasAuthority("ADMIN")
-                                //.requestMatchers(HttpMethod.GET,"/api/v1/bookings/{id}").hasAnyAuthority("ADMIN", "USER")
                                 .requestMatchers("/api/v1/bookings/").hasAnyAuthority("ADMIN", "USER")
                                 .requestMatchers("/api/v1/bookings/update/{id}").hasAuthority("ADMIN")
                                 .requestMatchers("/api/v1/bookings/delete/{id}").hasAuthority("ADMIN")

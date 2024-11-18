@@ -1,6 +1,6 @@
 package com.flightbookings.flight_bookings.dtos.DTOSeat;
 
-import com.flightbookings.flight_bookings.models.SeatEntity;
+import com.flightbookings.flight_bookings.models.Seat;
 import org.modelmapper.ModelMapper;
 
 public class SeatConverter {
@@ -11,11 +11,11 @@ public class SeatConverter {
         this.modelMapper = modelMapper;
     }
 
-    public SeatDTO convertToDto(SeatEntity seat) {
+    public SeatDTO convertToDto(Seat seat) {
         return modelMapper.map(seat, SeatDTO.class);
     }
 
-    public SeatEntity convertToEntity(SeatDTO seatDTO) {
-        return modelMapper.map(seatDTO, SeatEntity.class);
+    public Seat convertToEntity(SeatDTO seatDTO) {
+        return modelMapper.map(seatDTO, Seat.class);
     }
 }

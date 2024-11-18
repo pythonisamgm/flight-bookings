@@ -1,7 +1,7 @@
 package com.flightbookings.flight_bookings.services.interfaces;
 
-import com.flightbookings.flight_bookings.models.BookingEntity;
-import com.flightbookings.flight_bookings.models.UserEntity;
+import com.flightbookings.flight_bookings.models.Booking;
+import com.flightbookings.flight_bookings.models.User;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public interface BookingService {
      * @return the created Booking object.
      */
 
-    BookingEntity createBooking(Long flightId, Long passengerId, String seatName, Long userId);
+    Booking createBooking(Long flightId, Long passengerId, String seatName, Long userId);
 
     /**
      * Retrieves a booking by its ID.
@@ -29,7 +29,7 @@ public interface BookingService {
      * @param user the user requesting the booking details.
      * @return the Booking object if found, null otherwise.
      */
-    BookingEntity getBookingByIdByUser(Long id, UserEntity user);
+    Booking getBookingByIdByUser(Long id, User user);
 
     /**
      * Retrieves all bookings for a specific user.
@@ -37,13 +37,13 @@ public interface BookingService {
      * @param user the user whose bookings are to be retrieved.
      * @return a list of Booking objects for the user.
      */
-    List<BookingEntity> getAllBookingsByUser(UserEntity user);
+    List<Booking> getAllBookingsByUser(User user);
     /**
      * Retrieves all bookings.
      *
      * @return a list of Booking objects.
      */
-    List<BookingEntity> getAllBookings();
+    List<Booking> getAllBookings();
 
 
     /**
@@ -52,7 +52,7 @@ public interface BookingService {
      * @param updatedBooking the updated Booking object containing the new details.
      * @return the updated Booking object.
      */
-    BookingEntity updateBooking(BookingEntity updatedBooking);
+    Booking updateBooking(Booking updatedBooking);
 
     /**
      * Deletes a booking by its ID.
