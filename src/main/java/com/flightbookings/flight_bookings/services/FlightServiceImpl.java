@@ -9,6 +9,8 @@ import com.flightbookings.flight_bookings.repositories.ISeatRepository;
 import com.flightbookings.flight_bookings.services.interfaces.FlightService;
 import com.flightbookings.flight_bookings.services.interfaces.SeatService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,12 +23,25 @@ import java.util.stream.Collectors;
  * Service implementation for managing flight-related operations.
  */
 @Service
-@RequiredArgsConstructor
 public class FlightServiceImpl implements FlightService {
 
-    private final IFlightRepository flightRepository;
-    private final ISeatRepository seatRepository;
-    private final SeatService seatService;
+    private IFlightRepository flightRepository;
+    private ISeatRepository seatRepository;
+    private SeatService seatService;
+    @Autowired
+    public void setFlightRepository(IFlightRepository flightRepository) {
+        this.flightRepository = flightRepository;
+    }
+    @Autowired
+    public void setSeatRepository(ISeatRepository seatRepository) {
+        this.seatRepository = seatRepository;
+    }
+
+    @Lazy
+    @Autowired
+    public void setSeatService(SeatService seatService) {
+        this.seatService = seatService;
+    }
 
     /**
      * Creates a new flight and initializes its seats.

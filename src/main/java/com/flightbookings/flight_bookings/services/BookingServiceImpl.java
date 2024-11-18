@@ -6,6 +6,8 @@ import com.flightbookings.flight_bookings.repositories.*;
 import com.flightbookings.flight_bookings.services.interfaces.BookingService;
 import com.flightbookings.flight_bookings.services.interfaces.SeatService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -16,15 +18,45 @@ import java.util.List;
  * Implementation of the BookingService interface for managing booking operations.
  */
 @Service
-@RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
 
-    private final IBookingRepository bookingRepository;
-    private final ISeatRepository seatRepository;
-    private final IFlightRepository flightRepository;
-    private final IPassengerRepository passengerRepository;
-    private final IUserRepository userRepository;
-    private final SeatService seatService;
+    private IBookingRepository bookingRepository;
+    private ISeatRepository seatRepository;
+    private IFlightRepository flightRepository;
+    private IPassengerRepository passengerRepository;
+    private IUserRepository userRepository;
+    private SeatService seatService;
+
+    @Autowired
+    public void setBookingRepository(IBookingRepository bookingRepository) {
+        this.bookingRepository = bookingRepository;
+    }
+
+    @Autowired
+    public void setSeatRepository(ISeatRepository seatRepository) {
+        this.seatRepository = seatRepository;
+    }
+
+    @Autowired
+    public void setFlightRepository(IFlightRepository flightRepository) {
+        this.flightRepository = flightRepository;
+    }
+
+    @Autowired
+    public void setPassengerRepository(IPassengerRepository passengerRepository) {
+        this.passengerRepository = passengerRepository;
+    }
+
+    @Autowired
+    public void setUserRepository(IUserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @Lazy
+    @Autowired
+    public void setSeatService(SeatService seatService) {
+        this.seatService = seatService;
+    }
 
 
 

@@ -29,7 +29,7 @@ public class SeatEntity {
      */
     @Column
     @Schema(description = "The row number of the seat")
-    private int row;
+    private int seatRow;
 
     /**
      * The letter of the seat in the row.
@@ -80,18 +80,18 @@ public class SeatEntity {
      * Constructs a new Seat with the specified details.
      *
      * @param seatId     The ID of the seat.
-     * @param row        The row number of the seat.
+     * @param seatRow        The row number of the seat.
      * @param seatLetter The letter of the seat.
      * @param booked     The booking status of the seat.
      * @param flight     The flight associated with this seat.
      * @param booking    The booking associated with this seat.
      */
-    public SeatEntity(Long seatId, int row, ESeatLetter seatLetter, boolean booked, FlightEntity flight, BookingEntity booking) {
+    public SeatEntity(Long seatId, int seatRow, ESeatLetter seatLetter, boolean booked, FlightEntity flight, BookingEntity booking) {
         this.seatId = seatId;
-        this.row = row;
+        this.seatRow = seatRow;
         this.seatLetter = seatLetter;
         this.booked = booked;
-        this.seatName = row + seatLetter.name();
+        this.seatName = seatRow + seatLetter.name();
         this.flight = flight;
         this.booking = booking;
     }
@@ -119,17 +119,17 @@ public class SeatEntity {
      *
      * @return The row number.
      */
-    public int getRow() {
-        return row;
+    public int getSeatRow() {
+        return seatRow;
     }
 
     /**
      * Sets the row number of the seat.
      *
-     * @param row The row number.
+     * @param seatRow The row number.
      */
-    public void setRow(int row) {
-        this.row = row;
+    public void setSeatRow(int seatRow) {
+        this.seatRow = seatRow;
     }
 
     /**

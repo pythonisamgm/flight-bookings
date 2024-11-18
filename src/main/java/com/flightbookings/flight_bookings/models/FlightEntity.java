@@ -93,7 +93,7 @@ public class FlightEntity {
     /**
      * List of seats associated with this flight.
      */
-    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference(value = "flight-seat")
     @Schema(description = "List of seats associated with this flight.")
     private List<SeatEntity> seats = new ArrayList<>();
@@ -101,7 +101,7 @@ public class FlightEntity {
     /**
      * List of bookings associated with this flight.
      */
-    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference(value = "booking-flight")
     @Schema(description = "List of bookings associated with this flight.")
     private List<BookingEntity> bookingList;
