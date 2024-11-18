@@ -1,7 +1,6 @@
 package com.flightbookings.flight_bookings.services;
 
 import com.flightbookings.flight_bookings.models.*;
-import com.flightbookings.flight_bookings.exceptions.*;
 import com.flightbookings.flight_bookings.repositories.*;
 import com.flightbookings.flight_bookings.services.interfaces.BookingService;
 import com.flightbookings.flight_bookings.services.interfaces.SeatService;
@@ -14,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.settings.Keys.FAIL_ON_ERROR;
@@ -48,12 +45,13 @@ class BookingServiceImplIntegrationTest {
     private FlightEntity flight;
     private PassengerEntity passenger;
     private UserEntity user;
+    private SeatEntity seat;
 
     @BeforeEach
     void setUp() {
-        // Creación de datos de prueba
+
         flight = flightRepository.save(Instancio.of(FlightEntity.class)
-                .set(Select.field(FlightEntity::getFlightNumber), "FL123")
+                .set(Select.field(FlightEntity::getFlightNumber), 123)
                 .withSettings(Settings.create().set(FAIL_ON_ERROR, true))
                 .create());
 
@@ -67,10 +65,15 @@ class BookingServiceImplIntegrationTest {
                 .set(Select.field(UserEntity::getUsername), "testuser")
                 .withSettings(Settings.create().set(FAIL_ON_ERROR, true))
                 .create());
+
     }
 
     @Test
     void createBooking_ShouldSaveAndReturnBooking() {
+        seat = Instancio.of(SeatEntity.class)
+                .set(Select.field(SeatEntity::getSeatName), "1A")
+                .set(Select.field(SeatEntity::getFlight), flight)
+                .create();
         BookingEntity booking = Instancio.of(BookingEntity.class)
                 .set(Select.field(BookingEntity::getFlight), flight)
                 .set(Select.field(BookingEntity::getPassenger), passenger)

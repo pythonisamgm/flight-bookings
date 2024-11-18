@@ -6,9 +6,11 @@ import com.flightbookings.flight_bookings.models.ESeatLetter;
 import com.flightbookings.flight_bookings.models.FlightEntity;
 import com.flightbookings.flight_bookings.models.SeatEntity;
 import com.flightbookings.flight_bookings.repositories.ISeatRepository;
+import com.flightbookings.flight_bookings.services.interfaces.BookingService;
 import com.flightbookings.flight_bookings.services.interfaces.FlightService;
 import com.flightbookings.flight_bookings.services.interfaces.SeatService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,12 +22,20 @@ import java.util.Optional;
  * Implementation of the SeatService interface for managing seat operations.
  */
 @Service
-@RequiredArgsConstructor
 public class SeatServiceImpl implements SeatService {
+    private ISeatRepository seatRepository;
+    private FlightService flightService;
 
-    private final ISeatRepository seatRepository;
-    private final FlightService flightService;
+    @Autowired
+    public void setSeatRepository(ISeatRepository seatRepository) {
+        this.seatRepository = seatRepository;
+    }
 
+    @Lazy
+    @Autowired
+    public void setFlightService(FlightService flightService) {
+        this.flightService = flightService;
+    }
 
     @Override
     public Optional<SeatEntity> getSeatById(Long seatId) {

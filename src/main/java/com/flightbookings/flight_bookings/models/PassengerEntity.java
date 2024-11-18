@@ -51,7 +51,7 @@ public class PassengerEntity {
     /**
      * The booking associated with this passenger.
      */
-    @OneToOne(mappedBy = "passenger", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "passenger", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonBackReference(value = "booking-passenger")
     @Schema(description = "The booking associated with this passenger")
     private BookingEntity booking;

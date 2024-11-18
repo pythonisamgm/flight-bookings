@@ -35,7 +35,7 @@ public class BookingEntity {
     /**
      * The passenger associated with this booking.
      */
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "passenger_id")
     @JsonManagedReference(value = "booking-passenger")
     @Schema(description = "The passenger associated with this booking")

@@ -16,7 +16,7 @@ import java.util.List;
  * Contains user credentials, role, and associated bookings.
  */
 @Entity
-@Table(name = "user")
+@Table(name = "client")
 @Schema(description = "All details about the User entity.")
 public class UserEntity implements UserDetails {
 
