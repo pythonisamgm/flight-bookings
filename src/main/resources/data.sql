@@ -1,42 +1,8 @@
-
-INSERT INTO Airport (airport_code, airport_name, city, country) VALUES
-('MAD', 'Madrid-Barajas Adolfo Suárez', 'Madrid', 'ESPAÑA'),
-('BCN', 'Barcelona-El Prat', 'Barcelona', 'ESPAÑA'),
-('VLC', 'Valencia', 'Valencia', 'ESPAÑA'),
-('AGP', 'Málaga-Costa del Sol', 'Málaga', 'ESPAÑA'),
-('ALC', 'Alicante-Elche', 'Alicante', 'ESPAÑA'),
-('SVQ', 'Sevilla', 'Sevilla', 'ESPAÑA'),
-('BIO', 'Bilbao', 'Bilbao', 'ESPAÑA'),
-('PMI', 'Palma de Mallorca', 'Palma de Mallorca', 'ESPAÑA'),
-('LPA', 'Gran Canaria', 'Las Palmas', 'ESPAÑA'),
-('TFS', 'Tenerife Sur', 'Tenerife', 'ESPAÑA'),
-('LAX', 'Los Angeles International Airport', 'Los Ángeles', 'EE_UU'),
-('JFK', 'John F. Kennedy International Airport', 'Nueva York', 'EE_UU'),
-('ORD', 'O\'Hare International Airport', 'Chicago', 'EE_UU'),
-('ATL', 'Hartsfield-Jackson Atlanta International Airport', 'Atlanta', 'EE_UU'),
-('DFW', 'Dallas/Fort Worth International Airport', 'Dallas', 'EE_UU'),
-('YYZ', 'Toronto Pearson International Airport', 'Toronto', 'CANADA'),
-('GRU', 'São Paulo/Guarulhos International Airport', 'São Paulo', 'BRASIL'),
-('MEX', 'Mexico City International Airport', 'Ciudad de México', 'MEXICO'),
-('BOG', 'Bogotá El Dorado International Airport', 'Bogotá', 'COLOMBIA'),
-('CUN', 'Cancún International Airport', 'Cancún', 'MEXICO'),
-('LHR', 'London Heathrow Airport', 'Londres', 'REINO_UNIDO'),
-('AMS', 'Amsterdam Airport Schiphol', 'Ámsterdam', 'PAISES_BAJOS'),
-('CDG', 'Charles de Gaulle Airport', 'París', 'FRANCIA'),
-('FRA', 'Frankfurt Airport', 'Fráncfort', 'ALEMANIA'),
-('MUC', 'Munich Airport', 'Múnich', 'ALEMANIA'),
-('ZRH', 'Zurich Airport', 'Zúrich', 'SUIZA'),
-('CPH', 'Copenhagen Airport', 'Copenhague', 'DINAMARCA'),
-('VIE', 'Vienna International Airport', 'Viena', 'AUSTRIA'),
-('LIS', 'Lisbon Portela Airport', 'Lisboa', 'PORTUGAL'),
-('BRU', 'Brussels Airport', 'Bruselas', 'BELGICA');
-
-
 INSERT INTO flight
-(availability, capacity_plane, flight_airplane, flight_number, flight_price, num_rows, departure_time, arrival_time, flight_duration, origin_airport, destination_airport)
+(availability, capacity_plane, flight_airplane, flight_number, flight_price, num_rows, departure_time, arrival_time, origin_airport, destination_airport)
 VALUES
-(1, 180, 1, 1001, 300.50, 3, '2024-10-12 08:00:00', '2024-10-12 12:00:00', 4, 'MAD', 'LAX'),
-(1, 200, 2, 1002, 450.75, 4, '2024-10-12 14:30:00', '2024-10-12 19:00:00', 4.5, 'BCN', 'JFK')
+(1, 180, 'BOEING_747', 1001, 300.50, 3, '2024-10-12 08:00:00', '2024-10-12 12:00:00', 'MAD', 'LAX'),
+(1, 200, 'AIRBUS_A320', 1002, 450.75, 4, '2024-10-12 14:30:00', '2024-10-12 19:00:00', 'BCN', 'JFK');
 --(1, 150, 3, 1003, 200.00, 30, '2024-10-12 09:00:00', '2024-10-12 11:30:00', 2.5, 'AGP', 'LHR'),
 --(1, 220, 1, 1004, 350.25, 44, '2024-10-13 10:45:00', '2024-10-13 13:45:00', 3, 'BIO', 'AMS'),
 --(1, 250, 2, 1005, 320.00, 50, '2024-10-13 18:00:00', '2024-10-13 21:30:00', 3.5, 'PMI', 'CDG'),
