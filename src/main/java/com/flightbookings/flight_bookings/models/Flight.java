@@ -61,6 +61,7 @@ public class Flight {
     /**
      * The type of airplane used for this flight.
      */
+    @Enumerated(EnumType.STRING)
     @Schema(description = "Type of airplane used for the flight")
     @Column
     private EFlightAirplane flightAirplane;
