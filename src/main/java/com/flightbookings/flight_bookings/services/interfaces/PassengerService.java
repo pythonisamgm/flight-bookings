@@ -1,6 +1,6 @@
 package com.flightbookings.flight_bookings.services.interfaces;
 
-import com.flightbookings.flight_bookings.models.Passenger;
+import com.flightbookings.flight_bookings.models.PassengerEntity;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ public interface PassengerService {
      * @param passenger the Passenger object to be created.
      * @return the created Passenger object.
      */
-    Passenger createPassenger(Passenger passenger);
+    PassengerEntity createPassenger(PassengerEntity passenger);
 
     /**
      * Retrieves a passenger by their ID.
@@ -23,14 +23,14 @@ public interface PassengerService {
      * @param id the ID of the passenger to retrieve.
      * @return the Passenger object if found, null otherwise.
      */
-    Passenger getPassengerById(Long id);
+    PassengerEntity getPassengerById(Long id);
 
     /**
      * Retrieves all passengers.
      *
      * @return a list of all Passenger objects.
      */
-    List<Passenger> getAllPassengers();
+    List<PassengerEntity> getAllPassengers();
 
     /**
      * Updates a passenger's details.
@@ -39,7 +39,7 @@ public interface PassengerService {
      * @param passengerDetails the updated Passenger details.
      * @return the updated Passenger object.
      */
-    Passenger updatePassenger(Long id, Passenger passengerDetails);
+    PassengerEntity updatePassenger(Long id, PassengerEntity passengerDetails);
 
     /**
      * Deletes a passenger by their ID.

@@ -1,8 +1,7 @@
 package com.flightbookings.flight_bookings.services.interfaces;
 
-import com.flightbookings.flight_bookings.dtos.DTOSeat.SeatDTO;
-import com.flightbookings.flight_bookings.models.Flight;
-import com.flightbookings.flight_bookings.models.Seat;
+import com.flightbookings.flight_bookings.models.FlightEntity;
+import com.flightbookings.flight_bookings.models.SeatEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -19,7 +18,7 @@ public interface SeatService {
      * @param seatId the ID of the seat to retrieve.
      * @return an Optional containing the Seat object if found, or an empty Optional if not found.
      */
-    Optional<Seat> getSeatById(Long seatId);
+    Optional<SeatEntity> getSeatById(Long seatId);
 
     /**
      * Initializes seats for a given flight.
@@ -29,7 +28,7 @@ public interface SeatService {
      * @return a list of seat identifiers that were initialized.
      */
     @Transactional
-    List<String> initializeSeats(Flight flight, int numRows);
+    List<String> initializeSeats(FlightEntity flight, int numRows);
 
     /**
      * Initializes seats for all flights in the system.
@@ -45,5 +44,5 @@ public interface SeatService {
      * @return the reserved Seat object.
      */
     @Transactional
-    Seat reserveSeat(Flight flight, String seatName);
+    SeatEntity reserveSeat(FlightEntity flight, String seatName);
 }

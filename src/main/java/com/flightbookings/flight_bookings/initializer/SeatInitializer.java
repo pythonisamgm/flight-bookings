@@ -2,6 +2,7 @@ package com.flightbookings.flight_bookings.initializer;
 
 import com.flightbookings.flight_bookings.services.interfaces.SeatService;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 /**
