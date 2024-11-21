@@ -31,7 +31,6 @@ public class SeatServiceImpl implements SeatService {
         this.seatRepository = seatRepository;
     }
 
-    @Lazy
     @Autowired
     public void setFlightService(FlightService flightService) {
         this.flightService = flightService;

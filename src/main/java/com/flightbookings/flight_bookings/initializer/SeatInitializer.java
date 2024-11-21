@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
  * Initializes seats for all flights when the application starts.
  */
 @Component
-@Profile({"test", "default"})
 public class SeatInitializer implements CommandLineRunner {
 
     private final SeatService seatService;

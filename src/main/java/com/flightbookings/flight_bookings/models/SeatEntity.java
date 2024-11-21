@@ -56,7 +56,7 @@ public class SeatEntity {
     /**
      * The flight associated with this seat.
      */
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "flight_id", nullable = false)
     @JsonBackReference(value = "flight-seat")
     @Schema(description = "The flight associated with this seat")
